@@ -98,6 +98,105 @@ class ExampleTest extends TestCase
             ->assertSee('12345678');
     }
 
+    public function test_every_admin_route_requires_admin_privileges(): void
+    {
+        $message = \App\Models\ContactMessage::create([
+            'name' => 'Pengunjung',
+            'email' => 'visitor@example.test',
+            'whatsapp' => '081234567890',
+            'subject' => 'Umum',
+            'message' => 'Pesan untuk pengujian proteksi rute admin.',
+        ]);
+        $applicant = PpdbApplicant::create([
+            'registration_number' => 'INF-2026-AUDIT1',
+            'full_name' => 'Calon Murid',
+            'phone' => '081234567890',
+            'origin_school' => 'SMP Negeri 1',
+            'program' => 'PPLG',
+        ]);
+
+        $routes = [
+            ['GET', 'admin'],
+            ['GET', 'admin/settings'],
+            ['PUT', 'admin/settings'],
+            ['GET', 'admin/ppdb'],
+            ['GET', 'admin/pesan'],
+            ['GET', 'admin/content/berita'],
+            ['GET', 'admin/content/berita/create'],
+            ['POST', 'admin/content/berita'],
+            ['GET', 'admin/content/berita/1/edit'],
+            ['PUT', 'admin/content/berita/1'],
+            ['DELETE', 'admin/content/berita/1'],
+            ['PATCH', 'admin/pesan/' . $message->id . '/read'],
+            ['PATCH', 'admin/ppdb/' . $applicant->id],
+        ];
+
+        // Pengunjung tamu: semua rute admin diarahkan ke halaman login.
+        foreach ($routes as [$method, $uri]) {
+            $response = $this->call($method, $uri);
+            $this->assertSame(302, $response->getStatusCode(), "Tamu diterima di {$method} {$uri}");
+        }
+
+        // User login yang bukan admin: dilarang masuk (403).
+        $this->actingAs(User::factory()->create());
+        foreach ($routes as [$method, $uri]) {
+            $response = $this->call($method, $uri);
+            $this->assertSame(403, $response->getStatusCode(), "Non-admin diterima di {$method} {$uri}");
+        }
+    }
+
+    public function test_contact_form_returns_indonesian_validation_messages(): void
+    {
+        $this->from(route('site.section', 'kontak'))
+            ->post(route('contact-messages.store'), [
+                'name' => '',
+                'email' => 'bukan-email',
+                'whatsapp' => '123',
+                'subject' => 'Tidak Ada',
+                'message' => 'pendek',
+            ])
+            ->assertRedirect(route('site.section', 'kontak'))
+            ->assertSessionHasErrors(['name', 'email', 'whatsapp', 'subject', 'message']);
+
+        $errors = session('errors');
+        $this->assertSame('Nama wajib diisi.', $errors->first('name'));
+        $this->assertSame('Format email tidak valid.', $errors->first('email'));
+        $this->assertSame(
+            'Nomor WhatsApp hanya boleh berisi angka, spasi, dan tanda + ( ) - dengan panjang 9-30 karakter.',
+            $errors->first('whatsapp'),
+        );
+        $this->assertSame('Keperluan yang dipilih tidak valid.', $errors->first('subject'));
+        $this->assertSame('Pesan minimal 10 karakter.', $errors->first('message'));
+    }
+
+    public function test_admin_can_update_school_settings(): void
+    {
+        $this->actingAs(User::factory()->create(['is_admin' => true]))
+            ->put(route('admin.settings.update'), ['school_name' => 'SMK INFOKOM Bogor'])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $this->assertDatabaseHas('site_settings', ['key' => 'school_name', 'value' => 'SMK INFOKOM Bogor']);
+        $this->get(route('home'))->assertSee('SMK INFOKOM Bogor');
+    }
+
+    public function test_custom_error_pages_are_used_instead_of_framework_defaults(): void
+    {
+        $this->get('/halaman-yang-tidak-ada')
+            ->assertStatus(404)
+            ->assertSee('Halaman tidak ditemukan')
+            ->assertSee('Kembali ke beranda', false);
+
+        // Halaman 500 hanya dipakai saat APP_DEBUG=false (mode produksi).
+        config(['app.debug' => false]);
+        $response = app(\Illuminate\Foundation\Exceptions\Handler::class)->render(
+            \Illuminate\Http\Request::create('/', 'GET'),
+            new \RuntimeException('Kegagalan tak terduga'),
+        );
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertStringContainsString('Terjadi kesalahan di server kami', $response->getContent());
+    }
+
     public function test_contact_page_does_not_show_unverified_sample_contacts(): void
     {
         $this->get(route('site.section', 'kontak'))
