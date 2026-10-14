@@ -33,6 +33,71 @@ class ExampleTest extends TestCase
         }
     }
 
+    public function test_profile_page_renders_defaults_when_settings_are_empty(): void
+    {
+        $this->get(route('site.section', 'profil'))
+            ->assertOk()
+            ->assertSee('Selamat Datang di SMK INFOKOM')
+            ->assertSee('Menjadi sekolah kejuruan yang unggul')
+            ->assertSee('Laboratorium Komputer')
+            ->assertSee('Lengkapi melalui pengaturan sekolah');
+    }
+
+    public function test_profile_page_shows_values_saved_in_settings(): void
+    {
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'profile_vision'],
+            ['value' => 'Visi hasil pengaturan admin'],
+        );
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'profile_npsn'],
+            ['value' => '20998877'],
+        );
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'profile_mission'],
+            ['value' => "Misi pertama dari admin\nMisi kedua dari admin"],
+        );
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'profile_facilities'],
+            ['value' => 'Ruang Server|Pusat perangkat jaringan sekolah'],
+        );
+
+        $this->get(route('site.section', 'profil'))
+            ->assertOk()
+            ->assertSee('Visi hasil pengaturan admin')
+            ->assertDontSee('Menjadi sekolah kejuruan yang unggul')
+            ->assertSee('20998877')
+            ->assertSee('Misi pertama dari admin')
+            ->assertSee('Misi kedua dari admin')
+            ->assertSee('Ruang Server')
+            ->assertSee('Pusat perangkat jaringan sekolah')
+            ->assertDontSee('Laboratorium Komputer');
+    }
+
+    public function test_admin_can_save_profile_settings_from_filament_page(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($admin);
+
+        \Livewire\Livewire::test(\App\Filament\Pages\SchoolProfileSettings::class)
+            ->set('data.vision', 'Visi versi uji admin')
+            ->set('data.mission', "Misi uji satu\nMisi uji dua")
+            ->set('data.npsn', '12345678')
+            ->set('data.facilities', 'Ruang Data Center|Pusat server sekolah')
+            ->call('save');
+
+        $this->assertDatabaseHas('site_settings', ['key' => 'profile_vision', 'value' => 'Visi versi uji admin']);
+        $this->assertDatabaseHas('site_settings', ['key' => 'profile_mission', 'value' => "Misi uji satu\nMisi uji dua"]);
+        $this->assertDatabaseHas('site_settings', ['key' => 'profile_npsn', 'value' => '12345678']);
+        $this->assertDatabaseHas('site_settings', ['key' => 'profile_facilities', 'value' => 'Ruang Data Center|Pusat server sekolah']);
+
+        $this->get(route('site.section', 'profil'))
+            ->assertOk()
+            ->assertSee('Visi versi uji admin')
+            ->assertSee('Ruang Data Center')
+            ->assertSee('12345678');
+    }
+
     public function test_contact_page_does_not_show_unverified_sample_contacts(): void
     {
         $this->get(route('site.section', 'kontak'))

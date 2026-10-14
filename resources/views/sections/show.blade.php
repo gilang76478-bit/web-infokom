@@ -31,17 +31,16 @@
             <div class="kepala-sekolah-shell">
               <div class="kepala-sekolah-copy">
                 <span class="detail-tag">SAMBUTAN KEPALA SEKOLAH</span>
-                <h2 id="sambutanTitle">Selamat Datang di SMK INFOKOM</h2>
+                <h2 id="sambutanTitle">{{ $data['sambutan_title'] }}</h2>
                 <div class="kepala-sekolah-text">
                   <blockquote>
-                    <p>Assalamu'alaikum Warahmatullahi Wabarakatuh.</p>
-                    <p>Selamat datang di website resmi SMK INFOKOM. Website ini kami hadirkan sebagai sarana informasi dan komunikasi bagi siswa, orang tua, calon peserta didik, alumni, dunia industri, serta masyarakat.</p>
-                    <p>SMK INFOKOM berkomitmen menyelenggarakan pendidikan kejuruan yang relevan dengan perkembangan teknologi dan kebutuhan dunia kerja. Kami mendorong setiap peserta didik untuk tidak hanya menguasai pengetahuan, tetapi juga memiliki keterampilan, karakter, kreativitas, dan kesiapan menghadapi dunia industri.</p>
-                    <p>Semoga website ini dapat memberikan informasi yang bermanfaat mengenai SMK INFOKOM dan menjadi jembatan untuk mengenal sekolah kami lebih dekat.</p>
+                    @foreach ($data['sambutan_paragraphs'] as $paragraph)
+                      <p>{{ $paragraph }}</p>
+                    @endforeach
                   </blockquote>
                   <div class="kepala-sekolah-cardata">
-                    <strong>Kepala Sekolah</strong>
-                    <span>Kepala SMK INFOKOM</span>
+                    <strong>{{ $data['principal_name'] ?: 'Kepala Sekolah' }}</strong>
+                    <span>{{ $data['principal_title'] }}</span>
                   </div>
                 </div>
               </div>
@@ -94,38 +93,19 @@
               </div>
             </div>
             <div class="identitas-grid">
-              <div class="identitas-item">
-                <div class="label">Nama Sekolah</div>
-                <div class="value">SMK INFOKOM</div>
-              </div>
-              <div class="identitas-item">
-                <div class="label">Status Sekolah</div>
-                <div class="value">Swasta</div>
-              </div>
-              <div class="identitas-item placeholder">
-                <div class="label">NPSN</div>
-                <div class="value">Belum dikonfirmasi</div>
-              </div>
-              <div class="identitas-item placeholder">
-                <div class="label">Tahun Berdiri</div>
-                <div class="value">Belum dikonfirmasi</div>
-              </div>
-              <div class="identitas-item placeholder">
-                <div class="label">Akreditasi</div>
-                <div class="value">Belum dikonfirmasi</div>
-              </div>
-              <div class="identitas-item placeholder">
-                <div class="label">Kepala Sekolah</div>
-                <div class="value">Informasi belum tersedia</div>
-              </div>
-              <div class="identitas-item placeholder">
-                <div class="label">Alamat</div>
-                <div class="value">Lengkapi melalui pengaturan sekolah</div>
-              </div>
-              <div class="identitas-item placeholder">
-                <div class="label">Email</div>
-                <div class="value">Lengkapi melalui pengaturan sekolah</div>
-              </div>
+              @foreach ($data['identity'] as $item)
+                @if (filled($item['value']))
+                  <div class="identitas-item">
+                    <div class="label">{{ $item['label'] }}</div>
+                    <div class="value">{{ $item['value'] }}</div>
+                  </div>
+                @else
+                  <div class="identitas-item placeholder">
+                    <div class="label">{{ $item['label'] }}</div>
+                    <div class="value">{{ $item['fallback'] }}</div>
+                  </div>
+                @endif
+              @endforeach
             </div>
           </div>
         </section>
@@ -142,29 +122,15 @@
             <div class="visi-misi-section">
               <div class="visi-block">
                 <span class="visi-label">VISI</span>
-                <p class="visi-text">Menjadi sekolah kejuruan yang unggul, berkarakter, adaptif terhadap perkembangan teknologi, dan relevan dengan kebutuhan dunia industri.</p>
+                <p class="visi-text">{{ $data['vision'] }}</p>
               </div>
               <div class="misi-grid">
-                <div class="misi-item">
-                  <span class="misi-number">01</span>
-                  <p class="misi-text">Menyelenggarakan pembelajaran kejuruan yang berkualitas dan relevan.</p>
-                </div>
-                <div class="misi-item">
-                  <span class="misi-number">02</span>
-                  <p class="misi-text">Mengembangkan kompetensi siswa sesuai kebutuhan dunia industri.</p>
-                </div>
-                <div class="misi-item">
-                  <span class="misi-number">03</span>
-                  <p class="misi-text">Membangun karakter disiplin, bertanggung jawab, kreatif, dan profesional.</p>
-                </div>
-                <div class="misi-item">
-                  <span class="misi-number">04</span>
-                  <p class="misi-text">Mendorong pemanfaatan teknologi dalam proses pembelajaran.</p>
-                </div>
-                <div class="misi-item">
-                  <span class="misi-number">05</span>
-                  <p class="misi-text">Membangun kemitraan yang kuat dengan dunia usaha dan dunia industri.</p>
-                </div>
+                @foreach ($data['mission'] as $index => $point)
+                  <div class="misi-item">
+                    <span class="misi-number">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                    <p class="misi-text">{{ $point }}</p>
+                  </div>
+                @endforeach
               </div>
             </div>
           </div>
@@ -265,16 +231,9 @@
               </div>
             </div>
             <div class="fasilitas-grid">
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Laboratorium Komputer</h3><p>Ruang praktik untuk pembelajaran teknologi informasi dan komputasi.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Ruang Kelas</h3><p>Lingkungan belajar yang nyaman dan mendukung proses pembelajaran.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Perpustakaan</h3><p>Sumber bacaan dan referensi untuk mendukung tugas dan proyek siswa.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Bengkel / Workshop</h3><p>Tempat praktik kejuruan sesuai bidang keahlian masing-masing.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Ruang Praktik</h3><p>Fasilitas praktik khusus untuk proyek dan tugas kejuruan.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Aula</h3><p>Ruang pertemuan, upacara, dan kegiatan sekolah bersama.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Lapangan</h3><p>Area olahraga dan kegiatan fisik luar ruangan.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>UKS</h3><p>Unit Kesehatan Sekolah untuk layanan kesehatan siswa.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Musala</h3><p>Ruang ibadah untuk aktivitas keagamaan dan spiritual siswa.</p></article>
-              <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>Kantin</h3><p>Fasilitas wadah untuk kebutuhan sehari-hari siswa dan guru.</p></article>
+              @foreach ($data['facilities'] as $facility)
+                <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>{{ $facility['title'] }}</h3><p>{{ $facility['description'] }}</p></article>
+              @endforeach
             </div>
           </div>
         </section>

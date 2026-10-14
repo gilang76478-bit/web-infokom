@@ -31,6 +31,7 @@ class SiteController extends Controller
         abort_unless(isset($pages[$section]), 404);
 
         $data = match ($section) {
+            'profil' => SchoolSettings::profile(),
             'akademik' => Program::orderBy('short')->get(),
             'kesiswaan' => [
                 'achievements' => Achievement::orderByDesc('year')->get(),

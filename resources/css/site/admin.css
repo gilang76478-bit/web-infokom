@@ -35,8 +35,7 @@
     margin-bottom: 24px;
 }
 
-.admin-auth-panel h1,
-.admin-dashboard h1 {
+.admin-auth-panel h1 {
     margin: 0.5rem 0;
     font: 800 2rem/1.05 var(--fd);
 }
