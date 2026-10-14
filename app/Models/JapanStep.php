@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class JapanStep extends Model
 {
-    //
+    protected $fillable = [
+        'title',
+        'description',
+        'duration',
+    ];
 }
