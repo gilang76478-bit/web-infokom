@@ -1,0 +1,3 @@
+/* Entry point CSS panel admin: token bersama + gaya panel admin */
+@import './site/base.css';
+@import './site/admin.css';

@@ -1,0 +1,412 @@
+{
+    "programs": [
+        {
+            "short": "PPLG",
+            "icon": "code",
+            "name": "Pengembangan Perangkat Lunak dan Gim",
+            "description": "Siswa belajar membuat aplikasi web, aplikasi seluler, dan gim, dari merancang basis data sampai merilis produk yang dipakai orang sungguhan.",
+            "skills": [
+                "Pemrograman web",
+                "Aplikasi seluler",
+                "Basis data",
+                "Pengembangan gim",
+                "Rekayasa perangkat lunak"
+            ],
+            "jobs": [
+                "Web developer",
+                "Mobile developer",
+                "QA engineer",
+                "Game developer"
+            ],
+            "facilities": ["Lab Pemrograman 1 dan 2", "Ruang proyek tim"]
+        },
+        {
+            "short": "TJKT",
+            "icon": "network",
+            "name": "Teknik Jaringan Komputer dan Telekomunikasi",
+            "description": "Siswa belajar merancang, memasang, dan mengamankan jaringan komputer, serta memahami perangkat telekomunikasi dan server.",
+            "skills": [
+                "Jaringan dasar",
+                "Administrasi server",
+                "Keamanan jaringan",
+                "Perangkat telekomunikasi",
+                "Komputasi awan"
+            ],
+            "jobs": [
+                "Network technician",
+                "Administrator sistem",
+                "Teknisi data center",
+                "Support engineer"
+            ],
+            "facilities": ["Lab jaringan", "Rak server latihan"]
+        },
+        {
+            "short": "DKV",
+            "icon": "pen",
+            "name": "Desain Komunikasi Visual",
+            "description": "Siswa belajar merancang identitas visual, ilustrasi, foto, video, dan antarmuka sampai menjadi karya untuk klien sungguhan.",
+            "skills": [
+                "Desain grafis",
+                "Fotografi",
+                "Videografi dan penyuntingan",
+                "Ilustrasi digital",
+                "Desain antarmuka"
+            ],
+            "jobs": [
+                "Desainer grafis",
+                "Video editor",
+                "UI designer",
+                "Fotografer produk"
+            ],
+            "facilities": ["Studio foto", "Lab desain"]
+        },
+        {
+            "short": "AKL",
+            "icon": "calc",
+            "name": "Akuntansi dan Keuangan Lembaga",
+            "description": "Siswa belajar mencatat transaksi, menyusun laporan keuangan, dan memakai perangkat lunak akuntansi seperti yang dipakai perusahaan.",
+            "skills": [
+                "Akuntansi dasar",
+                "Laporan keuangan",
+                "Perpajakan dasar",
+                "Perangkat lunak akuntansi",
+                "Administrasi bank"
+            ],
+            "jobs": [
+                "Staf akuntansi",
+                "Staf pajak",
+                "Kasir dan teller",
+                "Staf keuangan"
+            ],
+            "facilities": ["Lab akuntansi", "Bank mini"]
+        },
+        {
+            "short": "MPLB",
+            "icon": "brief",
+            "name": "Manajemen Perkantoran dan Layanan Bisnis",
+            "description": "Siswa belajar mengelola perkantoran modern: kearsipan digital, korespondensi, layanan pelanggan, dan pengelolaan acara.",
+            "skills": [
+                "Kearsipan digital",
+                "Korespondensi bisnis",
+                "Layanan pelanggan",
+                "Pengelolaan acara",
+                "Aplikasi perkantoran"
+            ],
+            "jobs": [
+                "Sekretaris",
+                "Staf administrasi",
+                "Customer service",
+                "Staf humas"
+            ],
+            "facilities": ["Kantor simulasi", "Ruang layanan"]
+        }
+    ],
+    "posts": [
+        {
+            "category": "Prestasi",
+            "title": "Tim Robotik SMK INFOKOM meraih juara 2 tingkat provinsi",
+            "excerpt": "Empat siswa kelas XI membawa pulang piala setelah dua hari lomba dengan lintasan yang berubah tiap babak.",
+            "published_at": "2026-09-24",
+            "art": 2
+        },
+        {
+            "category": "PPDB",
+            "title": "PPDB 2026 gelombang 2 resmi dibuka",
+            "excerpt": "Pendaftaran dibuka secara daring sampai 31 Oktober. Tes seleksi dan wawancara dimulai 5 Oktober.",
+            "published_at": "2026-09-22",
+            "art": 4
+        },
+        {
+            "category": "Kegiatan",
+            "title": "Kunjungan industri siswa TJKT ke pusat data",
+            "excerpt": "Siswa melihat langsung ruang server, sistem pendingin, dan prosedur keamanan fisik.",
+            "published_at": "2026-09-19",
+            "art": 1
+        },
+        {
+            "category": "Akademik",
+            "title": "Kelas Bahasa Jepang angkatan 5 dimulai",
+            "excerpt": "Kelas diikuti siswa yang berminat pada program magang Jepang, dua kali seminggu sepulang sekolah.",
+            "published_at": "2026-09-15",
+            "art": 5
+        },
+        {
+            "category": "Kegiatan",
+            "title": "Workshop desain antarmuka bersama praktisi",
+            "excerpt": "Siswa DKV dan PPLG mengerjakan satu proyek aplikasi dari sketsa sampai prototipe.",
+            "published_at": "2026-09-10",
+            "art": 3
+        },
+        {
+            "category": "Akademik",
+            "title": "Jadwal penilaian tengah semester ganjil",
+            "excerpt": "Jadwal lengkap per kelas dapat diunduh dari halaman Akademik.",
+            "published_at": "2026-09-08",
+            "art": 0
+        }
+    ],
+    "agendas": [
+        {
+            "date": "2026-10-05",
+            "title": "Tes seleksi PPDB gelombang 2",
+            "place_time": "08.00 WIB, Aula sekolah"
+        },
+        {
+            "date": "2026-10-12",
+            "title": "Rapat orang tua siswa kelas X",
+            "place_time": "09.00 WIB, Ruang kelas"
+        },
+        {
+            "date": "2026-10-21",
+            "title": "Pelepasan siswa PKL angkatan 2026",
+            "place_time": "07.30 WIB, Lapangan"
+        },
+        {
+            "date": "2026-11-02",
+            "title": "Seleksi tahap 2 program Magang Jepang",
+            "place_time": "10.00 WIB, Lab bahasa"
+        }
+    ],
+    "achievements": [
+        {
+            "title": "Juara 1 Lomba Kompetensi Siswa, Web Technologies",
+            "who": "Tim PPLG",
+            "level": "Provinsi",
+            "year": 2026
+        },
+        {
+            "title": "Juara 2 Lomba Robotik Pelajar",
+            "who": "Tim Robotik",
+            "level": "Provinsi",
+            "year": 2026
+        },
+        {
+            "title": "Medali perak Lomba Desain Poster Digital",
+            "who": "Siswa DKV",
+            "level": "Nasional",
+            "year": 2025
+        },
+        {
+            "title": "Juara 1 Lomba Jaringan Komputer",
+            "who": "Tim TJKT",
+            "level": "Kabupaten/Kota",
+            "year": 2025
+        },
+        {
+            "title": "Finalis Kompetisi Inovasi Aplikasi Sekolah",
+            "who": "Tim PPLG",
+            "level": "Nasional",
+            "year": 2025
+        },
+        {
+            "title": "Juara 3 Kompetisi Akuntansi Antar-SMK",
+            "who": "Siswa AKL",
+            "level": "Provinsi",
+            "year": 2024
+        },
+        {
+            "title": "Peserta program pertukaran pelajar Asia Timur",
+            "who": "Perwakilan MPLB",
+            "level": "Internasional",
+            "year": 2024
+        }
+    ],
+    "gallery_items": [
+        {
+            "category": "Praktik",
+            "title": "Praktik jaringan di Lab TJKT",
+            "size": "w",
+            "art": 1
+        },
+        {
+            "category": "Kegiatan",
+            "title": "Upacara Hari Kemerdekaan",
+            "size": "",
+            "art": 0
+        },
+        {
+            "category": "Jepang",
+            "title": "Kelas budaya Jepang",
+            "size": "t",
+            "art": 4
+        },
+        {
+            "category": "PKL",
+            "title": "Siswa PKL di mitra industri",
+            "size": "",
+            "art": 2
+        },
+        {
+            "category": "Prestasi",
+            "title": "Penyerahan piala lomba",
+            "size": "",
+            "art": 3
+        },
+        {
+            "category": "Praktik",
+            "title": "Sesi foto produk di studio DKV",
+            "size": "w",
+            "art": 5
+        },
+        {
+            "category": "Kegiatan",
+            "title": "Pentas seni akhir semester",
+            "size": "",
+            "art": 0
+        },
+        {
+            "category": "Jepang",
+            "title": "Pelepasan peserta magang",
+            "size": "",
+            "art": 4
+        },
+        {
+            "category": "PKL",
+            "title": "Kunjungan guru pembimbing",
+            "size": "t",
+            "art": 1
+        },
+        {
+            "category": "Praktik",
+            "title": "Pemrograman gim di Lab PPLG",
+            "size": "",
+            "art": 2
+        }
+    ],
+    "japan_steps": [
+        {
+            "title": "Pendaftaran",
+            "description": "Siswa mengisi formulir minat dan menyerahkan berkas awal melalui website sekolah.",
+            "duration": "Sekitar 2 minggu"
+        },
+        {
+            "title": "Seleksi administrasi",
+            "description": "Tim sekolah memeriksa kelengkapan berkas, nilai, dan surat izin orang tua.",
+            "duration": "Sekitar 1 minggu"
+        },
+        {
+            "title": "Tes bahasa",
+            "description": "Tes dasar hiragana, katakana, dan kosakata sehari-hari untuk mengetahui kemampuan awal.",
+            "duration": "Satu hari"
+        },
+        {
+            "title": "Tes kompetensi",
+            "description": "Uji keterampilan sesuai bidang magang yang dipilih, langsung di lab atau bengkel sekolah.",
+            "duration": "Satu sampai dua hari"
+        },
+        {
+            "title": "Wawancara",
+            "description": "Wawancara dengan tim sekolah dan pendamping untuk melihat motivasi, kesiapan mental, dan izin keluarga.",
+            "duration": "Satu hari"
+        },
+        {
+            "title": "Pelatihan",
+            "description": "Kelas bahasa Jepang, budaya kerja, dan penguatan keterampilan teknis selama beberapa bulan.",
+            "duration": "Beberapa bulan"
+        },
+        {
+            "title": "Seleksi dan matching",
+            "description": "Profil peserta dicocokkan dengan kebutuhan perusahaan mitra di Jepang.",
+            "duration": "Sekitar 1 bulan"
+        },
+        {
+            "title": "Persiapan keberangkatan",
+            "description": "Pengurusan dokumen, pemeriksaan kesehatan, dan orientasi keberangkatan bersama orang tua.",
+            "duration": "Sekitar 1 bulan"
+        },
+        {
+            "title": "Keberangkatan",
+            "description": "Peserta berangkat bersama pendamping dan menerima pembekalan terakhir di bandara.",
+            "duration": "Satu hari"
+        },
+        {
+            "title": "Program di Jepang",
+            "description": "Peserta bekerja dan belajar di perusahaan mitra. Sekolah tetap memantau dan berkomunikasi berkala.",
+            "duration": "Sesuai kontrak program"
+        }
+    ],
+    "partners": [
+        {
+            "name": "Cakrawala Teknologi",
+            "category": "Industri"
+        },
+        {
+            "name": "Bumi Data Solusi",
+            "category": "Industri"
+        },
+        {
+            "name": "Nusa Jaringan Prima",
+            "category": "Industri"
+        },
+        {
+            "name": "Studio Lentera",
+            "category": "Industri"
+        },
+        {
+            "name": "Kanto Kogyo (contoh)",
+            "category": "Jepang"
+        },
+        {
+            "name": "Sakura Seisaku (contoh)",
+            "category": "Jepang"
+        },
+        {
+            "name": "Politeknik Contoh",
+            "category": "Kampus"
+        },
+        {
+            "name": "Universitas Contoh",
+            "category": "Kampus"
+        }
+    ],
+    "alumni": [
+        {
+            "name": "Rizky A.",
+            "role_desc": "Lulus 2021, PPLG. Software engineer di perusahaan rintisan.",
+            "quote": "Proyek akhir yang dibimbing guru dan praktisi membuat saya percaya diri saat wawancara kerja pertama."
+        },
+        {
+            "name": "Dewi S.",
+            "role_desc": "Lulus 2022, TJKT. Teknisi jaringan, alumni magang Jepang 2023.",
+            "quote": "Kelas bahasa Jepang dan latihan disiplin kerja dari sekolah sangat membantu saya beradaptasi di sana."
+        },
+        {
+            "name": "Bagas P.",
+            "role_desc": "Lulus 2020, DKV. Pemilik studio desain kecil.",
+            "quote": "Portofolio dari tugas praktik kelas XI saya pakai untuk mendapatkan klien pertama."
+        }
+    ],
+    "tracer_stats": [
+        {
+            "label": "Bekerja",
+            "value": 58,
+            "color": "var(--brand)"
+        },
+        {
+            "label": "Kuliah",
+            "value": 22,
+            "color": "var(--navy)"
+        },
+        {
+            "label": "Wirausaha",
+            "value": 12,
+            "color": "var(--accent)"
+        },
+        {
+            "label": "Belum bekerja",
+            "value": 8,
+            "color": "var(--muted)"
+        }
+    ],
+    "announcements": [
+        {
+            "text": "PPDB 2026 gelombang 2 dibuka sampai 31 Oktober 2026."
+        },
+        {
+            "text": "Tes seleksi dan wawancara dimulai 5 Oktober. Bawa berkas asli."
+        },
+        {
+            "text": "Kelas persiapan Bahasa Jepang angkatan 5 mulai pekan depan."
+        }
+    ]
+}
