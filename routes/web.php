@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminPpdbController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\PpdbApplicantController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\SiteController;
 
@@ -16,6 +17,13 @@ Route::get('/', [SiteController::class, 'home'])->name('home');
 // rute tangkap-lambung /{section} agar tidak tertangkap olehnya.
 Route::get('/program/{program:slug}', [ProgramController::class, 'show'])
 	->name('program.show');
+
+// Beranda dan detail artikel berita, diikat berdasarkan slug. Ditempatkan
+// sebelum rute tangkap-lambung /{section} agar tidak tertangkap olehnya.
+Route::get('/berita', [PostController::class, 'index'])
+	->name('berita.index');
+Route::get('/berita/{post:slug}', [PostController::class, 'show'])
+	->name('berita.show');
 
 Route::post('/ppdb', [PpdbApplicantController::class, 'store'])
 	->middleware('throttle:5,1')

@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\{Program, Post, Agenda, Achievement, GalleryItem, JapanStep, Partner, Alumnus, TracerStat, Announcement};
+use App\Models\{Category, Program, Post, Agenda, Achievement, GalleryItem, JapanStep, Partner, Alumnus, TracerStat, Announcement};
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class SiteSeeder extends Seeder
@@ -13,7 +14,6 @@ class SiteSeeder extends Seeder
 
         $map = [
             'programs'      => Program::class,
-            'posts'         => Post::class,
             'agendas'       => Agenda::class,
             'achievements'  => Achievement::class,
             'gallery_items' => GalleryItem::class,
@@ -28,6 +28,24 @@ class SiteSeeder extends Seeder
             foreach ($data[$key] as $row) {
                 $model::create($row);
             }
+        }
+
+        // Artikel: string kategori di site.json dipetakan ke tabel categories,
+        // dan slug diisi eksplisit karena seeder berjalan tanpa model events.
+        foreach ($data['posts'] as $row) {
+            $categoryName = $row['category'] ?? null;
+            unset($row['category']);
+
+            Post::create([
+                ...$row,
+                'slug' => Post::makeUniqueSlug($row['title']),
+                'category_id' => filled($categoryName)
+                    ? Category::firstOrCreate(
+                        ['type' => 'berita', 'slug' => Str::slug($categoryName) ?: 'kategori'],
+                        ['name' => $categoryName],
+                    )->id
+                    : null,
+            ]);
         }
 
         // Seeder berjalan dengan model events dimatikan (DatabaseSeeder),

@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use App\Models\{Achievement, Agenda, Alumnus, Announcement, GalleryItem, JapanStep, Partner, Post, Program, Teacher, TracerStat};
+use App\Models\{Achievement, Agenda, Alumnus, Announcement, GalleryItem, JapanStep, Partner, Program, Teacher, TracerStat};
 
 /**
  * Definisi modul konten admin: label, model, dan daftar field beserta
@@ -29,13 +29,6 @@ class ContentTypes
             'program_id' => ['label' => 'Program keahlian', 'type' => 'select', 'options' => 'programs', 'rules' => 'nullable|integer|exists:programs,id'],
             'photo' => ['label' => 'URL foto', 'type' => 'text', 'rules' => 'nullable|string|max:500'],
             'sort_order' => ['label' => 'Urutan tampil', 'type' => 'number', 'rules' => 'required|integer|min:0|max:9999'],
-        ]],
-        'berita' => ['label' => 'Berita', 'model' => Post::class, 'fields' => [
-            'category' => ['label' => 'Kategori', 'type' => 'text', 'rules' => 'required|string|max:30'],
-            'title' => ['label' => 'Judul', 'type' => 'text', 'rules' => 'required|string|max:255'],
-            'excerpt' => ['label' => 'Ringkasan', 'type' => 'textarea', 'rules' => 'required|string|max:4000'],
-            'published_at' => ['label' => 'Tanggal terbit', 'type' => 'date', 'rules' => 'required|date'],
-            'art' => ['label' => 'Variasi ilustrasi (0-5)', 'type' => 'number', 'rules' => 'required|integer|min:0|max:5'],
         ]],
         'agenda' => ['label' => 'Agenda', 'model' => Agenda::class, 'fields' => [
             'date' => ['label' => 'Tanggal', 'type' => 'date', 'rules' => 'required|date'],

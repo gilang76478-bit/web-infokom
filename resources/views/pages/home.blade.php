@@ -133,10 +133,10 @@
 
   <section class="sec mist home-section">
     <div class="container">
-      <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Informasi</p><h2>Kabar dan agenda sekolah</h2></div><a class="link" href="{{ route('site.section', 'informasi') }}">Semua kabar <span aria-hidden="true">→</span></a></div>
+      <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Informasi</p><h2>Kabar dan agenda sekolah</h2></div><a class="link" href="{{ route('berita.index') }}">Semua kabar <span aria-hidden="true">→</span></a></div>
       <div class="home-news">
         @foreach ($site['news']->take(3) as $post)
-          <a href="{{ route('site.section', 'informasi') }}"><span>{{ $post['cat'] }} · {{ $post['d'] }}</span><h3>{{ $post['t'] }}</h3><p>{{ $post['x'] }}</p></a>
+          <a href="{{ route('berita.show', $post['slug']) }}"><span>{{ $post['cat'] }} · {{ $post['d'] }}</span><h3>{{ $post['t'] }}</h3><p>{{ $post['x'] }}</p></a>
         @endforeach
       </div>
     </div>

@@ -44,11 +44,14 @@ class SiteController extends Controller
             'industri' => Partner::orderBy('name')->get(),
             'jepang' => JapanStep::orderBy('id')->get(),
             'ppdb' => [
-                'posts' => Post::where('category', 'PPDB')->orderByDesc('published_at')->get(),
+                'posts' => Post::with('category')
+                    ->whereHas('category', fn ($query) => $query->where('slug', 'ppdb'))
+                    ->orderByDesc('published_at')
+                    ->get(),
                 'programs' => Program::orderBy('short')->get(),
             ],
             'informasi' => [
-                'posts' => Post::orderByDesc('published_at')->get(),
+                'posts' => Post::with('category')->orderByDesc('published_at')->get(),
                 'agendas' => Agenda::orderBy('date')->get(),
             ],
             'galeri' => GalleryItem::orderBy('id')->get(),
@@ -72,9 +75,9 @@ class SiteController extends Controller
                 'jobs' => $p->jobs, 'fac' => $p->facilities,
             ]),
             'news' => Post::orderByDesc('published_at')->get()->map(fn ($n) => [
-                'cat' => $n->category, 't' => $n->title, 'x' => $n->excerpt,
+                'cat' => $n->category?->name ?? 'Berita', 't' => $n->title, 'x' => $n->excerpt,
                 'd' => $n->published_at->locale('id')->translatedFormat('j F Y'),
-                'a' => $n->art,
+                'a' => $n->art, 'slug' => $n->slug,
             ]),
             'agenda' => Agenda::orderBy('date')->get()->map(fn ($a) => [
                 'd' => $a->date->format('d'),

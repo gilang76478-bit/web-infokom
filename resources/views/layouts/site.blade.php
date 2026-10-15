@@ -48,9 +48,11 @@
         ],
         'Informasi' => [
             'section' => 'informasi',
-            'items' => array_map(fn (string $label) => ['label' => $label], [
-                'Berita', 'Pengumuman', 'Agenda',
-            ]),
+            'items' => [
+                ['label' => 'Berita', 'url' => route('berita.index')],
+                ['label' => 'Pengumuman'],
+                ['label' => 'Agenda'],
+            ],
         ],
     ];
 
@@ -104,7 +106,7 @@
             <summary>{{ $label }}</summary>
             <div class="nav-submenu">
               @foreach ($group['items'] as $item)
-                <a href="{{ route('site.section', $group['section']) }}{{ isset($item['anchor']) ? '#' . $item['anchor'] : '' }}">{{ $item['label'] }}</a>
+                <a href="{{ $item['url'] ?? (route('site.section', $group['section']) . (isset($item['anchor']) ? '#' . $item['anchor'] : '')) }}">{{ $item['label'] }}</a>
               @endforeach
             </div>
           </details>

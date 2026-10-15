@@ -472,16 +472,16 @@
           </div>
           <aside class="detail-agenda ppdb-sidebar">
             <h2>Informasi pendaftaran</h2>
-            @forelse ($data['posts'] as $post)<article><time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->locale('id')->translatedFormat('j M') }}</time><div><h3>{{ $post->title }}</h3><p>{{ $post->excerpt }}</p></div></article>@empty<p class="detail-empty">Silakan hubungi sekolah untuk jadwal terbaru.</p>@endforelse
+            @forelse ($data['posts'] as $post)<article><time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->locale('id')->translatedFormat('j M') }}</time><div><h3><a href="{{ route('berita.show', $post) }}">{{ $post->title }}</a></h3><p>{{ $post->excerpt }}</p></div></article>@empty<p class="detail-empty">Silakan hubungi sekolah untuk jadwal terbaru.</p>@endforelse
           </aside>
         </div>
       @elseif ($section === 'informasi')
         <div class="detail-split">
           <div><h2>Berita terbaru</h2><div class="detail-list">
             @forelse ($data['posts'] as $post)
-              <article class="detail-row"><span class="detail-tag">{{ $post->category }}</span><div><h3>{{ $post->title }}</h3><p>{{ $post->excerpt }}</p><small>{{ $post->published_at->locale('id')->translatedFormat('j F Y') }}</small></div></article>
+              <article class="detail-row"><span class="detail-tag">{{ $post->category?->name ?? 'Berita' }}</span><div><h3><a href="{{ route('berita.show', $post) }}">{{ $post->title }}</a></h3><p>{{ $post->excerpt }}</p><small>{{ $post->published_at->locale('id')->translatedFormat('j F Y') }}</small></div></article>
             @empty<p class="detail-empty">Belum ada berita yang dipublikasikan.</p>@endforelse
-          </div></div>
+          </div><a class="link" href="{{ route('berita.index') }}">Semua berita <span aria-hidden="true">→</span></a></div>
           <aside class="detail-agenda"><h2>Agenda</h2>
             @forelse ($data['agendas'] as $agenda)
               <article><time datetime="{{ $agenda->date->toDateString() }}">{{ $agenda->date->locale('id')->translatedFormat('j M') }}</time><div><h3>{{ $agenda->title }}</h3><p>{{ $agenda->place_time }}</p></div></article>

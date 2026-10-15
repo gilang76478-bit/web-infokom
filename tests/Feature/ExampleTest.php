@@ -117,16 +117,18 @@ class ExampleTest extends TestCase
 
         $routes = [
             ['GET', 'admin'],
+            ['GET', 'admin/posts'],
+            ['GET', 'admin/categories'],
             ['GET', 'admin/settings'],
             ['PUT', 'admin/settings'],
             ['GET', 'admin/ppdb'],
             ['GET', 'admin/pesan'],
-            ['GET', 'admin/content/berita'],
-            ['GET', 'admin/content/berita/create'],
-            ['POST', 'admin/content/berita'],
-            ['GET', 'admin/content/berita/1/edit'],
-            ['PUT', 'admin/content/berita/1'],
-            ['DELETE', 'admin/content/berita/1'],
+            ['GET', 'admin/content/galeri'],
+            ['GET', 'admin/content/galeri/create'],
+            ['POST', 'admin/content/galeri'],
+            ['GET', 'admin/content/galeri/1/edit'],
+            ['PUT', 'admin/content/galeri/1'],
+            ['DELETE', 'admin/content/galeri/1'],
             ['PATCH', 'admin/pesan/' . $message->id . '/read'],
             ['PATCH', 'admin/ppdb/' . $applicant->id],
         ];
@@ -284,33 +286,108 @@ class ExampleTest extends TestCase
             ->assertRedirect(route('filament.admin.auth.login'));
     }
 
-    public function test_admin_can_create_update_and_delete_news(): void
+    public function test_admin_can_write_publish_and_edit_news_in_filament(): void
     {
-        $admin = User::factory()->create(['is_admin' => true]);
-        $this->actingAs($admin);
+        $this->seed();
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
 
-        $this->get(route('admin.content.index', 'berita'))->assertOk();
-        $this->get(route('admin.content.create', 'berita'))->assertOk();
+        $this->get(route('filament.admin.resources.posts.index'))->assertOk();
+        $this->get(route('filament.admin.resources.categories.index'))->assertOk();
 
-        $data = [
-            'category' => 'Kegiatan',
-            'title' => 'Kegiatan sekolah terbaru',
-            'excerpt' => 'Informasi kegiatan sekolah.',
-            'published_at' => '2026-10-01',
-            'art' => 1,
-        ];
+        $category = \App\Models\Category::firstOrFail();
 
-        $this->post(route('admin.content.store', 'berita'), $data)
-            ->assertRedirect(route('admin.content.index', 'berita'));
+        // Menulis dan menerbitkan artikel baru (slug dibuat otomatis).
+        \Livewire\Livewire::test(\App\Filament\Resources\Posts\Pages\CreatePost::class)
+            ->fillForm([
+                'title' => 'Artikel Uji Coba Tahap 4',
+                'category_id' => $category->id,
+                'published_at' => '2026-10-10',
+                'slug' => '',
+                'art' => 2,
+                'excerpt' => 'Ringkasan artikel uji coba.',
+                'body' => "Paragraf pertama artikel uji.\nParagraf kedua artikel uji.",
+            ])
+            ->call('create');
 
-        $post = Post::firstOrFail();
-        $this->put(route('admin.content.update', ['berita', $post->id]), [...$data, 'title' => 'Judul diperbarui'])
-            ->assertRedirect(route('admin.content.index', 'berita'));
-        $this->assertDatabaseHas('posts', ['id' => $post->id, 'title' => 'Judul diperbarui']);
+        $post = Post::where('title', 'Artikel Uji Coba Tahap 4')->firstOrFail();
+        $this->assertSame('artikel-uji-coba-tahap-4', $post->slug);
+        $this->assertSame($category->id, $post->category_id);
 
-        $this->delete(route('admin.content.destroy', ['berita', $post->id]))
-            ->assertRedirect(route('admin.content.index', 'berita'));
-        $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+        // Hasil publikasi tampil di daftar berita dan isi lengkapnya di detail.
+        $this->get(route('berita.index'))->assertOk()->assertSee('Artikel Uji Coba Tahap 4');
+        $this->get(route('berita.show', $post))
+            ->assertOk()
+            ->assertSee('Paragraf pertama artikel uji.')
+            ->assertSee('Paragraf kedua artikel uji.');
+
+        // Menyunting artikel: judul berubah, slug tetap stabil.
+        \Livewire\Livewire::test(\App\Filament\Resources\Posts\Pages\EditPost::class, ['record' => $post->getKey()])
+            ->fillForm(['title' => 'Artikel Uji Coba Tahap 4 Disunting'])
+            ->call('save');
+
+        $this->assertDatabaseHas('posts', ['id' => $post->id, 'title' => 'Artikel Uji Coba Tahap 4 Disunting']);
+        $this->assertSame('artikel-uji-coba-tahap-4', $post->fresh()->slug);
+    }
+
+    public function test_admin_can_manage_categories_in_filament_with_auto_slug(): void
+    {
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+
+        \Livewire\Livewire::test(\App\Filament\Resources\Categories\Pages\CreateCategory::class)
+            ->fillForm(['name' => 'Kegiatan Ekstrakurikuler', 'type' => 'berita'])
+            ->call('create');
+
+        $category = \App\Models\Category::where('name', 'Kegiatan Ekstrakurikuler')->firstOrFail();
+
+        $this->assertSame('kegiatan-ekstrakurikuler', $category->slug);
+        $this->assertSame('berita', $category->type);
+    }
+
+    public function test_news_list_page_filters_by_category(): void
+    {
+        $this->seed();
+
+        $listing = $this->get(route('berita.index'));
+        $listing
+            ->assertOk()
+            ->assertSee('Berita & Artikel')
+            ->assertSee('PPDB 2026 gelombang 2 resmi dibuka')
+            ->assertSee('Kunjungan industri siswa TJKT ke pusat data');
+
+        // Tautan tiap kartu mengarah ke halaman detail per slug.
+        foreach (Post::query()->pluck('slug') as $slug) {
+            $listing->assertSee('/berita/' . $slug, false);
+        }
+
+        // Filter kategori hanya menampilkan artikel kategori tersebut.
+        $this->get(route('berita.index', ['kategori' => 'ppdb']))
+            ->assertOk()
+            ->assertSee('PPDB 2026 gelombang 2 resmi dibuka')
+            ->assertDontSee('Kunjungan industri siswa TJKT ke pusat data');
+
+        // Kategori tidak dikenal → 404 (halaman error kustom).
+        $this->get(route('berita.index', ['kategori' => 'kategori-tidak-ada']))
+            ->assertNotFound()
+            ->assertSee('Halaman tidak ditemukan');
+    }
+
+    public function test_news_detail_page_shows_the_full_article(): void
+    {
+        $this->seed();
+
+        $post = Post::where('slug', 'ppdb-2026-gelombang-2-resmi-dibuka')->firstOrFail();
+
+        $this->get(route('berita.show', $post))
+            ->assertOk()
+            ->assertSee($post->title)
+            ->assertSee($post->excerpt)
+            ->assertSee('Penerimaan Peserta Didik Baru (PPDB) 2026 gelombang 2 resmi dibuka')
+            ->assertSee('Persyaratan lengkap');
+
+        $this->assertNotNull($post->category);
+        $this->assertSame('PPDB', $post->category->name);
+
+        $this->get('/berita/artikel-yang-tidak-ada')->assertNotFound();
     }
 
     public function test_ppdb_form_stores_an_application_and_returns_a_number(): void
@@ -375,7 +452,7 @@ class ExampleTest extends TestCase
     {
         $this->actingAs(User::factory()->create(['is_admin' => true]));
 
-        foreach (['akademik', 'guru', 'berita', 'agenda', 'prestasi', 'galeri', 'jepang', 'industri', 'alumni', 'tracer', 'pengumuman'] as $type) {
+        foreach (['akademik', 'guru', 'agenda', 'prestasi', 'galeri', 'jepang', 'industri', 'alumni', 'tracer', 'pengumuman'] as $type) {
             $this->get(route('admin.content.index', $type))->assertOk();
             $this->get(route('admin.content.create', $type))->assertOk();
         }
