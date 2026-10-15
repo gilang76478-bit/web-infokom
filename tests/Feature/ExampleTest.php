@@ -375,9 +375,139 @@ class ExampleTest extends TestCase
     {
         $this->actingAs(User::factory()->create(['is_admin' => true]));
 
-        foreach (['akademik', 'berita', 'agenda', 'prestasi', 'galeri', 'jepang', 'industri', 'alumni', 'tracer', 'pengumuman'] as $type) {
+        foreach (['akademik', 'guru', 'berita', 'agenda', 'prestasi', 'galeri', 'jepang', 'industri', 'alumni', 'tracer', 'pengumuman'] as $type) {
             $this->get(route('admin.content.index', $type))->assertOk();
             $this->get(route('admin.content.create', $type))->assertOk();
         }
+    }
+
+    public function test_program_slugs_are_generated_automatically_and_stay_stable(): void
+    {
+        $program = \App\Models\Program::create([
+            'short' => 'TEST',
+            'icon' => 'code',
+            'name' => 'Program Uji Coba Teknologi',
+            'description' => 'Deskripsi program uji coba.',
+            'skills' => ['Keahlian uji'],
+            'jobs' => ['Pekerjaan uji'],
+            'facilities' => ['Fasilitas uji'],
+        ]);
+
+        $this->assertSame('program-uji-coba-teknologi', $program->slug);
+
+        // Nama berubah tidak memutus tautan yang sudah dibagikan.
+        $program->update(['name' => 'Nama Baru Program Uji']);
+        $this->assertSame('program-uji-coba-teknologi', $program->fresh()->slug);
+
+        // Nama sama menghasilkan slug unik, bukan tabrakan.
+        $duplicate = \App\Models\Program::create([
+            'short' => 'TST2',
+            'icon' => 'code',
+            'name' => 'Program Uji Coba Teknologi',
+            'description' => 'Deskripsi program uji kedua.',
+            'skills' => ['Keahlian uji'],
+            'jobs' => ['Pekerjaan uji'],
+            'facilities' => ['Fasilitas uji'],
+        ]);
+
+        $this->assertSame('program-uji-coba-teknologi-2', $duplicate->slug);
+    }
+
+    public function test_program_detail_page_shows_full_information_by_slug(): void
+    {
+        $this->seed();
+        $program = \App\Models\Program::firstOrFail();
+
+        $this->get(route('program.show', $program))
+            ->assertOk()
+            ->assertSee($program->name)
+            ->assertSee($program->description)
+            ->assertSee($program->skills[0])
+            ->assertSee($program->jobs[0])
+            ->assertSee($program->facilities[0]);
+
+        $this->get('/program/slug-yang-tidak-ada')->assertNotFound();
+        $this->get('/program')->assertNotFound();
+    }
+
+    public function test_program_list_and_home_link_to_the_detail_pages(): void
+    {
+        $this->seed();
+        $program = \App\Models\Program::firstOrFail();
+        $url = route('program.show', $program);
+
+        $this->get(route('site.section', 'akademik'))
+            ->assertOk()
+            ->assertSee($url, false);
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee($url, false);
+    }
+
+    public function test_teachers_are_shown_on_profile_and_program_detail_with_relations(): void
+    {
+        $this->seed();
+
+        $teacher = \App\Models\Teacher::whereNotNull('program_id')->firstOrFail();
+
+        // Relasi Eloquent dua arah: belongsTo dan hasMany.
+        $this->assertNotNull($teacher->program);
+        $this->assertTrue($teacher->program->teachers->contains($teacher));
+        $this->assertSame($teacher->program->id, $teacher->program_id);
+
+        $this->get(route('site.section', 'profil'))
+            ->assertOk()
+            ->assertSee('Guru & Tenaga Kependidikan')
+            ->assertSee($teacher->name)
+            ->assertSee($teacher->nip);
+
+        $this->get(route('program.show', $teacher->program))
+            ->assertOk()
+            ->assertSee($teacher->name);
+    }
+
+    public function test_admin_can_manage_teachers(): void
+    {
+        $this->seed();
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $program = \App\Models\Program::firstOrFail();
+
+        $this->get(route('admin.content.index', 'guru'))
+            ->assertOk()
+            ->assertSee('Guru & Tenaga Kependidikan');
+        $this->get(route('admin.content.create', 'guru'))->assertOk();
+
+        $this->post(route('admin.content.store', 'guru'), [
+            'name' => 'Guru Baru Produksi',
+            'nip' => '199001012020031001',
+            'position' => 'Guru Produktif',
+            'program_id' => $program->id,
+            'photo' => '',
+            'sort_order' => 50,
+        ])->assertRedirect(route('admin.content.index', 'guru'));
+
+        $teacher = \App\Models\Teacher::where('name', 'Guru Baru Produksi')->firstOrFail();
+        $this->assertSame($program->id, $teacher->program_id);
+        $this->assertNull($teacher->photo);
+
+        // Tabel daftar admin menampilkan nama program, bukan id mentah.
+        $this->get(route('admin.content.index', 'guru'))
+            ->assertOk()
+            ->assertSee($program->name);
+
+        $this->put(route('admin.content.update', ['guru', $teacher->id]), [
+            'name' => 'Guru Produksi Diperbarui',
+            'nip' => '199001012020031001',
+            'position' => 'Ketua Program Keahlian',
+            'program_id' => $program->id,
+            'photo' => '',
+            'sort_order' => 51,
+        ])->assertRedirect(route('admin.content.index', 'guru'));
+
+        $this->assertDatabaseHas('teachers', [
+            'id' => $teacher->id,
+            'name' => 'Guru Produksi Diperbarui',
+            'position' => 'Ketua Program Keahlian',
+        ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\Models\{Program, Post, Agenda, Achievement, GalleryItem, JapanStep, Partner, Alumnus, TracerStat, Announcement};
+use App\Models\{Program, Post, Agenda, Achievement, GalleryItem, JapanStep, Partner, Alumnus, TracerStat, Announcement, Teacher};
 use App\Support\SchoolSettings;
 
 class SiteController extends Controller
@@ -31,8 +31,11 @@ class SiteController extends Controller
         abort_unless(isset($pages[$section]), 404);
 
         $data = match ($section) {
-            'profil' => SchoolSettings::profile(),
-            'akademik' => Program::orderBy('short')->get(),
+            'profil' => [
+                ...SchoolSettings::profile(),
+                'teachers' => Teacher::query()->with('program')->ordered()->get(),
+            ],
+            'akademik' => Program::query()->with('teachers')->orderBy('short')->get(),
             'kesiswaan' => [
                 'achievements' => Achievement::orderByDesc('year')->get(),
                 'activities' => GalleryItem::orderBy('id')->get(),
@@ -64,7 +67,7 @@ class SiteController extends Controller
     {
         $site = [
             'programs' => Program::orderBy('id')->get()->map(fn ($p) => [
-                'short' => $p->short, 'icon' => $p->icon, 'name' => $p->name,
+                'short' => $p->short, 'slug' => $p->slug, 'icon' => $p->icon, 'name' => $p->name,
                 'desc' => $p->description, 'skills' => $p->skills,
                 'jobs' => $p->jobs, 'fac' => $p->facilities,
             ]),

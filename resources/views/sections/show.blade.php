@@ -16,6 +16,7 @@
           <a href="#visi-misi">Visi &amp; misi <span aria-hidden="true">↓</span></a>
           <a href="#sejarah">Sejarah <span aria-hidden="true">↓</span></a>
           <a href="#struktur-organisasi">Struktur <span aria-hidden="true">↓</span></a>
+          <a href="#guru">Guru &amp; TTK <span aria-hidden="true">↓</span></a>
           <a href="#fasilitas">Fasilitas <span aria-hidden="true">↓</span></a>
         </nav>
       @endif
@@ -221,6 +222,44 @@
           </div>
         </section>
 
+        {{-- 7b. GURU & TENAGA KEPENDIDIKAN --}}
+        <section class="struktur-shell" aria-labelledby="guruTitle" id="guru">
+          <div class="container">
+            <div class="sh-row">
+              <div class="sh">
+                <span class="detail-eyebrow">TIM PENGAJAR</span>
+                <h2 id="guruTitle">Guru &amp; Tenaga Kependidikan</h2>
+                <p>Data guru dikelola melalui panel admin dan ditampilkan sesuai urutan yang ditentukan.</p>
+              </div>
+            </div>
+            @if (($data['teachers'] ?? collect())->isNotEmpty())
+              <div class="org-tree">
+                <div class="org-level">
+                  @foreach ($data['teachers'] as $teacher)
+                    <article class="org-card">
+                      <div class="photo">
+                        @if (filled($teacher->photo))
+                          <img src="{{ $teacher->photo }}" alt="Foto {{ $teacher->name }}" loading="lazy">
+                        @else
+                          <div class="photo-placeholder">{{ $teacher->initials }}</div>
+                        @endif
+                      </div>
+                      <div class="role">{{ $teacher->position }}</div>
+                      <div class="name">{{ $teacher->name }}</div>
+                      <div class="org-card-meta">
+                        @if (filled($teacher->nip))<span>{{ $teacher->nip }}</span>@endif
+                        @if ($teacher->program?->short)<span>{{ $teacher->program->short }}</span>@endif
+                      </div>
+                    </article>
+                  @endforeach
+                </div>
+              </div>
+            @else
+              <p class="detail-empty">Informasi guru akan segera tersedia.</p>
+            @endif
+          </div>
+        </section>
+
         {{-- 8. FASILITAS SEKOLAH --}}
         <section class="fasilitas-shell" aria-labelledby="fasilitasTitle" id="fasilitas">
           <div class="container">
@@ -342,6 +381,7 @@
                 <ul>@foreach ($program->skills as $skill)<li>{{ $skill }}</li>@endforeach</ul>
                 <h3>Prospek karier</h3>
                 <p>{{ implode(' · ', $program->jobs) }}</p>
+                <a class="tentang-cta" href="{{ route('program.show', $program) }}">Selengkapnya <span aria-hidden="true">→</span></a>
               </article>
             @endforeach
           </div>

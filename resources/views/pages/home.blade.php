@@ -113,7 +113,7 @@
       <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Akademik</p><h2>Pilih jalur, bangun keahlian</h2><p>Program vokasi untuk teknologi, desain, bisnis, dan layanan.</p></div><a class="link" href="{{ route('site.section', 'akademik') }}">Lihat semua program <span aria-hidden="true">→</span></a></div>
       <div class="home-programs">
         @foreach ($site['programs']->take(3) as $program)
-          <a class="home-program" href="{{ route('site.section', 'akademik') }}"><span>{{ $program['short'] }}</span><h3>{{ $program['name'] }}</h3><p>{{ $program['desc'] }}</p><b>Detail program <span aria-hidden="true">→</span></b></a>
+          <a class="home-program" href="{{ route('program.show', $program['slug']) }}"><span>{{ $program['short'] }}</span><h3>{{ $program['name'] }}</h3><p>{{ $program['desc'] }}</p><b>Detail program <span aria-hidden="true">→</span></b></a>
         @endforeach
       </div>
     </div>

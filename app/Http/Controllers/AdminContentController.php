@@ -74,6 +74,10 @@ class AdminContentController extends Controller
                     ->values()
                     ->all();
             }
+
+            if ($field['type'] === 'select') {
+                $values[$name] = filled($values[$name] ?? null) ? (int) $values[$name] : null;
+            }
         }
 
         return $values;

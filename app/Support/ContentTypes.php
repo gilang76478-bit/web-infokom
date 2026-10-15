@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use App\Models\{Achievement, Agenda, Alumnus, Announcement, GalleryItem, JapanStep, Partner, Post, Program, TracerStat};
+use App\Models\{Achievement, Agenda, Alumnus, Announcement, GalleryItem, JapanStep, Partner, Post, Program, Teacher, TracerStat};
 
 /**
  * Definisi modul konten admin: label, model, dan daftar field beserta
@@ -21,6 +21,14 @@ class ContentTypes
             'skills' => ['label' => 'Kompetensi (satu per baris)', 'type' => 'lines', 'rules' => 'required|string|max:4000'],
             'jobs' => ['label' => 'Prospek karier (satu per baris)', 'type' => 'lines', 'rules' => 'required|string|max:4000'],
             'facilities' => ['label' => 'Fasilitas (satu per baris)', 'type' => 'lines', 'rules' => 'required|string|max:4000'],
+        ]],
+        'guru' => ['label' => 'Guru & Tenaga Kependidikan', 'model' => Teacher::class, 'fields' => [
+            'name' => ['label' => 'Nama guru', 'type' => 'text', 'rules' => 'required|string|max:255'],
+            'nip' => ['label' => 'NIP / NIDN', 'type' => 'text', 'rules' => 'nullable|string|max:30'],
+            'position' => ['label' => 'Jabatan / peran', 'type' => 'text', 'rules' => 'required|string|max:120'],
+            'program_id' => ['label' => 'Program keahlian', 'type' => 'select', 'options' => 'programs', 'rules' => 'nullable|integer|exists:programs,id'],
+            'photo' => ['label' => 'URL foto', 'type' => 'text', 'rules' => 'nullable|string|max:500'],
+            'sort_order' => ['label' => 'Urutan tampil', 'type' => 'number', 'rules' => 'required|integer|min:0|max:9999'],
         ]],
         'berita' => ['label' => 'Berita', 'model' => Post::class, 'fields' => [
             'category' => ['label' => 'Kategori', 'type' => 'text', 'rules' => 'required|string|max:30'],
@@ -69,4 +77,28 @@ class ContentTypes
             'text' => ['label' => 'Isi pengumuman', 'type' => 'textarea', 'rules' => 'required|string|max:1000'],
         ]],
     ];
+
+    /**
+     * Opsi untuk field bertipe select, dipetakan dari sumber data
+     * yang terdaftar di sini (bisa dipanggil dari view maupun request).
+     *
+     * @return array<int|string, string>
+     */
+    public static function options(string $source): array
+    {
+        return match ($source) {
+            'programs' => Program::query()->orderBy('name')->pluck('name', 'id')->all(),
+            default => [],
+        };
+    }
+
+    /** Teks tampilan untuk nilai select pada tabel daftar admin. */
+    public static function optionLabel(string $source, mixed $value): string
+    {
+        if ($value === null || $value === '') {
+            return '—';
+        }
+
+        return self::options($source)[$value] ?? (string) $value;
+    }
 }

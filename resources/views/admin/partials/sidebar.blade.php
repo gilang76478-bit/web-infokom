@@ -7,8 +7,7 @@
     <p class="admin-nav-label">Ruang kerja</p>
     <a href="{{ route('filament.admin.pages.dashboard') }}"><span class="admin-nav-icon" aria-hidden="true">▦</span>Dashboard</a>
     <a href="{{ route('admin.settings.index') }}" @class(['is-active' => request()->routeIs('admin.settings.*')]) @if (request()->routeIs('admin.settings.*')) aria-current="page" @endif><span class="admin-nav-icon" aria-hidden="true">⚙</span>Pengaturan sekolah</a>
-    <p class="admin-nav-label">Konten website</p>
-    @foreach ([['akademik', 'Program keahlian', '◇'], ['berita', 'Berita', '▤'], ['agenda', 'Agenda', '▦'], ['prestasi', 'Prestasi', '✦'], ['galeri', 'Galeri', '▧'], ['industri', 'Mitra industri', '⌘'], ['jepang', 'Magang Jepang', '◉'], ['alumni', 'Alumni', '◎'], ['tracer', 'Tracer study', '⌁'], ['pengumuman', 'Pengumuman', '◌']] as [$slug, $label, $icon])
+    <p class="admin-nav-label">Konten website</p>      @foreach ([['akademik', 'Program keahlian', '◇'], ['guru', 'Guru & TTK', '☺'], ['berita', 'Berita', '▤'], ['agenda', 'Agenda', '▦'], ['prestasi', 'Prestasi', '✦'], ['galeri', 'Galeri', '▧'], ['industri', 'Mitra industri', '⌘'], ['jepang', 'Magang Jepang', '◉'], ['alumni', 'Alumni', '◎'], ['tracer', 'Tracer study', '⌁'], ['pengumuman', 'Pengumuman', '◌']] as [$slug, $label, $icon])
       <a href="{{ route('admin.content.index', $slug) }}" @class(['is-active' => request()->routeIs('admin.content.*') && request()->route('type') === $slug]) @if (request()->route('type') === $slug) aria-current="page" @endif><span class="admin-nav-icon" aria-hidden="true">{{ $icon }}</span>{{ $label }}</a>
     @endforeach
     <a href="{{ route('admin.ppdb.index') }}" @class(['is-active' => request()->routeIs('admin.ppdb.*')]) @if (request()->routeIs('admin.ppdb.*')) aria-current="page" @endif><span class="admin-nav-icon" aria-hidden="true">▣</span>Pendaftar PPDB</a>

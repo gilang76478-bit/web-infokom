@@ -997,6 +997,21 @@
     text-wrap: balance;
 }
 
+.org-card .org-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 8px;
+    font: 600 0.7rem var(--fb);
+    color: var(--muted);
+}
+
+.org-card .org-card-meta span + span::before {
+    content: "·";
+    margin-right: 8px;
+    color: var(--line);
+}
+
 .org-card .photo {
     width: 76px;
     aspect-ratio: 1 / 1;
@@ -2589,6 +2604,18 @@
 .academic-card {
     background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
     box-shadow: 0 10px 24px rgb(17 25 40 / 3%);
+}
+
+/* Halaman detail program keahlian */
+.program-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 1.5rem;
+}
+
+.program-teachers {
+    margin-top: clamp(2rem, 4vw, 3rem);
 }
 
 /* Kartu & grid generik */

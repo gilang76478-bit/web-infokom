@@ -20,6 +20,13 @@
       <label for="field-{{ $key }}">{{ $field['label'] }}</label>
       @if ($field['type'] === 'textarea' || $field['type'] === 'lines')
         <textarea id="field-{{ $key }}" name="{{ $key }}" rows="{{ $field['type'] === 'lines' ? 5 : 4 }}" @if ($required) required @endif>{{ $value }}</textarea>
+      @elseif ($field['type'] === 'select')
+        <select id="field-{{ $key }}" name="{{ $key }}" @if ($required) required @endif>
+          <option value="">Tanpa {{ strtolower($field['label']) }}</option>
+          @foreach (\App\Support\ContentTypes::options($field['options'] ?? '') as $optionValue => $optionLabel)
+            <option value="{{ $optionValue }}" @selected((string) ($value ?? '') === (string) $optionValue)>{{ $optionLabel }}</option>
+          @endforeach
+        </select>
       @else
         <input id="field-{{ $key }}" name="{{ $key }}" type="{{ $field['type'] }}" value="{{ $value }}" @if ($required) required @endif>
       @endif

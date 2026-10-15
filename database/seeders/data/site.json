@@ -408,5 +408,66 @@
         {
             "text": "Kelas persiapan Bahasa Jepang angkatan 5 mulai pekan depan."
         }
+    ],
+    "teachers": [
+        {
+            "name": "Drs. H. M. Syaiful, M.Pd.",
+            "nip": "196805101994031006",
+            "position": "Kepala Sekolah",
+            "sort_order": 1
+        },
+        {
+            "name": "Rina Wulandari, S.Kom.",
+            "nip": "198702142015032004",
+            "position": "Wakil Kepala Bidang Kurikulum",
+            "sort_order": 2
+        },
+        {
+            "name": "Ahmad Hidayat, S.Kom.",
+            "nip": "198903172019031005",
+            "position": "Ketua Program Keahlian",
+            "program": "PPLG",
+            "sort_order": 10
+        },
+        {
+            "name": "Siti Nurhaliza, S.T.",
+            "nip": "199107222020122003",
+            "position": "Guru Produktif",
+            "program": "TJKT",
+            "sort_order": 11
+        },
+        {
+            "name": "Budi Santoso, S.Ds.",
+            "nip": "198811052014031008",
+            "position": "Guru Produktif",
+            "program": "DKV",
+            "sort_order": 12
+        },
+        {
+            "name": "Dewi Anggraini, S.E.",
+            "nip": "199202282021032006",
+            "position": "Guru Produktif",
+            "program": "AKL",
+            "sort_order": 13
+        },
+        {
+            "name": "Hendra Gunawan, S.E., M.M.",
+            "nip": "198610122015031004",
+            "position": "Guru Produktif",
+            "program": "MPLB",
+            "sort_order": 14
+        },
+        {
+            "name": "Yulia Ramadhani, S.Pd.",
+            "nip": "199305042022032009",
+            "position": "Guru Bahasa Inggris",
+            "sort_order": 20
+        },
+        {
+            "name": "Ahmad Fauzi, S.Pd.",
+            "nip": "199009182018031002",
+            "position": "Guru Pendidikan Jasmani",
+            "sort_order": 21
+        }
     ]
 }

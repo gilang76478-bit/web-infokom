@@ -29,5 +29,16 @@ class SiteSeeder extends Seeder
                 $model::create($row);
             }
         }
+
+        // Seeder berjalan dengan model events dimatikan (DatabaseSeeder),
+        // sehingga pembuatan slug pada event model tidak berjalan —
+        // slug program diisi secara eksplisit di sini.
+        foreach (Program::query()->whereNull('slug')->orderBy('id')->get() as $program) {
+            $program->forceFill([
+                'slug' => Program::makeUniqueSlug($program->name, $program->short),
+            ])->save();
+        }
+
+        $this->call(TeacherSeeder::class);
     }
 }

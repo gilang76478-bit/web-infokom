@@ -7,9 +7,15 @@ use App\Http\Controllers\AdminPpdbController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\PpdbApplicantController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\SiteController;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
+
+// Detail program keahlian, diikat berdasarkan slug. Ditempatkan sebelum
+// rute tangkap-lambung /{section} agar tidak tertangkap olehnya.
+Route::get('/program/{program:slug}', [ProgramController::class, 'show'])
+	->name('program.show');
 
 Route::post('/ppdb', [PpdbApplicantController::class, 'store'])
 	->middleware('throttle:5,1')
