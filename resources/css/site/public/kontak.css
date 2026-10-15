@@ -1,0 +1,392 @@
+/* =============================================================
+   public/kontak.css — bagian dari gaya halaman publik
+   (dipotong dari public.css; urutan antar-bagian WAJIB dijaga)
+   ============================================================= */
+/* =============================================================
+   Kontak
+   ============================================================= */
+.contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(310px, 0.8fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+}
+
+.contact-main,
+.contact-aside {
+    display: grid;
+    gap: 34px;
+    min-width: 0;
+}
+
+.contact-block {
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--line);
+}
+
+.contact-identity {
+    padding: clamp(22px, 4vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--brand) 100%);
+    color: #fff;
+    box-shadow: 0 16px 40px rgb(18 31 74 / 14%);
+}
+
+.contact-identity .detail-tag {
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+}
+
+.contact-identity h2 {
+    margin: 10px 0 8px;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+}
+
+.contact-identity p {
+    color: #dfe9ff;
+    font-size: 1rem;
+}
+
+.contact-quick-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.contact-quick-stats > div {
+    display: grid;
+    gap: 4px;
+    padding: 14px 12px;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 10px;
+    background: rgb(255 255 255 / 4%);
+}
+
+.contact-quick-stats strong {
+    font: 800 1.05rem var(--fd);
+    color: #fff;
+}
+
+.contact-quick-stats span {
+    color: #dfe9ff;
+    font-size: 0.74rem;
+}
+
+.contact-cta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.contact-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font: 700 0.82rem var(--fb);
+    text-decoration: none;
+    transition:
+        transform 160ms ease,
+        filter 160ms ease;
+}
+
+.contact-cta-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+.contact-cta-button.whatsapp {
+    background: #1fa76a;
+    color: #fff;
+}
+
+.contact-cta-button.map {
+    border-color: rgb(255 255 255 / 24%);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.contact-block > h2,
+.contact-block-heading h2,
+.contact-hours h2,
+.contact-form-panel h2 {
+    margin: 9px 0 18px;
+    font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+}
+
+.contact-block-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.contact-block-heading h2 {
+    margin-bottom: 14px;
+}
+
+.contact-copy-button {
+    flex: none;
+    padding: 8px 11px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--surface);
+    color: var(--link);
+    font: 700 0.78rem var(--fb);
+    cursor: pointer;
+    transition:
+        background 160ms ease,
+        border-color 160ms ease;
+}
+
+.contact-copy-button:hover:not(:disabled) {
+    border-color: var(--brand);
+    background: var(--mist);
+}
+
+.contact-copy-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.contact-address {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px 24px;
+    margin: 0;
+}
+
+.contact-address > div {
+    min-width: 0;
+}
+
+.contact-address dt {
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.contact-address dd {
+    margin: 3px 0 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.contact-full-address {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.contact-map-actions {
+    margin-top: 20px;
+}
+
+.contact-map-shell {
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgb(19 31 68 / 8%);
+}
+
+.contact-map {
+    display: block;
+    width: 100%;
+    height: 270px;
+    border: 0;
+    background: var(--mist);
+}
+
+.contact-not-configured {
+    display: grid;
+    gap: 6px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--accent);
+    background: var(--mist);
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.contact-not-configured strong {
+    color: var(--ink);
+}
+
+.contact-not-configured p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.contact-channel-list {
+    border-top: 1px solid var(--line);
+}
+
+.contact-channel {
+    display: grid;
+    grid-template-columns: minmax(145px, 0.5fr) minmax(0, 1fr);
+    gap: 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.contact-channel h3 {
+    font: 700 0.9rem var(--fb);
+}
+
+.contact-channel > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+}
+
+.contact-channel a,
+.contact-socials a {
+    color: var(--link);
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.contact-channel a:hover,
+.contact-socials a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.contact-channel .contact-whatsapp {
+    color: #177447;
+}
+
+.contact-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.contact-socials a {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--surface);
+}
+
+.contact-hours,
+.contact-form-panel {
+    padding: clamp(20px, 3vw, 28px);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--surface);
+}
+
+.contact-hours dl {
+    display: grid;
+    gap: 0;
+    margin: 0;
+}
+
+.contact-hours dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid var(--line);
+    font-size: 0.84rem;
+}
+
+.contact-hours dt {
+    color: var(--muted);
+}
+
+.contact-hours dd {
+    margin: 0;
+    font-weight: 700;
+    text-align: right;
+}
+
+.contact-form-panel {
+    background: var(--mist);
+}
+
+.contact-success {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border: 1px solid #b9e4cc;
+    border-radius: 5px;
+    background: #eef9f2;
+    color: #247747;
+    font-size: 0.82rem;
+}
+
+.contact-form {
+    display: grid;
+    gap: 8px;
+}
+
+.contact-form label {
+    margin-top: 7px;
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 11px;
+    border: 1px solid #cbd3df;
+    border-radius: 5px;
+    background: var(--surface);
+    color: var(--ink);
+    font: 0.84rem var(--fb);
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    border-color: var(--brand);
+    outline: 3px solid color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.contact-form > small {
+    color: var(--danger);
+    font-size: 0.74rem;
+}
+
+.contact-form > .btn {
+    margin-top: 10px;
+}
+
+.contact-form > .btn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.contact-honeypot,
+.contact-copy-buffer {
+    position: absolute !important;
+    left: -10000px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
+
+.contact-copy-button:focus-visible,
+.contact-socials a:focus-visible,
+.contact-channel a:focus-visible {
+    outline-offset: 3px;
+}

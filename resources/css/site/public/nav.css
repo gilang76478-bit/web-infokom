@@ -1,0 +1,263 @@
+/* =============================================================
+   public/nav.css — bagian dari gaya halaman publik
+   (dipotong dari public.css; urutan antar-bagian WAJIB dijaga)
+   ============================================================= */
+/* =============================================================
+   Navigasi & header
+   ============================================================= */
+.nav {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+}
+
+.nav-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 76px;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--navy);
+    text-decoration: none;
+    margin-right: auto;
+}
+
+.brand b,
+.brand small {
+    display: block;
+}
+
+.brand b {
+    font: 800 1rem/1.1 var(--fd);
+    letter-spacing: -0.01em;
+}
+
+.brand small {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.menu > a,
+.nav-dropdown summary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 9px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: var(--navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease;
+}
+
+.menu > a:hover,
+.nav-dropdown summary:hover,
+.menu > a.active {
+    background: var(--mist);
+    border-color: rgba(42, 63, 224, 0.12);
+    color: var(--navy);
+}
+
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown summary {
+    list-style: none;
+}
+
+.nav-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.nav-dropdown summary::after {
+    content: "▾";
+    margin-left: 4px;
+    font-size: 0.72rem;
+    opacity: 0.75;
+}
+
+.kepala-sekolah-portrait-placeholder .portrait-initials {
+    display: grid;
+    width: 56px;
+    height: 56px;
+    place-items: center;
+    margin: 0 0 12px;
+    border: 1px solid rgb(245 197 24 / 55%);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 8%);
+    color: var(--accent);
+    font: 800 1.15rem var(--fd);
+    opacity: 1;
+}
+
+.nav-dropdown[open] summary {
+    background: var(--mist);
+    border-color: rgba(42, 63, 224, 0.12);
+}
+
+.nav-dropdown.is-active > summary {
+    color: var(--brand);
+}
+
+.nav-submenu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    display: grid;
+    min-width: 220px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 18px 36px rgb(19 31 68 / 12%);
+    gap: 4px;
+}
+
+.nav-submenu a {
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.nav-submenu a:hover {
+    background: var(--mist);
+    color: var(--navy);
+}
+
+.nav-submenu a:focus-visible {
+    outline-offset: 1px;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.burger {
+    display: none;
+}
+
+@media (max-width: 1279px) {
+    .nav-in {
+        position: relative;
+        gap: 12px;
+    }
+    .menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.97);
+        box-shadow: 0 18px 40px rgb(17 25 40 / 10%);
+    }
+    .menu.open {
+        display: flex;
+    }
+    .menu > a,
+    .nav-dropdown {
+        width: 100%;
+    }
+    .nav-dropdown summary,
+    .nav-submenu a {
+        justify-content: space-between;
+    }
+    .nav-submenu {
+        position: static;
+        margin-top: 6px;
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: none;
+    }
+    .burger {
+        display: inline-flex;
+    }
+}
+
+@media (max-width: 520px) {
+    .nav-in {
+        gap: 6px;
+    }
+    .brand {
+        gap: 8px;
+    }
+    .brand small {
+        display: none;
+    }
+    .nav-actions {
+        gap: 6px;
+    }
+    .nav-actions .icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+    .nav-actions .btn {
+        padding: 0.55rem 0.65rem;
+        font-size: 0.82rem;
+    }
+    .profile-hero-nav {
+        gap: 8px;
+    }
+    .profile-hero-nav a {
+        min-height: 40px;
+        padding-inline: 12px;
+        font-size: 0.76rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        width: calc(100% - 32px);
+    }
+    .nav-actions {
+        gap: 4px;
+    }
+    .nav-actions .icon-btn {
+        width: 34px;
+        height: 34px;
+    }
+    .nav-actions .btn {
+        padding: 0.45rem;
+        font-size: 0.75rem;
+    }
+}

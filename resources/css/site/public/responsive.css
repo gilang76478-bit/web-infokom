@@ -1,0 +1,66 @@
+/* =============================================================
+   public/responsive.css — bagian dari gaya halaman publik
+   (dipotong dari public.css; urutan antar-bagian WAJIB dijaga)
+   ============================================================= */
+/* =============================================================
+   Responsif halaman seksi
+   ============================================================= */
+@media (max-width: 900px) {
+    .detail-split,
+    .profile-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .academic-grid,
+    .industry-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .contact-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .contact-aside {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+}
+
+@media (max-width: 520px) {
+    .detail-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .profile-value-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .detail-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+    .detail-ppdb {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .contact-aside {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .contact-address {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 11px;
+    }
+    .contact-channel {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 7px;
+    }
+    .contact-map {
+        height: 220px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

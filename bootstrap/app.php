@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Header keamanan dasar (nosniff, frame, referrer, HSTS) + fallback
+        // cache untuk aset yang jatuh ke front controller.
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->alias(['admin' => EnsureAdmin::class]);
         $middleware->redirectGuestsTo(fn () => route('filament.admin.auth.login'));
     })

@@ -1,3 +1,11 @@
-/* Entry point CSS website publik: token bersama + gaya halaman publik */
+/* Entry point CSS website publik: token bersama + gaya halaman publik.
+   Catatan: urutan import menentukan urutan cascade — jangan diacak.
+   Gaya halaman dipisah per-area di ./site/public/ agar mudah dirawat. */
 @import './site/base.css';
-@import './site/public.css';
+@import './site/public/shared.css';
+@import './site/public/nav.css';
+@import './site/public/profil.css';
+@import './site/public/home.css';
+@import './site/public/sections.css';
+@import './site/public/kontak.css';
+@import './site/public/responsive.css';

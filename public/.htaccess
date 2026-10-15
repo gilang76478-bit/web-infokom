@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Larangan file tersembunyi (.env, .git, .htaccess, dsb) — termasuk
+    # yang terletak di balik symlink public/storage.
+    RewriteRule "(^|/)\." - [F]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -18,8 +22,20 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Tandai aset yang di-cache berat lewat environment (dibaca mod_headers).
+    RewriteRule "^build/" - [E=VITE_ASSET:1]
+    RewriteRule "^storage/" - [E=UPLOAD_ASSET:1]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Cache aset produksi (Apache):
+# - /build/* selalu ber- nama hash, aman di-cache 1 tahun (immutable).
+# - /storage/* berisi unggahan (foto galeri), cukup 7 hari.
+<IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable" env=VITE_ASSET
+    Header set Cache-Control "public, max-age=604800" env=UPLOAD_ASSET
 </IfModule>

@@ -1,0 +1,87 @@
+/* =============================================================
+   public/shared.css — bagian dari gaya halaman publik
+   (dipotong dari public.css; urutan antar-bagian WAJIB dijaga)
+   ============================================================= */
+/* =============================================================
+   public.css — halaman publik: navigasi, beranda, dan halaman
+   seksi (profil, akademik, ppdb, kontak, dst.)
+   ============================================================= */
+
+.sec {
+    padding: clamp(56px, 8vw, 104px) 0;
+}
+
+.fasilitas-card:not(a) {
+    cursor: default;
+}
+
+.fasilitas-card:not(a):hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--line);
+}
+
+.sec.mist {
+    background: var(--mist);
+}
+
+.sh {
+    max-width: 44rem;
+    margin-bottom: 2.2rem;
+}
+
+.sh p {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.sh-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 2rem;
+}
+
+.sh-row .sh {
+    margin-bottom: 0;
+}
+
+/* Kepala seksi: eyebrow dengan garis aksen + jarak yang konsisten */
+.sh-row .sh > .detail-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.5rem;
+}
+
+.sh-row .sh > .detail-eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+/* Judul dalam .sh-row sudah diberi jarak oleh .sh-row, hilangkan dubel */
+.sh-row .sh h2 {
+    margin-bottom: 0;
+}
+
+.link {
+    color: var(--link);
+    font-weight: 700;
+    text-underline-offset: 4px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: var(--mist);
+    color: var(--ink);
+}

@@ -335,6 +335,49 @@ class ExampleTest extends TestCase
         $this->assertSame('artikel-uji-coba-tahap-4', $post->fresh()->slug);
     }
 
+    public function test_security_headers_and_asset_cache_rules_are_sent(): void
+    {
+        // Header keamanan menempel pada setiap respons framework.
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertHeader('X-Content-Type-Options', 'nosniff')
+            ->assertHeader('X-Frame-Options', 'SAMEORIGIN')
+            ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+            ->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
+        // Halaman tidak lagi memuat font eksternal (self-hosted via build).
+        $this->get(route('home'))
+            ->assertDontSee('fonts.googleapis.com', false)
+            ->assertDontSee('fonts.gstatic.com', false);
+
+        // Cadangan cache aset hanya untuk respons sukses.
+        $handler = app(\App\Http\Middleware\SecurityHeaders::class);
+
+        $build = $handler->handle(
+            \Illuminate\Http\Request::create('/build/assets/site-abc123.css', 'GET'),
+            fn () => new \Symfony\Component\HttpFoundation\Response('css', 200),
+        );
+        // Symfony menormalkan urutan token Cache-Control; verifikasi tiap direktif.
+        $buildCache = (string) $build->headers->get('Cache-Control');
+        $this->assertStringContainsString('immutable', $buildCache);
+        $this->assertStringContainsString('max-age=31536000', $buildCache);
+        $this->assertStringContainsString('public', $buildCache);
+
+        $missing = $handler->handle(
+            \Illuminate\Http\Request::create('/build/assets/hilang.css', 'GET'),
+            fn () => new \Symfony\Component\HttpFoundation\Response('tidak ada', 404),
+        );
+        $this->assertStringNotContainsString('immutable', (string) $missing->headers->get('Cache-Control'));
+
+        $storage = $handler->handle(
+            \Illuminate\Http\Request::create('/storage/gallery/foto.jpg', 'GET'),
+            fn () => new \Symfony\Component\HttpFoundation\Response('gambar', 200),
+        );
+        $storageCache = (string) $storage->headers->get('Cache-Control');
+        $this->assertStringContainsString('max-age=604800', $storageCache);
+        $this->assertStringContainsString('public', $storageCache);
+    }
+
     public function test_admin_can_manage_categories_in_filament_with_auto_slug(): void
     {
         $this->actingAs(User::factory()->create(['is_admin' => true]));
