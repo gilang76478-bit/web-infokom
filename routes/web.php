@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminContactController;
 use App\Http\Controllers\AdminPpdbController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\PpdbApplicantController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProgramController;
@@ -24,6 +25,10 @@ Route::get('/berita', [PostController::class, 'index'])
 	->name('berita.index');
 Route::get('/berita/{post:slug}', [PostController::class, 'show'])
 	->name('berita.show');
+
+// Galeri foto dengan filter kategori, diikat di depan rute tangkap-lambung.
+Route::get('/galeri', [GaleriController::class, 'index'])
+	->name('galeri.index');
 
 Route::post('/ppdb', [PpdbApplicantController::class, 'store'])
 	->middleware('throttle:5,1')
@@ -48,8 +53,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 Route::get('/{section}', [SiteController::class, 'section'])
-	->whereIn('section', [
+	->	whereIn('section', [
 		'profil', 'akademik', 'kesiswaan', 'prestasi', 'industri',
-		'jepang', 'ppdb', 'informasi', 'galeri', 'alumni', 'kontak',
+		'jepang', 'ppdb', 'informasi', 'alumni', 'kontak',
 	])
 	->name('site.section');

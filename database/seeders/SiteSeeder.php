@@ -16,7 +16,6 @@ class SiteSeeder extends Seeder
             'programs'      => Program::class,
             'agendas'       => Agenda::class,
             'achievements'  => Achievement::class,
-            'gallery_items' => GalleryItem::class,
             'japan_steps'   => JapanStep::class,
             'partners'      => Partner::class,
             'alumni'        => Alumnus::class,
@@ -28,6 +27,23 @@ class SiteSeeder extends Seeder
             foreach ($data[$key] as $row) {
                 $model::create($row);
             }
+        }
+
+        // Foto galeri: string kategori dipetakan ke tabel categories
+        // berjenis galeri (slug diisi eksplisit karena tanpa model events).
+        foreach ($data['gallery_items'] as $row) {
+            $categoryName = $row['category'] ?? null;
+            unset($row['category']);
+
+            GalleryItem::create([
+                ...$row,
+                'category_id' => filled($categoryName)
+                    ? Category::firstOrCreate(
+                        ['type' => 'galeri', 'slug' => Str::slug($categoryName) ?: 'kategori'],
+                        ['name' => $categoryName],
+                    )->id
+                    : null,
+            ]);
         }
 
         // Artikel: string kategori di site.json dipetakan ke tabel categories,

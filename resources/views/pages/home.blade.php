@@ -151,10 +151,10 @@
 
   <section class="sec mist home-section">
     <div class="container">
-      <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Galeri</p><h2>Belajar, berkarya, bersama</h2></div><a class="link" href="{{ route('site.section', 'galeri') }}">Lihat kegiatan lain <span aria-hidden="true">→</span></a></div>
+      <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Galeri</p><h2>Belajar, berkarya, bersama</h2></div><a class="link" href="{{ route('galeri.index') }}">Lihat kegiatan lain <span aria-hidden="true">→</span></a></div>
       <div class="home-gallery">
         @foreach ($site['gal']->take(4) as $item)
-          <a href="{{ route('site.section', 'galeri') }}"><b>{{ $item['t'] }}</b><small>{{ $item['c'] }}</small></a>
+          <a href="{{ route('galeri.index') }}"><b>{{ $item['t'] }}</b><small>{{ $item['c'] }}</small></a>
         @endforeach
       </div>
     </div>

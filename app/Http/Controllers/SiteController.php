@@ -23,7 +23,6 @@ class SiteController extends Controller
             'jepang' => ['title' => 'Program Magang Jepang', 'intro' => 'Kenali tahapan persiapan, seleksi, dan pembekalan sebelum mengikuti program magang.', 'eyebrow' => 'Peluang internasional'],
             'ppdb' => ['title' => 'Penerimaan murid baru', 'intro' => 'Informasi terbaru mengenai pendaftaran, jadwal, dan tahapan seleksi calon murid.', 'eyebrow' => 'PPDB / SPMB'],
             'informasi' => ['title' => 'Informasi sekolah', 'intro' => 'Berita, pengumuman, dan agenda terbaru dari SMK INFOKOM.', 'eyebrow' => 'Kabar terkini'],
-            'galeri' => ['title' => 'Galeri kegiatan', 'intro' => 'Cuplikan aktivitas belajar, berkarya, dan bertumbuh bersama di SMK INFOKOM.', 'eyebrow' => 'Dokumentasi'],
             'alumni' => ['title' => 'Alumni dan tracer study', 'intro' => 'Cerita perjalanan alumni dan gambaran aktivitas setelah menyelesaikan pendidikan.', 'eyebrow' => 'Jejak lulusan'],
             'kontak' => ['title' => 'Hubungi sekolah', 'intro' => 'Pilih jalur komunikasi yang sesuai. Kami siap membantu pertanyaan tentang sekolah, PPDB, administrasi, dan kerja sama.', 'eyebrow' => 'Kontak SMK INFOKOM'],
         ];
@@ -38,7 +37,7 @@ class SiteController extends Controller
             'akademik' => Program::query()->with('teachers')->orderBy('short')->get(),
             'kesiswaan' => [
                 'achievements' => Achievement::orderByDesc('year')->get(),
-                'activities' => GalleryItem::orderBy('id')->get(),
+                'activities' => GalleryItem::with('category')->orderBy('id')->get(),
             ],
             'prestasi' => Achievement::orderByDesc('year')->get(),
             'industri' => Partner::orderBy('name')->get(),
@@ -54,7 +53,6 @@ class SiteController extends Controller
                 'posts' => Post::with('category')->orderByDesc('published_at')->get(),
                 'agendas' => Agenda::orderBy('date')->get(),
             ],
-            'galeri' => GalleryItem::orderBy('id')->get(),
             'alumni' => [
                 'alumni' => Alumnus::orderBy('id')->get(),
                 'tracer' => TracerStat::orderBy('id')->get(),
@@ -88,7 +86,7 @@ class SiteController extends Controller
                 't' => $a->title, 'who' => $a->who, 'lv' => $a->level, 'y' => $a->year,
             ]),
             'gal' => GalleryItem::orderBy('id')->get()->map(fn ($g) => [
-                'c' => $g->category, 't' => $g->title, 's' => $g->size, 'a' => $g->art,
+                'c' => $g->category?->name ?? 'Galeri', 't' => $g->title, 's' => $g->size, 'a' => $g->art,
             ]),
             'jsteps' => JapanStep::orderBy('id')->get()->map(fn ($s) => [
                 't' => $s->title, 'd' => $s->description, 'l' => $s->duration,

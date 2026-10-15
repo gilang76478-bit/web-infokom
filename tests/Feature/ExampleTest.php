@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Post;
 use App\Models\PpdbApplicant;
 use App\Models\User;
@@ -28,9 +30,12 @@ class ExampleTest extends TestCase
 
     public function test_public_navigation_pages_are_available(): void
     {
-        foreach (['profil', 'akademik', 'kesiswaan', 'prestasi', 'industri', 'jepang', 'ppdb', 'informasi', 'galeri', 'alumni', 'kontak'] as $section) {
+        foreach (['profil', 'akademik', 'kesiswaan', 'prestasi', 'industri', 'jepang', 'ppdb', 'informasi', 'alumni', 'kontak'] as $section) {
             $this->get(route('site.section', $section))->assertOk();
         }
+
+        // Galeri kini mempunyai rute sendiri dengan filter kategori.
+        $this->get(route('galeri.index'))->assertOk();
     }
 
     public function test_profile_page_renders_defaults_when_settings_are_empty(): void
@@ -119,16 +124,17 @@ class ExampleTest extends TestCase
             ['GET', 'admin'],
             ['GET', 'admin/posts'],
             ['GET', 'admin/categories'],
+            ['GET', 'admin/gallery-items'],
             ['GET', 'admin/settings'],
             ['PUT', 'admin/settings'],
             ['GET', 'admin/ppdb'],
             ['GET', 'admin/pesan'],
-            ['GET', 'admin/content/galeri'],
-            ['GET', 'admin/content/galeri/create'],
-            ['POST', 'admin/content/galeri'],
-            ['GET', 'admin/content/galeri/1/edit'],
-            ['PUT', 'admin/content/galeri/1'],
-            ['DELETE', 'admin/content/galeri/1'],
+            ['GET', 'admin/content/agenda'],
+            ['GET', 'admin/content/agenda/create'],
+            ['POST', 'admin/content/agenda'],
+            ['GET', 'admin/content/agenda/1/edit'],
+            ['PUT', 'admin/content/agenda/1'],
+            ['DELETE', 'admin/content/agenda/1'],
             ['PATCH', 'admin/pesan/' . $message->id . '/read'],
             ['PATCH', 'admin/ppdb/' . $applicant->id],
         ];
@@ -294,7 +300,7 @@ class ExampleTest extends TestCase
         $this->get(route('filament.admin.resources.posts.index'))->assertOk();
         $this->get(route('filament.admin.resources.categories.index'))->assertOk();
 
-        $category = \App\Models\Category::firstOrFail();
+        $category = \App\Models\Category::ofType('berita')->firstOrFail();
 
         // Menulis dan menerbitkan artikel baru (slug dibuat otomatis).
         \Livewire\Livewire::test(\App\Filament\Resources\Posts\Pages\CreatePost::class)
@@ -390,6 +396,77 @@ class ExampleTest extends TestCase
         $this->get('/berita/artikel-yang-tidak-ada')->assertNotFound();
     }
 
+    public function test_gallery_page_shows_photos_with_lazy_loading_and_category_filter(): void
+    {
+        Storage::fake('public');
+        $this->seed();
+
+        // Satu foto "diunggah" (lolos validasi Filament pada test lain),
+        // ditampilkan sebagai <img> dengan atribut performa lazy loading.
+        Storage::disk('public')->put('gallery/foto-uji.jpg', 'bytes-gambar-uji');
+        \App\Models\GalleryItem::whereNull('image_path')->first()->update(['image_path' => 'gallery/foto-uji.jpg']);
+
+        $listing = $this->get(route('galeri.index'));
+        $listing
+            ->assertOk()
+            ->assertSee('Galeri Kegiatan')
+            ->assertSee(asset('storage/gallery/foto-uji.jpg'), false)
+            ->assertSee('loading="lazy"', false);
+
+        // Item tanpa foto memakai fallback ilustrasi (kolom art).
+        $listing->assertSee('galeri-art-', false);
+
+        // Filter kategori galeri.
+        $this->get(route('galeri.index', ['kategori' => 'praktik']))
+            ->assertOk()
+            ->assertSee('Praktik jaringan di Lab TJKT')
+            ->assertDontSee('Upacara Hari Kemerdekaan');
+
+        // Kategori tidak dikenal → 404 (halaman error kustom).
+        $this->get(route('galeri.index', ['kategori' => 'tidak-ada']))
+            ->assertNotFound()
+            ->assertSee('Halaman tidak ditemukan');
+    }
+
+    public function test_admin_can_upload_a_gallery_photo_in_filament(): void
+    {
+        Storage::fake('public');
+        $this->seed();
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+
+        $category = \App\Models\Category::ofType('galeri')->firstOrFail();
+        $file = UploadedFile::fake()->image('kegiatan-lab.jpg', 800, 600);
+
+        $this->get(route('filament.admin.resources.gallery-items.index'))->assertOk();
+
+        \Livewire\Livewire::test(\App\Filament\Resources\GalleryItems\Pages\CreateGalleryItem::class)
+            ->fillForm([
+                'title' => 'Foto Unggahan Uji',
+                'category_id' => $category->id,
+                'size' => 'w',
+                'art' => 3,
+                'image_path' => [$file],
+            ])
+            ->call('create');
+
+        $item = \App\Models\GalleryItem::where('title', 'Foto Unggahan Uji')->firstOrFail();
+
+        $this->assertNotNull($item->image_path);
+        $this->assertSame($category->id, $item->category_id);
+        Storage::disk('public')->assertExists($item->image_path);
+
+        // Foto hasil unggahan tampil di halaman galeri publik.
+        $this->get(route('galeri.index'))
+            ->assertOk()
+            ->assertSee('Foto Unggahan Uji')
+            ->assertSee(asset('storage/' . $item->image_path), false);
+
+        // File ikut terhapus ketika record dihapus (tidak ada file yatim).
+        $path = $item->image_path;
+        $item->delete();
+        Storage::disk('public')->assertMissing($path);
+    }
+
     public function test_ppdb_form_stores_an_application_and_returns_a_number(): void
     {
         $this->seed();
@@ -452,7 +529,7 @@ class ExampleTest extends TestCase
     {
         $this->actingAs(User::factory()->create(['is_admin' => true]));
 
-        foreach (['akademik', 'guru', 'agenda', 'prestasi', 'galeri', 'jepang', 'industri', 'alumni', 'tracer', 'pengumuman'] as $type) {
+        foreach (['akademik', 'guru', 'agenda', 'prestasi', 'jepang', 'industri', 'alumni', 'tracer', 'pengumuman'] as $type) {
             $this->get(route('admin.content.index', $type))->assertOk();
             $this->get(route('admin.content.create', $type))->assertOk();
         }

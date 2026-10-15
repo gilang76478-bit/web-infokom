@@ -2717,6 +2717,69 @@
     color: var(--ink);
 }
 
+/* Halaman galeri (/galeri) */
+.galeri-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 16px;
+}
+
+.galeri-card {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.galeri-card img,
+.galeri-placeholder {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: var(--mist);
+}
+
+/* Fallback kolom "art" ketika foto asli belum diunggah. */
+.galeri-placeholder {
+    background-image: linear-gradient(135deg, var(--navy-2) 0%, var(--navy) 100%);
+}
+
+.galeri-art-0 { background-image: linear-gradient(135deg, #102a65, #2a3fe0); }
+.galeri-art-1 { background-image: linear-gradient(135deg, #1d3557, #457b9d); }
+.galeri-art-2 { background-image: linear-gradient(135deg, #264653, #2a9d8f); }
+.galeri-art-3 { background-image: linear-gradient(135deg, #6a4c93, #1982c4); }
+.galeri-art-4 { background-image: linear-gradient(135deg, #7b2cbf, #e0aaff); }
+.galeri-art-5 { background-image: linear-gradient(135deg, #bc4749, #386641); }
+
+.galeri-card figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 16px;
+}
+
+.galeri-card figcaption b {
+    font: 800 0.95rem/1.4 var(--fd);
+    color: var(--ink);
+}
+
+@media (min-width: 768px) {
+    .galeri-card.size-w {
+        grid-column: span 2;
+    }
+}
+
+.aktivitas-thumb {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.85rem;
+}
+
 /* Kartu & grid generik */
 .detail-grid {
     display: grid;

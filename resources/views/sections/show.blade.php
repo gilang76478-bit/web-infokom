@@ -390,7 +390,10 @@
         <div class="detail-split">
           <div><h2>Kegiatan siswa</h2><div class="detail-grid detail-grid-compact">
             @forelse ($data['activities'] as $activity)
-              <article class="detail-card"><span class="detail-tag">{{ $activity->category }}</span><h2>{{ $activity->title }}</h2><p>Pengalaman belajar, berkarya, dan bertumbuh bersama.</p></article>
+              <article class="detail-card">
+                @if ($activity->url)<img class="aktivitas-thumb" src="{{ $activity->url }}" alt="{{ $activity->title }}" loading="lazy" decoding="async">@endif
+                <span class="detail-tag">{{ $activity->category?->name ?? 'Kegiatan' }}</span><h2>{{ $activity->title }}</h2><p>Pengalaman belajar, berkarya, dan bertumbuh bersama.</p>
+              </article>
             @empty<p class="detail-empty">Informasi kegiatan siswa akan segera tersedia.</p>@endforelse
           </div></div>
           <aside class="detail-agenda"><h2>Pencapaian siswa</h2>
@@ -487,12 +490,6 @@
               <article><time datetime="{{ $agenda->date->toDateString() }}">{{ $agenda->date->locale('id')->translatedFormat('j M') }}</time><div><h3>{{ $agenda->title }}</h3><p>{{ $agenda->place_time }}</p></div></article>
             @empty<p class="detail-empty">Belum ada agenda mendatang.</p>@endforelse
           </aside>
-        </div>
-      @elseif ($section === 'galeri')
-        <div class="detail-grid detail-grid-compact">
-          @forelse ($data as $item)
-            <article class="detail-card"><span class="detail-tag">{{ $item->category }}</span><h2>{{ $item->title }}</h2><p>Dokumentasi kegiatan SMK INFOKOM.</p></article>
-          @empty<p class="detail-empty">Galeri akan diperbarui dengan dokumentasi kegiatan sekolah.</p>@endforelse
         </div>
       @elseif ($section === 'alumni')
         <div class="detail-split">

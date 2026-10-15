@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use App\Models\{Achievement, Agenda, Alumnus, Announcement, GalleryItem, JapanStep, Partner, Program, Teacher, TracerStat};
+use App\Models\{Achievement, Agenda, Alumnus, Announcement, JapanStep, Partner, Program, Teacher, TracerStat};
 
 /**
  * Definisi modul konten admin: label, model, dan daftar field beserta
@@ -40,12 +40,6 @@ class ContentTypes
             'who' => ['label' => 'Siswa atau tim', 'type' => 'text', 'rules' => 'required|string|max:255'],
             'level' => ['label' => 'Tingkat', 'type' => 'text', 'rules' => 'required|string|max:30'],
             'year' => ['label' => 'Tahun', 'type' => 'number', 'rules' => 'required|integer|min:2000|max:2100'],
-        ]],
-        'galeri' => ['label' => 'Galeri', 'model' => GalleryItem::class, 'fields' => [
-            'category' => ['label' => 'Kategori', 'type' => 'text', 'rules' => 'required|string|max:30'],
-            'title' => ['label' => 'Keterangan', 'type' => 'text', 'rules' => 'required|string|max:255'],
-            'size' => ['label' => 'Ukuran tile (kosong, w, atau t)', 'type' => 'text', 'rules' => 'nullable|in:w,t'],
-            'art' => ['label' => 'Variasi ilustrasi (0-5)', 'type' => 'number', 'rules' => 'required|integer|min:0|max:5'],
         ]],
         'jepang' => ['label' => 'Tahap Magang Jepang', 'model' => JapanStep::class, 'fields' => [
             'title' => ['label' => 'Nama tahap', 'type' => 'text', 'rules' => 'required|string|max:255'],

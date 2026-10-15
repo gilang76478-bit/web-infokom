@@ -60,7 +60,7 @@
         ['label' => 'Prestasi', 'section' => 'prestasi'],
         ['label' => 'Industri', 'section' => 'industri'],
         ['label' => 'Magang Jepang', 'section' => 'jepang'],
-        ['label' => 'Galeri', 'section' => 'galeri'],
+        ['label' => 'Galeri', 'section' => 'galeri', 'url' => route('galeri.index')],
         ['label' => 'Alumni', 'section' => 'alumni'],
         ['label' => 'Kontak', 'section' => 'kontak'],
     ]);
@@ -112,7 +112,7 @@
           </details>
         @endforeach
         @foreach ($navLinks as $link)
-          <a href="{{ route('site.section', $link['section']) }}" @class(['active' => $activeSection === $link['section']])>{{ $link['label'] }}</a>
+          <a href="{{ $link['url'] ?? route('site.section', $link['section']) }}" @class(['active' => $activeSection === $link['section']])>{{ $link['label'] }}</a>
         @endforeach
       </nav>
       <div class="nav-actions">
@@ -139,7 +139,7 @@
         <h3>Jelajahi</h3>
         <a href="{{ route('site.section', 'profil') }}">Profil sekolah</a>
         <a href="{{ route('site.section', 'akademik') }}">Program keahlian</a>
-        <a href="{{ route('site.section', 'galeri') }}">Galeri kegiatan</a>
+        <a href="{{ route('galeri.index') }}">Galeri kegiatan</a>
         <a href="{{ route('site.section', 'alumni') }}">Alumni</a>
       </div>
       <div>

@@ -34,6 +34,11 @@ class Category extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function galleryItems(): HasMany
+    {
+        return $this->hasMany(GalleryItem::class);
+    }
+
     public function scopeOfType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type)->orderBy('name');
