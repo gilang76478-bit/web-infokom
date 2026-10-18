@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: PHPUnit + Playwright E2E
+    runs-on: ubuntu-latest
+    # Image resmi Playwright: browser + dependensi sistem sudah bawaan,
+    # sehingga langkah `playwright install --with-deps` gugur sepenuhnya.
+    # WAJIB sinkron dengan @playwright/test di package.json — keduanya naik
+    # versi bersamaan (tag terkonfirmasi ada: mcr.microsoft.com/playwright).
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+    # Job berjalan sebagai root di dalam container; ini menekan peringatan
+    # Composer agar langkah install tidak perlu konfirmasi interaktif.
+    env:
+      COMPOSER_ALLOW_SUPERUSER: 1
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom, pdo, sqlite3, pdo_sqlite
+          coverage: none
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      # Cache file unduhan Composer + vendor/ agar install ulang hanya
+      # berjalan penuh saat composer.lock berubah.
+      - name: Resolve Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.composer-cache.outputs.dir }}
+            vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      # Salin .env + siapkan file sqlite sebelum composer dump-autoload
+      # (post-autoload-dump menjalankan artisan package:discover).
+      - name: Prepare environment file
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # Tag image container dan versi @playwright/test WAJIB identik sampai
+      # digit patch. Guard menagih segera setelah npm ci, sebelum kegagalan
+      # yang lebih membingungkan muncul di tahap tes browser.
+      - name: Verify image tag equals Playwright version exactly
+        run: |
+          WF="${1:-.github/workflows/ci.yml}"
+          IMAGE_TAG=$(sed -n 's|.*playwright:v\([0-9][0-9.]*\).*|\1|p' "$WF" | head -n 1)
+          INSTALLED=$(node -p "require('@playwright/test/package.json').version")
+          echo "sumber=$WF | tag image=v$IMAGE_TAG | @playwright/test=$INSTALLED"
+          test -n "$IMAGE_TAG" || { echo "GAGAL: tag image Playwright (mcr.microsoft.com/playwright:v<versi>) tidak ditemukan di $WF"; exit 1; }
+          test "$IMAGE_TAG" = "$INSTALLED" || { echo "GAGAL: image tag v$IMAGE_TAG ≠ @playwright/test $INSTALLED — naikkan keduanya bersamaan."; exit 1; }
+
+      # Pengganti `playwright install --with-deps`: browser + pustaka sistem
+      # sudah ada di image. Guard ini menagih lebih dini bila container image
+      # dilepas atau tag image tidak sinkron dengan versi @playwright/test —
+      # pesan kegagalannya jelas, bukan error peluncuran browser belakangan.
+      - name: Verify browsers ship with the container image
+        run: |
+          test "$PLAYWRIGHT_BROWSERS_PATH" = "/ms-playwright" || { echo "Tidak berada di dalam image Playwright (PLAYWRIGHT_BROWSERS_PATH='$PLAYWRIGHT_BROWSERS_PATH')"; exit 1; }
+          node -e "const fs=require('fs');const {chromium}=require('@playwright/test');const p=chromium.executablePath();console.log('Chromium:',p);fs.accessSync(p)"
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Migrate and seed database
+        run: |
+          php artisan migrate
+          php artisan db:seed
+
+      # Manifest Vite wajib ada: tanpanya @vite pada view melempar
+      # ViteManifestNotFoundException sehingga seluruh test halaman gagal.
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Run PHPUnit suite
+        run: php artisan test
+
+      # playwright.config.js menyalakan `php artisan serve --port=8237`
+      # sendiri bila server belum hidup (reuseExistingServer).
+      # Tanpa langkah instal browser: image sudah membawanya.
+      - name: Run browser tests
+        run: npm run test:e2e

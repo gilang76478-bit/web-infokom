@@ -15,7 +15,9 @@
 /.zed
 /auth.json
 /node_modules
+/playwright-report
 /public/build
+/test-results
 /public/css/filament
 /public/fonts-manifest.dev.json
 /public/fonts/filament

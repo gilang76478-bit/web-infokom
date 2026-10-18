@@ -1,5 +1,7 @@
 # SMK INFOKOM — Situs Sekolah + Panel Admin
 
+[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+
 Situs publik dan panel admin untuk SMK INFOKOM (sekolah vokasi, program keahlian teknologi & budaya Jepang), dibangun dengan **Laravel + Blade + Vite + CSS murni** (tanpa framework CSS/JS eksternal).
 
 ## Fitur
