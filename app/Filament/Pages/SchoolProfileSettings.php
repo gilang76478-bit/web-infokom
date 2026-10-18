@@ -21,8 +21,9 @@ use Filament\Support\Icons\Heroicon;
  * Form pengaturan konten halaman profil (/profil).
  *
  * Semua nilai disimpan sebagai baris teks biasa di tabel site_settings
- * (satu baris = satu paragraf / satu poin misi / satu fasilitas), sehingga
- * identik dengan cara membaca yang dilakukan SchoolSettings::profile().
+ * (satu baris = satu paragraf / satu poin misi / satu fasilitas / satu
+ * tonggak sejarah), sehingga identik dengan cara membaca yang dilakukan
+ * SchoolSettings::profile().
  *
  * @property-read Schema $form
  */
@@ -37,7 +38,7 @@ class SchoolProfileSettings extends Page
 
     protected static ?string $title = 'Pengaturan Profil Sekolah';
 
-    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedClipboardDocument;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocument;
 
     protected static ?int $navigationSort = 30;
 
@@ -57,7 +58,10 @@ class SchoolProfileSettings extends Page
             'vision' => $profile['vision'],
             'mission' => implode("\n", $profile['mission']),
             'facilities' => collect($profile['facilities'])
-                ->map(fn (array $facility) => $facility['title'] . '|' . $facility['description'])
+                ->map(fn (array $facility) => $facility['title'].'|'.$facility['description'])
+                ->implode("\n"),
+            'history' => collect($profile['history'])
+                ->map(fn (array $entry) => implode('|', [$entry['year'], $entry['title'], $entry['description']]))
                 ->implode("\n"),
         ]);
     }
@@ -131,6 +135,15 @@ class SchoolProfileSettings extends Page
                             ->maxLength(8000),
                     ]),
 
+                Section::make('Sejarah sekolah')
+                    ->description('Satu baris = satu tonggak dengan format "Tahun|Judul|Keterangan". Kosongkan untuk mengembalikan keterangan bawaan.')
+                    ->schema([
+                        Textarea::make('history')
+                            ->label('Tonggak sejarah (satu baris per tonggak)')
+                            ->rows(7)
+                            ->maxLength(4000),
+                    ]),
+
                 Section::make('Fasilitas')
                     ->description('Satu baris = satu fasilitas dengan format "Nama fasilitas|Deskripsi".')
                     ->schema([
@@ -181,6 +194,7 @@ class SchoolProfileSettings extends Page
             'sambutan_text' => 'profile_sambutan_text',
             'mission' => 'profile_mission',
             'facilities' => 'profile_facilities',
+            'history' => 'profile_history',
         ];
 
         foreach ($textKeys as $field => $dbKey) {

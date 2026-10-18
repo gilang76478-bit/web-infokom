@@ -13,7 +13,7 @@
         <tr data-search-item @class(['admin-message-unread' => ! $message->is_read])>
           <td><span class="admin-message-status {{ $message->is_read ? 'is-read' : 'is-unread' }}">{{ $message->is_read ? 'Dibaca' : 'Baru' }}</span></td>
           <td><b>{{ $message->name }}</b></td>
-          <td><a href="mailto:{{ $message->email }}">{{ $message->email }}</a><a href="https://wa.me/{{ preg_replace('/\D+/', '', $message->whatsapp) }}" target="_blank" rel="noopener">{{ $message->whatsapp }}</a></td>
+          <td><a href="mailto:{{ $message->email }}">{{ $message->email }}</a><a href="{{ \App\Support\WhatsApp::link($message->whatsapp) }}" target="_blank" rel="noopener">{{ $message->whatsapp }}</a></td>
           <td>{{ $message->subject }}</td>
           <td class="admin-message-body">{{ $message->message }}</td>
           <td>{{ $message->created_at->locale('id')->translatedFormat('j M Y, H:i') }}</td>

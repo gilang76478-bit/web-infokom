@@ -11,13 +11,23 @@
       <h1>{{ $pages[$section]['title'] }}</h1>
       <p>{{ $pages[$section]['intro'] }}</p>
       @if ($section === 'profil')
+        @if ($data['quick_facts'] !== [])
+          <dl class="profile-hero-facts">
+            @foreach ($data['quick_facts'] as $fact)
+              <div><dt>{{ $fact['label'] }}</dt><dd>{{ $fact['value'] }}</dd></div>
+            @endforeach
+          </dl>
+        @endif
         <nav class="profile-hero-nav" aria-label="Navigasi cepat profil sekolah">
+          <a href="#sambutan">Sambutan <span aria-hidden="true">↓</span></a>
           <a href="#tentang">Tentang sekolah <span aria-hidden="true">↓</span></a>
+          <a href="#identitas">Identitas <span aria-hidden="true">↓</span></a>
           <a href="#visi-misi">Visi &amp; misi <span aria-hidden="true">↓</span></a>
           <a href="#sejarah">Sejarah <span aria-hidden="true">↓</span></a>
           <a href="#struktur-organisasi">Struktur <span aria-hidden="true">↓</span></a>
           <a href="#guru">Guru &amp; TTK <span aria-hidden="true">↓</span></a>
           <a href="#fasilitas">Fasilitas <span aria-hidden="true">↓</span></a>
+          <a href="#keunggulan">Keunggulan <span aria-hidden="true">↓</span></a>
         </nav>
       @endif
     </div>
@@ -63,13 +73,13 @@
               <div class="tentang-copy">
                 <span class="detail-tag">TENTANG KAMI</span>
                 <h2 id="tentangTitle">Belajar dengan Mengerjakan Hal yang Nyata</h2>
-                <p>SMK INFOKOM berfokus pada pembelajaran kejuruan yang menghubungkan pengetahuan di kelas dengan praktik, proyek, dan dunia kerja. Siswa didorong untuk membangun keterampilan, karakter, kreativitas, dan kesiapan menghadapi perkembangan industri.</p>
+                <p>{{ $data['school_name'] }} berfokus pada pembelajaran kejuruan yang menghubungkan pengetahuan di kelas dengan praktik, proyek, dan dunia kerja. Siswa didorong untuk membangun keterampilan, karakter, kreativitas, dan kesiapan menghadapi perkembangan industri.</p>
                 <a class="tentang-cta" href="#identitas">Selengkapnya <span>→</span></a>
               </div>
               <aside class="tentang-aside">
                 <div class="nilai-utama-card">
                   <span class="detail-tag">NILAI UTAMA</span>
-                  <h3>SMK INFOKOM</h3>
+                  <h3>{{ $data['school_name'] }}</h3>
                   <ul>
                     <li>Berorientasi pada industri</li>
                     <li>Praktik terarah dan relevan</li>
@@ -147,11 +157,13 @@
               </div>
             </div>
             <div class="timeline">
-              <article class="timeline-item timeline-pending">
-                <span class="timeline-dot" aria-hidden="true"></span>
-                <span class="timeline-year">Data resmi</span>
-                <p class="timeline-text"><strong>Riwayat sekolah sedang dilengkapi.</strong> Informasi tahun pendirian dan tonggak perkembangan akan ditampilkan setelah dikonfirmasi oleh pihak sekolah.</p>
-              </article>
+              @foreach ($data['history'] as $entry)
+                <article @class(['timeline-item', 'timeline-pending' => $entry['pending']])>
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <span class="timeline-year">{{ $entry['year'] }}</span>
+                  <p class="timeline-text">@if (filled($entry['title']))<strong>{{ $entry['title'] }}</strong>@endif@if (filled($entry['description'])) {{ $entry['description'] }}@endif</p>
+                </article>
+              @endforeach
             </div>
           </div>
         </section>
@@ -172,7 +184,7 @@
                     <div class="photo-placeholder">KHS</div>
                   </div>
                   <div class="role">Pimpinan</div>
-                  <div class="name">Drs. H. M. Syaiful, M.Pd.</div>
+                  <div class="name">{{ filled($data['principal_name']) ? $data['principal_name'] : 'Belum dikonfirmasi' }}</div>
                 </div>
               </div>
               <div class="org-level diamond">
@@ -326,7 +338,7 @@
           <div class="container">
             <div class="profil-cta-copy">
               <span class="detail-eyebrow" style="margin-bottom:0.5rem">LANGKAH BERIKUTNYA</span>
-              <h2 id="profilCtaTitle">Kenali SMK INFOKOM Lebih Dekat</h2>
+              <h2 id="profilCtaTitle">Kenali {{ $data['school_name'] }} Lebih Dekat</h2>
               <p>Temukan program keahlian, fasilitas, kegiatan, dan berbagai peluang yang tersedia di SMK INFOKOM.</p>
               <div class="profil-cta-buttons">
                 <a class="btn btn-accent" href="{{ route('site.section', 'akademik') }}">Lihat Program Keahlian</a>
@@ -371,7 +383,7 @@
               <span>Kompetensi terukur</span>
             </div>
           </div>
-          <div class="detail-grid academic-grid">
+          <div class="detail-grid academic-grid" id="program-keahlian">
             @foreach ($data as $program)
               <article class="detail-card academic-card">
                 <span class="detail-tag">{{ $program->short }}</span>
@@ -388,7 +400,7 @@
         </div>
       @elseif ($section === 'kesiswaan')
         <div class="detail-split">
-          <div><h2>Kegiatan siswa</h2><div class="detail-grid detail-grid-compact">
+          <div id="kegiatan-siswa"><h2>Kegiatan siswa</h2><div class="detail-grid detail-grid-compact">
             @forelse ($data['activities'] as $activity)
               <article class="detail-card">
                 @if ($activity->url)<img class="aktivitas-thumb" src="{{ $activity->url }}" alt="{{ $activity->title }}" loading="lazy" decoding="async">@endif
@@ -396,7 +408,7 @@
               </article>
             @empty<p class="detail-empty">Informasi kegiatan siswa akan segera tersedia.</p>@endforelse
           </div></div>
-          <aside class="detail-agenda"><h2>Pencapaian siswa</h2>
+          <aside class="detail-agenda" id="pencapaian"><h2>Pencapaian siswa</h2>
             @forelse ($data['achievements'] as $achievement)
               <article><time>{{ $achievement->year }}</time><div><h3>{{ $achievement->title }}</h3><p>{{ $achievement->who }} · {{ $achievement->level }}</p></div></article>
             @empty<p class="detail-empty">Belum ada pencapaian yang dipublikasikan.</p>@endforelse
@@ -427,7 +439,7 @@
               <article class="detail-card industry-card">
                 <span class="detail-tag">{{ $partner->category }}</span>
                 <h2>{{ $partner->name }}</h2>
-                <p>{{ $partner->description ?? 'Mitra industri yang mendukung proses pembelajaran, praktik, dan kesiapan siswa memasuki dunia kerja.' }}</p>
+                <p>Mitra industri yang mendukung proses pembelajaran, praktik, dan kesiapan siswa memasuki dunia kerja.</p>
                 <div class="industry-meta">
                   <span>Industri</span>
                   <span>{{ $partner->category ?: 'Mitra sekolah' }}</span>
@@ -480,12 +492,12 @@
         </div>
       @elseif ($section === 'informasi')
         <div class="detail-split">
-          <div><h2>Berita terbaru</h2><div class="detail-list">
+          <div id="berita"><h2>Berita terbaru</h2><div class="detail-list">
             @forelse ($data['posts'] as $post)
               <article class="detail-row"><span class="detail-tag">{{ $post->category?->name ?? 'Berita' }}</span><div><h3><a href="{{ route('berita.show', $post) }}">{{ $post->title }}</a></h3><p>{{ $post->excerpt }}</p><small>{{ $post->published_at->locale('id')->translatedFormat('j F Y') }}</small></div></article>
             @empty<p class="detail-empty">Belum ada berita yang dipublikasikan.</p>@endforelse
           </div><a class="link" href="{{ route('berita.index') }}">Semua berita <span aria-hidden="true">→</span></a></div>
-          <aside class="detail-agenda"><h2>Agenda</h2>
+          <aside class="detail-agenda" id="agenda"><h2>Agenda</h2>
             @forelse ($data['agendas'] as $agenda)
               <article><time datetime="{{ $agenda->date->toDateString() }}">{{ $agenda->date->locale('id')->translatedFormat('j M') }}</time><div><h3>{{ $agenda->title }}</h3><p>{{ $agenda->place_time }}</p></div></article>
             @empty<p class="detail-empty">Belum ada agenda mendatang.</p>@endforelse
@@ -495,7 +507,7 @@
         <div class="detail-split">
           <div><h2>Cerita alumni</h2><div class="detail-grid detail-grid-compact">
             @forelse ($data['alumni'] as $alumnus)
-              <blockquote class="detail-card"><p>“{{ $alumnus->quote }}”</p><footer><b>{{ $alumnus->name }}</b><span>{{ $alumnus->role_desc }}</span></footer></blockquote>
+              <blockquote class="detail-card">@if (filled($alumnus->quote))<p>“{{ $alumnus->quote }}”</p>@endif<footer><b>{{ $alumnus->name }}</b><span>{{ $alumnus->role_desc }}</span></footer></blockquote>
             @empty<p class="detail-empty">Cerita alumni akan segera tersedia.</p>@endforelse
           </div></div>
           <aside class="detail-agenda"><h2>Tracer study</h2>

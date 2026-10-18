@@ -13,7 +13,7 @@
       <nav class="berita-filters" aria-label="Filter kategori galeri">
         <a href="{{ route('galeri.index') }}"
            @class(['is-active' => $activeCategory === null])
-           @if ($activeCategory === null) aria-current="page" @endif>Semua <span>{{ $items->count() }}</span></a>
+           @if ($activeCategory === null) aria-current="page" @endif>Semua <span>{{ $items->total() }}</span></a>
         @foreach ($categories as $category)
           <a href="{{ route('galeri.index', ['kategori' => $category->slug]) }}"
              @class(['is-active' => $activeCategory?->slug === $category->slug])
@@ -45,6 +45,18 @@
             </figure>
           @endforeach
         </div>
+      @endif
+
+      @if ($items->hasPages())
+        <nav class="berita-filters list-pager" aria-label="Navigasi halaman galeri">
+          @if (! $items->onFirstPage())
+            <a href="{{ $items->previousPageUrl() }}" rel="prev">← Sebelumnya</a>
+          @endif
+          <span>Halaman {{ $items->currentPage() }} dari {{ $items->lastPage() }}</span>
+          @if ($items->hasMorePages())
+            <a href="{{ $items->nextPageUrl() }}" rel="next">Berikutnya →</a>
+          @endif
+        </nav>
       @endif
     </div>
   </section>

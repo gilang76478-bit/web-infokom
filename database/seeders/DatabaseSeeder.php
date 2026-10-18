@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(SiteSeeder::class);
+        $this->call(SchoolSettingsSeeder::class);
     }
 }

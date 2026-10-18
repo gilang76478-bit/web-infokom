@@ -1,220 +1,161 @@
 {
     "programs": [
         {
-            "short": "PPLG",
-            "icon": "code",
-            "name": "Pengembangan Perangkat Lunak dan Gim",
-            "description": "Siswa belajar membuat aplikasi web, aplikasi seluler, dan gim, dari merancang basis data sampai merilis produk yang dipakai orang sungguhan.",
+            "short": "TKJ",
+            "icon": "network",
+            "name": "Teknik Komputer dan Jaringan",
+            "description": "Program Teknik Komputer dan Jaringan mempelajari cara merakit komputer, mengenal dan mempelajari komponen hardware di dalam komputer, serta fokus mempelajari jaringan dasar.",
             "skills": [
+                "Merakit komputer dan mengenal komponen hardware",
+                "Jaringan dasar dan sistem kerja jaringan",
                 "Pemrograman web",
-                "Aplikasi seluler",
-                "Basis data",
-                "Pengembangan gim",
-                "Rekayasa perangkat lunak"
+                "Administrasi jaringan",
+                "Konfigurasi Linux (DHCP, Mail Server, DNS)",
+                "Mikrotik dan Cisco"
             ],
             "jobs": [
-                "Web developer",
-                "Mobile developer",
-                "QA engineer",
-                "Game developer"
+                "Network Administrator",
+                "Teknisi komputer dan jaringan",
+                "Administrator server"
             ],
-            "facilities": ["Lab Pemrograman 1 dan 2", "Ruang proyek tim"]
+            "facilities": [
+                "Laboratorium komputer",
+                "Laboratorium jaringan"
+            ]
         },
         {
-            "short": "TJKT",
-            "icon": "network",
-            "name": "Teknik Jaringan Komputer dan Telekomunikasi",
-            "description": "Siswa belajar merancang, memasang, dan mengamankan jaringan komputer, serta memahami perangkat telekomunikasi dan server.",
+            "short": "RPL",
+            "icon": "code",
+            "name": "Rekayasa Perangkat Lunak",
+            "description": "Program Rekayasa Perangkat Lunak mempelajari semua cara pengembangan perangkat lunak, termasuk pembuatan, pemeliharaan, manajemen organisasi pengembangan perangkat lunak, dan manajemen kualitas.",
             "skills": [
-                "Jaringan dasar",
-                "Administrasi server",
-                "Keamanan jaringan",
-                "Perangkat telekomunikasi",
-                "Komputasi awan"
+                "Pemrograman aplikasi berbasis desktop",
+                "Analisa dan perancangan sistem",
+                "Arsitektur aplikasi desktop, mobile, web dan enterprise",
+                "Pembuatan website, aplikasi dan game",
+                "Pemrograman, coding, desain dan algoritma"
             ],
             "jobs": [
-                "Network technician",
-                "Administrator sistem",
-                "Teknisi data center",
-                "Support engineer"
+                "Programmer aplikasi",
+                "Web developer",
+                "Mobile developer",
+                "Game developer"
             ],
-            "facilities": ["Lab jaringan", "Rak server latihan"]
+            "facilities": [
+                "Laboratorium komputer",
+                "Ruang kerja proyek perangkat lunak"
+            ]
         },
         {
             "short": "DKV",
             "icon": "pen",
             "name": "Desain Komunikasi Visual",
-            "description": "Siswa belajar merancang identitas visual, ilustrasi, foto, video, dan antarmuka sampai menjadi karya untuk klien sungguhan.",
+            "description": "Program Desain Komunikasi Visual menyiapkan siswa merancang karya visual: desain grafis dan ilustrasi, foto dan video, sampai media interaktif.",
             "skills": [
-                "Desain grafis",
+                "Desain grafis dan ilustrasi",
                 "Fotografi",
-                "Videografi dan penyuntingan",
-                "Ilustrasi digital",
-                "Desain antarmuka"
+                "Merekam dan menyunting audio-video",
+                "Mengembangkan citra dan animasi digital",
+                "Mengembangkan aplikasi multimedia interaktif"
             ],
             "jobs": [
                 "Desainer grafis",
-                "Video editor",
-                "UI designer",
-                "Fotografer produk"
+                "Ilustrator",
+                "Editor video",
+                "Pengembang media interaktif"
             ],
-            "facilities": ["Studio foto", "Lab desain"]
+            "facilities": [
+                "Studio desain",
+                "Laboratorium komputer desain"
+            ]
         },
         {
-            "short": "AKL",
-            "icon": "calc",
-            "name": "Akuntansi dan Keuangan Lembaga",
-            "description": "Siswa belajar mencatat transaksi, menyusun laporan keuangan, dan memakai perangkat lunak akuntansi seperti yang dipakai perusahaan.",
-            "skills": [
-                "Akuntansi dasar",
-                "Laporan keuangan",
-                "Perpajakan dasar",
-                "Perangkat lunak akuntansi",
-                "Administrasi bank"
-            ],
-            "jobs": [
-                "Staf akuntansi",
-                "Staf pajak",
-                "Kasir dan teller",
-                "Staf keuangan"
-            ],
-            "facilities": ["Lab akuntansi", "Bank mini"]
-        },
-        {
-            "short": "MPLB",
+            "short": "PSPT",
             "icon": "brief",
-            "name": "Manajemen Perkantoran dan Layanan Bisnis",
-            "description": "Siswa belajar mengelola perkantoran modern: kearsipan digital, korespondensi, layanan pelanggan, dan pengelolaan acara.",
+            "name": "Produksi dan Siaran Program Televisi",
+            "description": "Program Produksi dan Siaran Program Televisi membekali siswa keterampilan produksi dan penyiaran program televisi, dari penulisan naskah sampai penayangan.",
             "skills": [
-                "Kearsipan digital",
-                "Korespondensi bisnis",
-                "Layanan pelanggan",
-                "Pengelolaan acara",
-                "Aplikasi perkantoran"
+                "Program pertelevisian",
+                "Penyutradaraan, editor, kameramen",
+                "Penata artistik dan suara",
+                "Penulis naskah dan skenario",
+                "Aplikasi teknik produksi dan penyiaran program pertelevisian interaktif"
             ],
             "jobs": [
-                "Sekretaris",
-                "Staf administrasi",
-                "Customer service",
-                "Staf humas"
+                "Kameramen",
+                "Editor video",
+                "Penata artistik dan suara",
+                "Penulis naskah dan skenario"
             ],
-            "facilities": ["Kantor simulasi", "Ruang layanan"]
+            "facilities": [
+                "Studio produksi televisi",
+                "Peralatan kamera dan penyuntingan"
+            ]
         }
     ],
     "posts": [
         {
-            "category": "Prestasi",
-            "title": "Tim Robotik SMK INFOKOM meraih juara 2 tingkat provinsi",                "excerpt": "Empat siswa kelas XI membawa pulang piala setelah dua hari lomba dengan lintasan yang berubah tiap babak.",
-                "body": "Tim Robotik SMK INFOKOM meraih juara 2 pada kompetisi robotik tingkat Provinsi Jawa Barat yang digelar selama dua hari. Empat siswa kelas XI mewakili sekolah dan harus menyelesaikan babak penyisihan, semifinal, dan final dengan lintasan yang berubah di setiap ronde.\r\nKeberhasilan ini menjadi hasil latihan rutin selama tiga bulan di ruang praktik robotika. Tim berlatih dua kali seminggu bersama pembimbing untuk merancang, memprogram, dan menguji robot sebelum berangkat bertanding.",
-            "published_at": "2026-09-24",
+            "category": "Kegiatan",
+            "title": "Alumni TKJ diterima bekerja di PT. Mitra Copierindo Mandiri",
+            "excerpt": "Bursa Kerja Khusus SMK INFOKOM mengabarkan alumni Teknik Komputer dan Jaringan diterima bekerja di perusahaan mitra.",
+            "body": "Melalui Bursa Kerja Khusus (BKK), SMK INFOKOM Kota Bogor mengabarkan bahwa alumni program keahlian Teknik Komputer dan Jaringan, M. Fahmi Ramadhan, diterima bekerja di PT. Mitra Copierindo Mandiri.\nKabar yang diunggah pada 10 Oktober 2026 ini menunjukkan jalur dunia kerja yang terbuka bagi lulusan sekolah melalui jejaring Bursa Kerja Khusus dan mitra DU/DI.",
+            "published_at": "2026-10-10",
             "art": 2
         },
         {
             "category": "PPDB",
-            "title": "PPDB 2026 gelombang 2 resmi dibuka",                "excerpt": "Pendaftaran dibuka secara daring sampai 31 Oktober. Tes seleksi dan wawancara dimulai 5 Oktober.",
-                "body": "Penerimaan Peserta Didik Baru (PPDB) 2026 gelombang 2 resmi dibuka. Pendaftaran dilakukan secara daring melalui halaman PPDB di situs sekolah dan dibuka sampai 31 Oktober 2026.\r\nCalon murid wajib mengisi formulir, mengunggah berkas, lalu mengikuti tes seleksi dan wawancara yang dimulai 5 Oktober 2026. Persyaratan lengkap dan jadwal per gelombang dapat dilihat pada halaman PPDB.",
-            "published_at": "2026-09-22",
+            "title": "SPMB Tahun Ajaran 2026-2027 dibuka",
+            "excerpt": "Sekolah mengundang calon peserta didik mendaftar melalui kanal resmi; empat program keahlian ditawarkan.",
+            "body": "SMK INFOKOM Kota Bogor mempromosikan Penerimaan Murid Baru (SPMB) tahun ajaran 2026-2027 melalui kanal resmi sekolah, termasuk unggahan di akun Instagram @smk.infokom_official pada 26 Februari 2026 dengan tagar #spmbjabar dan #spmb2026.\nCalon peserta didik diarahkan mengunjungi website resmi sekolah untuk informasi pendaftaran lebih lanjut. Empat program keahlian ditawarkan: Teknik Komputer dan Jaringan (TKJ), Rekayasa Perangkat Lunak (RPL), Desain Komunikasi Visual (DKV), dan Produksi dan Siaran Program Televisi (PSPT).",
+            "published_at": "2026-02-26",
             "art": 4
         },
         {
-            "category": "Kegiatan",
-            "title": "Kunjungan industri siswa TJKT ke pusat data",                "excerpt": "Siswa melihat langsung ruang server, sistem pendingin, dan prosedur keamanan fisik.",
-                "body": "Siswa kelas XI program keahlian Teknik Jaringan Komputer dan Telekomunikasi mengikuti kunjungan industri ke pusat data di Bogor. Mereka melihat langsung rak server, sistem pendingin ruangan, hingga prosedur keamanan fisik yang berlaku.\r\nKegiatan ini mempertemukan materi kelas tentang administrasi server dengan kondisi nyata di lapangan. Siswa sempat bertanya langsung kepada teknisi mengenai pemantauan jaringan dan penanganan gangguan.",
-            "published_at": "2026-09-19",
-            "art": 1
-        },
-        {
             "category": "Akademik",
-            "title": "Kelas Bahasa Jepang angkatan 5 dimulai",                "excerpt": "Kelas diikuti siswa yang berminat pada program magang Jepang, dua kali seminggu sepulang sekolah.",
-                "body": "Kelas Bahasa Jepang angkatan 5 resmi dimulai dan diikuti siswa kelas X dan XI yang berminat mengikuti program magang Jepang. Kelas berlangsung dua kali seminggu sepulang sekolah bersama pengampu bahasa.\r\nSelain kosakata dan tata bahasa dasar, siswa juga mempelajari percakapan sehari-hari serta pembekalan budaya kerja Jepang sebagai persiapan menghadapi tes seleksi magang.",
-            "published_at": "2026-09-15",
-            "art": 5
+            "title": "Siswa kelas X-XII menempuh Ujian Sumatif Akhir Semester Ganjil",
+            "excerpt": "Ujian Sumatif Akhir Semester ganjil tahun ajaran 2025-2026 diikuti siswa kelas X, XI, dan XII.",
+            "body": "Melalui kanal resminya, SMK INFOKOM Kota Bogor menyampaikan ucapan selamat menempuh Ujian Sumatif Akhir Semester (SAS) ganjil kepada seluruh siswa-siswi kelas X, XI, dan XII tahun ajaran 2025-2026.\nUcapan tersebut diunggah pada 4 Desember 2025 sebagai dukungan sekolah menjelang berakhirnya semester ganjil.",
+            "published_at": "2025-12-04",
+            "art": 0
         },
         {
             "category": "Kegiatan",
-            "title": "Workshop desain antarmuka bersama praktisi",                "excerpt": "Siswa DKV dan PPLG mengerjakan satu proyek aplikasi dari sketsa sampai prototipe.",
-                "body": "Workshop desain antarmuka digabungkan untuk siswa DKV dan PPLG bersama praktisi desain produk. Peserta mengerjakan satu proyek aplikasi yang sama dari sketsa kertas, wireframe, sampai prototipe interaktif.\r\nSelama satu hari penuh, siswa belajar menyusun alur pengguna, memilih tipografi dan warna, lalu menguji prototipe ke sesama peserta untuk mendapat masukan sebelum perbaikan akhir.",
-            "published_at": "2026-09-10",
+            "title": "Peringatan Hari Guru Nasional 25 November 2025",
+            "excerpt": "Warga sekolah memperingati Hari Guru Nasional bersama guru dan tenaga kependidikan.",
+            "body": "SMK INFOKOM Kota Bogor memperingati Hari Guru Nasional yang jatuh pada 25 November 2025. Ucapan peringatan diunggah melalui kanal resmi sekolah pada 24 November 2025.\nPeringatan ini merupakan apresiasi bagi guru dan tenaga kependidikan yang mendampingi pendidikan siswa di sekolah.",
+            "published_at": "2025-11-24",
             "art": 3
         },
         {
             "category": "Akademik",
-            "title": "Jadwal penilaian tengah semester ganjil",                "excerpt": "Jadwal lengkap per kelas dapat diunduh dari halaman Akademik.",
-                "body": "Jadwal penilaian tengah semester ganjil telah ditetapkan dan berlaku untuk seluruh tingkatan. Jadwal lengkap per kelas dapat diunduh dari halaman Akademik di situs sekolah.\r\nSiswa diminta hadir lima belas menit sebelum sesi dimulai dan membawa kartu peserta. Guru pengampu akan menyampaikan rincian materi tiap mata pelajaran pada sesi pembelajaran terakhir sebelum minggu penilaian.",
-            "published_at": "2026-09-08",
-            "art": 0
+            "title": "Siswa Kelas XII Menempuh Tes Kemampuan Akademik",
+            "excerpt": "Seluruh siswa kelas XII menempuh Ujian Tes Kemampuan Akademik tahun ajaran 2025-2026.",
+            "body": "Melalui kanal resminya, SMK INFOKOM Kota Bogor menyampaikan dukungan kepada seluruh siswa-siswi kelas XII yang menempuh Ujian Tes Kemampuan Akademik (TKA) tahun ajaran 2025-2026.\nUcapan tersebut diunggah pada 3 November 2025.",
+            "published_at": "2025-11-03",
+            "art": 5
+        },
+        {
+            "category": "Akademik",
+            "title": "Siswa Kelas X-XII Menempuh Sumatif Tengah Semester",
+            "excerpt": "Sumatif Tengah Semester ganjil tahun ajaran 2025-2026 diikuti siswa kelas X, XI, dan XII.",
+            "body": "Melalui kanal resminya, SMK INFOKOM Kota Bogor menyampaikan ucapan selamat menempuh Sumatif Tengah Semester (STS) kepada siswa-siswi kelas X, XI, dan XII tahun ajaran 2025-2026.\nUcapan tersebut diunggah pada 5 Oktober 2025.",
+            "published_at": "2025-10-05",
+            "art": 1
         }
     ],
-    "agendas": [
-        {
-            "date": "2026-10-05",
-            "title": "Tes seleksi PPDB gelombang 2",
-            "place_time": "08.00 WIB, Aula sekolah"
-        },
-        {
-            "date": "2026-10-12",
-            "title": "Rapat orang tua siswa kelas X",
-            "place_time": "09.00 WIB, Ruang kelas"
-        },
-        {
-            "date": "2026-10-21",
-            "title": "Pelepasan siswa PKL angkatan 2026",
-            "place_time": "07.30 WIB, Lapangan"
-        },
-        {
-            "date": "2026-11-02",
-            "title": "Seleksi tahap 2 program Magang Jepang",
-            "place_time": "10.00 WIB, Lab bahasa"
-        }
-    ],
+    "agendas": [],
     "achievements": [
         {
-            "title": "Juara 1 Lomba Kompetensi Siswa, Web Technologies",
-            "who": "Tim PPLG",
-            "level": "Provinsi",
+            "title": "Juara 3 Lomba Poster Pertolongan Pertama pada Luka Psikologis (P3LP)",
+            "who": "Alisa Putri Hasanah",
+            "level": "Jabodetabek",
             "year": 2026
-        },
-        {
-            "title": "Juara 2 Lomba Robotik Pelajar",
-            "who": "Tim Robotik",
-            "level": "Provinsi",
-            "year": 2026
-        },
-        {
-            "title": "Medali perak Lomba Desain Poster Digital",
-            "who": "Siswa DKV",
-            "level": "Nasional",
-            "year": 2025
-        },
-        {
-            "title": "Juara 1 Lomba Jaringan Komputer",
-            "who": "Tim TJKT",
-            "level": "Kabupaten/Kota",
-            "year": 2025
-        },
-        {
-            "title": "Finalis Kompetisi Inovasi Aplikasi Sekolah",
-            "who": "Tim PPLG",
-            "level": "Nasional",
-            "year": 2025
-        },
-        {
-            "title": "Juara 3 Kompetisi Akuntansi Antar-SMK",
-            "who": "Siswa AKL",
-            "level": "Provinsi",
-            "year": 2024
-        },
-        {
-            "title": "Peserta program pertukaran pelajar Asia Timur",
-            "who": "Perwakilan MPLB",
-            "level": "Internasional",
-            "year": 2024
         }
     ],
     "gallery_items": [
         {
             "category": "Praktik",
-            "title": "Praktik jaringan di Lab TJKT",
+            "title": "Praktik jaringan di Lab TKJ",
             "size": "w",
             "art": 1
         },
@@ -268,7 +209,7 @@
         },
         {
             "category": "Praktik",
-            "title": "Pemrograman gim di Lab PPLG",
+            "title": "Pemrograman gim di Lab RPL",
             "size": "",
             "art": 2
         }
@@ -327,147 +268,46 @@
     ],
     "partners": [
         {
-            "name": "Cakrawala Teknologi",
-            "category": "Industri"
+            "name": "PT. Guna Senaputra Sejahtera",
+            "category": "DU/DI"
         },
         {
-            "name": "Bumi Data Solusi",
-            "category": "Industri"
-        },
-        {
-            "name": "Nusa Jaringan Prima",
-            "category": "Industri"
-        },
-        {
-            "name": "Studio Lentera",
-            "category": "Industri"
-        },
-        {
-            "name": "Kanto Kogyo (contoh)",
-            "category": "Jepang"
-        },
-        {
-            "name": "Sakura Seisaku (contoh)",
-            "category": "Jepang"
-        },
-        {
-            "name": "Politeknik Contoh",
-            "category": "Kampus"
-        },
-        {
-            "name": "Universitas Contoh",
-            "category": "Kampus"
+            "name": "Raja Promo Advertising",
+            "category": "DU/DI"
         }
     ],
     "alumni": [
         {
-            "name": "Rizky A.",
-            "role_desc": "Lulus 2021, PPLG. Software engineer di perusahaan rintisan.",
-            "quote": "Proyek akhir yang dibimbing guru dan praktisi membuat saya percaya diri saat wawancara kerja pertama."
+            "name": "Nazib Sopian",
+            "role_desc": "Alumni SMK INFOKOM Angkatan XVII. Berangkat ke Jepang.",
+            "quote": ""
         },
         {
-            "name": "Dewi S.",
-            "role_desc": "Lulus 2022, TJKT. Teknisi jaringan, alumni magang Jepang 2023.",
-            "quote": "Kelas bahasa Jepang dan latihan disiplin kerja dari sekolah sangat membantu saya beradaptasi di sana."
+            "name": "Surya Difraja",
+            "role_desc": "Alumni SMK INFOKOM Angkatan XVII. Berangkat ke Tokyo, Jepang.",
+            "quote": ""
         },
         {
-            "name": "Bagas P.",
-            "role_desc": "Lulus 2020, DKV. Pemilik studio desain kecil.",
-            "quote": "Portofolio dari tugas praktik kelas XI saya pakai untuk mendapatkan klien pertama."
+            "name": "M. Fahmi Ramadhan",
+            "role_desc": "Alumni Teknik Komputer dan Jaringan. Diterima bekerja di PT. Mitra Copierindo Mandiri.",
+            "quote": ""
         }
     ],
-    "tracer_stats": [
-        {
-            "label": "Bekerja",
-            "value": 58,
-            "color": "var(--brand)"
-        },
-        {
-            "label": "Kuliah",
-            "value": 22,
-            "color": "var(--navy)"
-        },
-        {
-            "label": "Wirausaha",
-            "value": 12,
-            "color": "var(--accent)"
-        },
-        {
-            "label": "Belum bekerja",
-            "value": 8,
-            "color": "var(--muted)"
-        }
-    ],
+    "tracer_stats": [],
     "announcements": [
         {
-            "text": "PPDB 2026 gelombang 2 dibuka sampai 31 Oktober 2026."
+            "text": "SPMB tahun ajaran 2026-2027 sudah dibuka. Informasi lengkap melalui kanal resmi sekolah."
         },
         {
-            "text": "Tes seleksi dan wawancara dimulai 5 Oktober. Bawa berkas asli."
-        },
-        {
-            "text": "Kelas persiapan Bahasa Jepang angkatan 5 mulai pekan depan."
+            "text": "Selamat kepada lulusan Angkatan XVIII yang lulus seleksi SNBP dan SNBT tahun 2026."
         }
     ],
     "teachers": [
         {
-            "name": "Drs. H. M. Syaiful, M.Pd.",
-            "nip": "196805101994031006",
+            "name": "Ir. Hj. Liliek Rahmaningsih, M.MPd",
+            "nip": null,
             "position": "Kepala Sekolah",
             "sort_order": 1
-        },
-        {
-            "name": "Rina Wulandari, S.Kom.",
-            "nip": "198702142015032004",
-            "position": "Wakil Kepala Bidang Kurikulum",
-            "sort_order": 2
-        },
-        {
-            "name": "Ahmad Hidayat, S.Kom.",
-            "nip": "198903172019031005",
-            "position": "Ketua Program Keahlian",
-            "program": "PPLG",
-            "sort_order": 10
-        },
-        {
-            "name": "Siti Nurhaliza, S.T.",
-            "nip": "199107222020122003",
-            "position": "Guru Produktif",
-            "program": "TJKT",
-            "sort_order": 11
-        },
-        {
-            "name": "Budi Santoso, S.Ds.",
-            "nip": "198811052014031008",
-            "position": "Guru Produktif",
-            "program": "DKV",
-            "sort_order": 12
-        },
-        {
-            "name": "Dewi Anggraini, S.E.",
-            "nip": "199202282021032006",
-            "position": "Guru Produktif",
-            "program": "AKL",
-            "sort_order": 13
-        },
-        {
-            "name": "Hendra Gunawan, S.E., M.M.",
-            "nip": "198610122015031004",
-            "position": "Guru Produktif",
-            "program": "MPLB",
-            "sort_order": 14
-        },
-        {
-            "name": "Yulia Ramadhani, S.Pd.",
-            "nip": "199305042022032009",
-            "position": "Guru Bahasa Inggris",
-            "sort_order": 20
-        },
-        {
-            "name": "Ahmad Fauzi, S.Pd.",
-            "nip": "199009182018031002",
-            "position": "Guru Pendidikan Jasmani",
-            "sort_order": 21
         }
     ]
 }

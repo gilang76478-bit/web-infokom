@@ -42,6 +42,18 @@
           <p class="detail-empty">Belum ada berita yang dipublikasikan pada kategori ini.</p>
         @endforelse
       </div>
+
+      @if ($posts->hasPages())
+        <nav class="berita-filters list-pager" aria-label="Navigasi halaman berita">
+          @if (! $posts->onFirstPage())
+            <a href="{{ $posts->previousPageUrl() }}" rel="prev">← Sebelumnya</a>
+          @endif
+          <span>Halaman {{ $posts->currentPage() }} dari {{ $posts->lastPage() }}</span>
+          @if ($posts->hasMorePages())
+            <a href="{{ $posts->nextPageUrl() }}" rel="next">Berikutnya →</a>
+          @endif
+        </nav>
+      @endif
     </div>
   </section>
 @endsection

@@ -98,8 +98,11 @@ class SchoolSettings
             'school_other_social_url' => 'socials.Kanal resmi lainnya',
         ];
 
+        // Seluruh pengaturan diambil dengan satu kueri, bukan satu kueri per kunci.
+        $stored = SiteSetting::pluck('value', 'key');
+
         foreach ($mapping as $dbKey => $path) {
-            $value = SiteSetting::where('key', $dbKey)->value('value');
+            $value = $stored[$dbKey] ?? null;
             if ($value === null || $value === '') {
                 continue;
             }
@@ -107,7 +110,7 @@ class SchoolSettings
             self::setValueByPath($merged, $path, $value);
         }
 
-        $hoursRaw = SiteSetting::where('key', 'school_hours')->value('value');
+        $hoursRaw = $stored['school_hours'] ?? null;
         if (filled($hoursRaw)) {
             $hours = collect(preg_split('/\r\n|\r|\n/', $hoursRaw))
                 ->map(function ($row) {
@@ -135,7 +138,7 @@ class SchoolSettings
      *\     * Default sengaja persis sama dengan teks yang selama ini hardcoded di
      * view, sehingga tampilan tidak berubah sampai admin mengisi pengaturan.
      * Setiap baris di database diinterpretasikan sebagai satu butir
-     * (paragraf sambutan, poin misi, atau satu fasilitas).
+     * (paragraf sambutan, poin misi, satu fasilitas, atau satu tonggak sejarah).
      */
     public static function profile(): array
     {
@@ -173,6 +176,17 @@ class SchoolSettings
                 ['title' => 'Musala', 'description' => 'Ruang ibadah untuk aktivitas keagamaan dan spiritual siswa.'],
                 ['title' => 'Kantin', 'description' => 'Fasilitas wadah untuk kebutuhan sehari-hari siswa dan guru.'],
             ],
+            // Riwayat sekolah. Bawaan sengaja sama dengan teks placeholder yang
+            // selama ini hardcoded di view (/profil #sejarah), sehingga tampilan
+            // tidak berubah sampai admin mengisi pengaturan.
+            'history' => [
+                [
+                    'year' => 'Data resmi',
+                    'title' => 'Riwayat sekolah sedang dilengkapi.',
+                    'description' => 'Informasi tahun pendirian dan tonggak perkembangan akan ditampilkan setelah dikonfirmasi oleh pihak sekolah.',
+                    'pending' => true,
+                ],
+            ],
         ];
 
         if (! Schema::hasTable('site_settings')) {
@@ -190,8 +204,11 @@ class SchoolSettings
             'profile_vision' => 'vision',
         ];
 
+        // Seluruh pengaturan diambil dengan satu kueri, bukan satu kueri per kunci.
+        $stored = SiteSetting::pluck('value', 'key');
+
         foreach ($mapping as $dbKey => $field) {
-            $value = SiteSetting::where('key', $dbKey)->value('value');
+            $value = $stored[$dbKey] ?? null;
             if ($value === null || $value === '') {
                 continue;
             }
@@ -205,13 +222,13 @@ class SchoolSettings
         ];
 
         foreach ($listMapping as $dbKey => $field) {
-            $lines = self::lines(SiteSetting::where('key', $dbKey)->value('value'));
+            $lines = self::lines($stored[$dbKey] ?? null);
             if ($lines !== []) {
                 $profile[$field] = $lines;
             }
         }
 
-        $facilities = collect(self::lines(SiteSetting::where('key', 'profile_facilities')->value('value')))
+        $facilities = collect(self::lines($stored['profile_facilities'] ?? null))
             ->map(function (string $row) {
                 $parts = array_pad(explode('|', $row, 2), 2, '');
 
@@ -226,6 +243,27 @@ class SchoolSettings
 
         if ($facilities !== []) {
             $profile['facilities'] = $facilities;
+        }
+
+        // Riwayat sekolah: satu baris = satu tonggak dengan format
+        // "Tahun|Judul|Keterangan". Baris kosong diabaikan.
+        $history = collect(self::lines($stored['profile_history'] ?? null))
+            ->map(function (string $row) {
+                $parts = array_pad(explode('|', $row, 3), 3, '');
+
+                return [
+                    'year' => trim($parts[0]),
+                    'title' => trim($parts[1]),
+                    'description' => trim($parts[2]),
+                    'pending' => false,
+                ];
+            })
+            ->filter(fn (array $entry) => $entry['year'] !== '' || $entry['title'] !== '')
+            ->values()
+            ->all();
+
+        if ($history !== []) {
+            $profile['history'] = $history;
         }
 
         return self::withIdentity($profile);
@@ -254,6 +292,18 @@ class SchoolSettings
             ['label' => 'Email', 'value' => $contact['emails']['general'] ?? '', 'fallback' => 'Lengkapi melalui pengaturan sekolah'],
         ];
 
+        // Nama sekolah untuk salinan naratif halaman profil (bagian "tentang"
+        // dan CTA), agar tidak lagi hardcoded di view.
+        $profile['school_name'] = filled($contact['name'] ?? '') ? $contact['name'] : 'SMK INFOKOM';
+
+        // Fakta singkat untuk hero profil: hanya baris identitas yang
+        // nilainya sudah terisi, sehingga data kosong tidak ikut tampil.
+        $quickFactLabels = ['Status Sekolah', 'NPSN', 'Tahun Berdiri', 'Akreditasi'];
+        $profile['quick_facts'] = collect($profile['identity'])
+            ->filter(fn (array $item) => in_array($item['label'], $quickFactLabels, true) && filled($item['value']))
+            ->values()
+            ->all();
+
         return $profile;
     }
 
@@ -281,6 +331,7 @@ class SchoolSettings
         foreach ($segments as $index => $segment) {
             if ($index === count($segments) - 1) {
                 $current[$segment] = $value;
+
                 return;
             }
 

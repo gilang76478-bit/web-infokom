@@ -765,6 +765,82 @@
     color: #e3ebff;
 }
 
+/* Pusat informasi: direktori sebelas bagian */
+.home-explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 26px;
+}
+
+.home-explore-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 12px;
+    align-content: start;
+    min-height: 208px;
+    padding: 22px 20px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 0 12px 28px rgb(19 31 68 / 4%);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.home-explore-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--brand) 22%, var(--line));
+    box-shadow: 0 20px 40px rgb(19 31 68 / 9%);
+}
+
+.explore-index {
+    grid-column: 1;
+    color: color-mix(in srgb, var(--link) 55%, transparent);
+    font: 800 0.78rem var(--fd);
+    letter-spacing: 0.08em;
+}
+
+.home-explore-card b {
+    grid-column: 3;
+    color: var(--link);
+    font-size: 1rem;
+    transition: transform 180ms ease;
+}
+
+.home-explore-card:hover b {
+    transform: translateX(3px);
+}
+
+.explore-eyebrow {
+    grid-column: 2;
+    color: var(--link);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.home-explore-card h3 {
+    grid-column: 1 / -1;
+    margin: 8px 0 0;
+    font-size: 1.05rem;
+}
+
+.home-explore-card > p:not(.explore-eyebrow) {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+
+.home-explore-card small {
+    grid-column: 1 / -1;
+    color: var(--link);
+    font-weight: 700;
+}
+
 /* Footer */
 .home-footer {
     display: grid;
@@ -843,6 +919,9 @@
     .home-two {
         grid-template-columns: minmax(0, 1fr);
     }
+    .home-explore-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 680px) {
@@ -919,8 +998,12 @@
     .home-programs,
     .home-news,
     .home-gallery,
-    .home-alumni {
+    .home-alumni,
+    .home-explore-grid {
         grid-template-columns: minmax(0, 1fr);
+    }
+    .home-explore-card {
+        min-height: 0;
     }
 
     @media (prefers-reduced-motion: reduce) {

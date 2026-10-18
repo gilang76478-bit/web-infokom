@@ -10,7 +10,7 @@
         [
             'label' => 'WhatsApp',
             'value' => $school['whatsapp']['general'] ?? '',
-            'link' => filled($school['whatsapp']['general'] ?? null) ? 'https://wa.me/' . preg_replace('/\D+/', '', $school['whatsapp']['general']) : null,
+            'link' => \App\Support\WhatsApp::link($school['whatsapp']['general'] ?? null),
         ],
         [
             'label' => 'Email',
@@ -20,50 +20,46 @@
     ])->map(fn (array $item) => [
         'label' => $item['label'],
         'display' => filled($item['value']) ? $item['value'] : 'Nomor telepon, WhatsApp, dan email resmi belum dikonfigurasi.',
-        'link' => $item['link'] ?? '#',
+        // Tautan '#' tidak dirender sebagai <a> (lihat loop footer di bawah).
+        'link' => $item['link'],
     ]);
 
-    $navGroups = [
-        'Profil' => [
-            'section' => 'profil',
-            'items' => [
-                ['label' => 'Tentang Sekolah', 'anchor' => 'tentang'],
-                ['label' => 'Sejarah', 'anchor' => 'sejarah'],
-                ['label' => 'Visi & Misi', 'anchor' => 'visi-misi'],
-                ['label' => 'Struktur Organisasi', 'anchor' => 'struktur-organisasi'],
-                ['label' => 'Fasilitas', 'anchor' => 'fasilitas'],
-            ],
-        ],
+    // Dropdown navigasi: label induk adalah tautan ke bagian TERATAS halaman
+    // (bukan sekadar pemicu scroll), dan setiap isi submenu harus menunjuk ke
+    // tujuan yang benar-benar ada. Submenu tanpa konten nyata sengaja belum
+    // dipasang agar tidak menjadi tautan dekoratif.
+    $navDropdowns = [
         'Akademik' => [
             'section' => 'akademik',
-            'items' => array_map(fn (string $label) => ['label' => $label], [
-                'Program Keahlian', 'Kurikulum', 'Guru & Tenaga Kependidikan', 'Kalender Akademik',
-            ]),
+            'items' => [
+                ['label' => 'Program Keahlian', 'url' => route('site.section', 'akademik') . '#program-keahlian'],
+                ['label' => 'Guru & Tenaga Kependidikan', 'url' => route('site.section', 'profil') . '#guru'],
+            ],
         ],
         'Kesiswaan' => [
             'section' => 'kesiswaan',
-            'items' => array_map(fn (string $label) => ['label' => $label], [
-                'OSIS', 'Ekstrakurikuler', 'Kegiatan Siswa', 'Tata Tertib', 'Beasiswa',
-            ]),
+            'items' => [
+                ['label' => 'Kegiatan Siswa', 'url' => route('site.section', 'kesiswaan') . '#kegiatan-siswa'],
+                ['label' => 'Pencapaian Siswa', 'url' => route('site.section', 'kesiswaan') . '#pencapaian'],
+            ],
         ],
         'Informasi' => [
             'section' => 'informasi',
             'items' => [
                 ['label' => 'Berita', 'url' => route('berita.index')],
-                ['label' => 'Pengumuman'],
-                ['label' => 'Agenda'],
+                ['label' => 'Agenda', 'url' => route('site.section', 'informasi') . '#agenda'],
             ],
         ],
     ];
 
-    $navLinks = collect([
+    $navLinks = [
         ['label' => 'Prestasi', 'section' => 'prestasi'],
         ['label' => 'Industri', 'section' => 'industri'],
         ['label' => 'Magang Jepang', 'section' => 'jepang'],
         ['label' => 'Galeri', 'section' => 'galeri', 'url' => route('galeri.index')],
         ['label' => 'Alumni', 'section' => 'alumni'],
         ['label' => 'Kontak', 'section' => 'kontak'],
-    ]);
+    ];
 
     $siteTitle = $title ?? 'SMK INFOKOM | Teknologi, Industri, Dunia';
     $siteDescription = $description ?? 'SMK INFOKOM menyiapkan siswa dengan keterampilan teknologi, pengalaman industri, dan kesempatan berkembang melalui pembelajaran berbasis proyek dan kerja sama industri.';
@@ -99,15 +95,21 @@
       </a>
       <nav class="menu" id="menu" aria-label="Menu utama">
         <a href="{{ route('home') }}" @class(['active' => ($activeSection ?? 'home') === 'home']) @if (($activeSection ?? null) === 'home') aria-current="page" @endif>Beranda</a>
-        @foreach ($navGroups as $label => $group)
-          <details @class(['nav-dropdown', 'is-active' => $activeSection === $group['section']])>
-            <summary>{{ $label }}</summary>
-            <div class="nav-submenu">
+        {{-- Profil adalah satu halaman lengkap: tautan langsung ke bagian teratas,
+             tanpa dropdown anchor yang membingungkan. --}}
+        <a href="{{ route('site.section', 'profil') }}" @class(['active' => $activeSection === 'profil']) @if ($activeSection === 'profil') aria-current="page" @endif>Profil</a>
+        @foreach ($navDropdowns as $label => $group)
+          <div @class(['nav-dropdown', 'is-active' => $activeSection === $group['section']]) data-nav-dropdown>
+            <span class="nav-parent-row">
+              <a class="nav-parent" href="{{ route('site.section', $group['section']) }}" @if ($activeSection === $group['section']) aria-current="page" @endif>{{ $label }}</a>
+              <button class="nav-caret" type="button" aria-expanded="false" aria-controls="nav-sub-{{ $group['section'] }}" aria-label="Tampilkan submenu {{ $label }}"></button>
+            </span>
+            <div class="nav-submenu" id="nav-sub-{{ $group['section'] }}" hidden>
               @foreach ($group['items'] as $item)
-                <a href="{{ $item['url'] ?? (route('site.section', $group['section']) . (isset($item['anchor']) ? '#' . $item['anchor'] : '')) }}">{{ $item['label'] }}</a>
+                <a href="{{ $item['url'] }}">{{ $item['label'] }}</a>
               @endforeach
             </div>
-          </details>
+          </div>
         @endforeach
         @foreach ($navLinks as $link)
           <a href="{{ $link['url'] ?? route('site.section', $link['section']) }}" @class(['active' => $activeSection === $link['section']])>{{ $link['label'] }}</a>
@@ -143,7 +145,11 @@
       <div>
         <h3>Kontak</h3>
         @foreach ($footerContacts as $item)
-          <a href="{{ $item['link'] }}">{{ $item['label'] }}: {{ $item['display'] }}</a>
+          @if (filled($item['link']))
+            <a href="{{ $item['link'] }}">{{ $item['label'] }}: {{ $item['display'] }}</a>
+          @else
+            <span class="footer-contact-disabled">{{ $item['label'] }}: {{ $item['display'] }}</span>
+          @endif
         @endforeach
         @php
           $fullAddress = collect([

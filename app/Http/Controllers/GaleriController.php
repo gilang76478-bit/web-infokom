@@ -10,7 +10,8 @@ use Illuminate\View\View;
 class GaleriController extends Controller
 {
     /**
-     * Galeri publik (/galeri) dengan filter kategori lewat ?kategori={slug}.
+     * Galeri publik (/galeri) dengan filter kategori lewat ?kategori={slug}
+     * dan paginasi agar jumlah foto yang membesar tidak membebani halaman.
      */
     public function index(Request $request): View
     {
@@ -30,7 +31,8 @@ class GaleriController extends Controller
         }
 
         return view('galeri.index', [
-            'items' => $query->get(),
+            // Filter kategori dibawa ke tautan halaman berikutnya.
+            'items' => $query->paginate(12)->withQueryString(),
             'categories' => $categories,
             'activeCategory' => $activeCategory,
         ]);

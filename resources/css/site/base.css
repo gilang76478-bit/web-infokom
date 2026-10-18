@@ -27,6 +27,7 @@
     --line: #dce3ef;
     --link: var(--brand);
     --on-bg: var(--navy);
+    --nav-ink: var(--navy);
     --focus: var(--brand);
     --danger: #c43d4b;
     --ok: #1e8e5a;
@@ -48,6 +49,7 @@
         --line: #243359;
         --link: color-mix(in srgb, var(--brand) 50%, #fff);
         --on-bg: var(--brand);
+        --nav-ink: var(--ink);
         --focus: #9db8ff;
         --danger: #ff8494;
         --ok: #5fd3a0;
@@ -64,6 +66,7 @@
     --line: #243359;
     --link: color-mix(in srgb, var(--brand) 50%, #fff);
     --on-bg: var(--brand);
+    --nav-ink: var(--ink);
     --focus: #9db8ff;
     --danger: #ff8494;
     --ok: #5fd3a0;

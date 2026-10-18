@@ -52,6 +52,24 @@
     </div>
   </section>
 
+  <section class="sec home-section home-explore" id="jelajahi">
+    <div class="container">
+      <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Pusat informasi</p><h2>Sebelas bagian, satu beranda</h2><p>Seluruh informasi SMK INFOKOM tersusun dalam sebelas bagian — pilih bagian yang ingin Anda kenali lebih dekat.</p></div></div>
+      <div class="home-explore-grid">
+        @foreach ($explore as $index => $item)
+          <a class="home-explore-card" href="{{ $item['href'] }}">
+            <span class="explore-index" aria-hidden="true">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+            <p class="explore-eyebrow">{{ $item['eyebrow'] }}</p>
+            <h3>{{ $item['title'] }}</h3>
+            <p>{{ $item['intro'] }}</p>
+            @if (filled($item['count_label']))<small>{{ $item['count_label'] }}</small>@endif
+            <b aria-hidden="true">→</b>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </section>
+
   <section class="sec home-section home-why">
     <div class="container">
       <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Kenapa kami</p><h2>Lingkungan belajar yang mendorong siswa berkembang</h2></div></div>
@@ -122,9 +140,11 @@
   <section class="sec home-section">
     <div class="container home-two">
       <div><div class="sh"><p class="detail-eyebrow">Kesiswaan &amp; prestasi</p><h2>Ruang untuk mencoba dan berprestasi</h2><p>Pengalaman belajar tumbuh lewat karya, kompetisi, dan kegiatan bersama.</p></div>
-        @foreach ($site['prest']->take(2) as $achievement)
+        @forelse ($site['prest']->take(2) as $achievement)
           <article class="home-achievement"><span>{{ $achievement['y'] }}</span><div><h3>{{ $achievement['t'] }}</h3><p>{{ $achievement['who'] }} · {{ $achievement['lv'] }}</p></div></article>
-        @endforeach
+        @empty
+          <p class="detail-empty">Pencapaian siswa akan diumumkan di halaman ini setelah dikonfirmasi sekolah.</p>
+        @endforelse
         <a class="link" href="{{ route('site.section', 'prestasi') }}">Jelajahi kegiatan dan prestasi <span aria-hidden="true">→</span></a>
       </div>
       <aside class="home-japan"><p class="detail-eyebrow">Magang Jepang</p><h2>Langkah terarah menuju pengalaman di Jepang</h2><p>Kenali tahapan program, persiapan bahasa, dan seleksi peserta.</p><a class="btn btn-accent" href="{{ route('site.section', 'jepang') }}">Lihat tahapan program</a></aside>
@@ -135,9 +155,11 @@
     <div class="container">
       <div class="sh-row"><div class="sh"><p class="detail-eyebrow">Informasi</p><h2>Kabar dan agenda sekolah</h2></div><a class="link" href="{{ route('berita.index') }}">Semua kabar <span aria-hidden="true">→</span></a></div>
       <div class="home-news">
-        @foreach ($site['news']->take(3) as $post)
+        @forelse ($site['news']->take(3) as $post)
           <a href="{{ route('berita.show', $post['slug']) }}"><span>{{ $post['cat'] }} · {{ $post['d'] }}</span><h3>{{ $post['t'] }}</h3><p>{{ $post['x'] }}</p></a>
-        @endforeach
+        @empty
+          <p class="detail-empty">Belum ada kabar terbaru. Artikel akan tampil di sini setelah dipublikasikan.</p>
+        @endforelse
       </div>
     </div>
   </section>
@@ -164,7 +186,7 @@
     <div class="container home-alumni">
       <div><p class="detail-eyebrow">Alumni</p><h2>Bekal belajar yang ikut melangkah</h2><a class="link" href="{{ route('site.section', 'alumni') }}">Cerita alumni dan tracer study <span aria-hidden="true">→</span></a></div>
       @if ($site['alum']->isNotEmpty())
-        <blockquote><p>“{{ $site['alum']->first()['q'] }}”</p><footer><b>{{ $site['alum']->first()['n'] }}</b><span>{{ $site['alum']->first()['r'] }}</span></footer></blockquote>
+        <blockquote>@if (filled($site['alum']->first()['q']))<p>“{{ $site['alum']->first()['q'] }}”</p>@endif<footer><b>{{ $site['alum']->first()['n'] }}</b><span>{{ $site['alum']->first()['r'] }}</span></footer></blockquote>
       @endif
     </div>
   </section>

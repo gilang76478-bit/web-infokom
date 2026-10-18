@@ -10,7 +10,8 @@ use Illuminate\View\View;
 class PostController extends Controller
 {
     /**
-     * Daftar berita (/berita) dengan filter kategori lewat ?kategori={slug}.
+     * Daftar berita (/berita) dengan filter kategori lewat ?kategori={slug}
+     * dan paginasi agar halaman tetap ringan ketika artikel bertambah.
      */
     public function index(Request $request): View
     {
@@ -30,7 +31,8 @@ class PostController extends Controller
         }
 
         return view('berita.index', [
-            'posts' => $query->get(),
+            // Filter kategori dibawa ke tautan halaman berikutnya.
+            'posts' => $query->paginate(9)->withQueryString(),
             'categories' => $categories,
             'activeCategory' => $activeCategory,
         ]);
