@@ -1,0 +1,18 @@
+[
+    {"name": "by.U", "category": "Dunia Usaha & Industri", "logo_file": "by-u.png"},
+    {"name": "BONET IT Solution Partner", "category": "Dunia Usaha & Industri", "logo_file": "bonet.png"},
+    {"name": "Bank Syariah Indonesia", "category": "Dunia Usaha & Industri", "logo_file": "bsi.png"},
+    {"name": "bank bjb", "category": "Dunia Usaha & Industri", "logo_file": "bank-bjb.png"},
+    {"name": "Bank Mandiri", "category": "Dunia Usaha & Industri", "logo_file": "mandiri.png"},
+    {"name": "Citraweb Solusi Teknologi", "category": "Dunia Usaha & Industri", "logo_file": "citraweb.png"},
+    {"name": "MSV Studio", "category": "Dunia Usaha & Industri", "logo_file": "msv-studio.png"},
+    {"name": "Jawa Pos", "category": "Dunia Usaha & Industri", "logo_file": "jawa-pos.png"},
+    {"name": "Mega Motor", "category": "Dunia Usaha & Industri", "logo_file": "mega-motor.png"},
+    {"name": "PT. Guna Senaputra Sejahtera", "category": "Dunia Usaha & Industri", "logo_file": null},
+    {"name": "Raja Promo Advertising", "category": "Dunia Usaha & Industri", "logo_file": null},
+    {"name": "IPB University", "category": "Perguruan Tinggi", "logo_file": "ipb.png"},
+    {"name": "Universitas Pakuan", "category": "Perguruan Tinggi", "logo_file": "pakuan.png"},
+    {"name": "Universitas Djuanda", "category": "Perguruan Tinggi", "logo_file": "djuanda.png"},
+    {"name": "Universitas Ibn Khaldun", "category": "Perguruan Tinggi", "logo_file": "ibn-khaldun.png"},
+    {"name": "Politeknik Negeri Jakarta", "category": "Perguruan Tinggi", "logo_file": "pnj.png"}
+]

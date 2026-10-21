@@ -26,6 +26,9 @@ trait TranslatesValidationMessages
         'in' => 'Pilihan untuk :attribute tidak valid.',
         'exists' => 'Pilihan :attribute tidak terdaftar.',
         'accepted' => 'Kolom :attribute harus disetujui.',
+        'file' => 'Kolom :attribute harus berupa berkas.',
+        'image' => 'Kolom :attribute harus berupa gambar (JPG, PNG, atau WebP).',
+        'mimes' => 'Kolom :attribute harus berekstensi :values.',
         'prohibited' => 'Kolom :attribute tidak boleh diisi.',
         'regex' => 'Format :attribute tidak sesuai ketentuan.',
     ];

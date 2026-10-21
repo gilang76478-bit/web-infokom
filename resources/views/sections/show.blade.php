@@ -5,6 +5,17 @@
 ])
 
 @section('content')
+  {{-- Remah navigasi Schema.org untuk sebelas bagian situs. Judul dan URL
+       diambil dari sumber metadata yang sama dengan beranda & sitemap. --}}
+  @push('jsonld')
+    {!! \App\Support\StructuredData::script(\App\Support\StructuredData::breadcrumb($pages[$section]['title'], route('site.section', $section))) !!}
+    {{-- FAQ penerimaan murid baru hanya dilempar ke mesin pencari ketika
+         daftar pertanyaan benar-benar terisi. --}}
+    @if ($section === 'ppdb' && ($data['spmb']['faq'] ?? []) !== [])
+      {!! \App\Support\StructuredData::script(\App\Support\StructuredData::faqPage($data['spmb']['faq'], route('site.section', 'ppdb'))) !!}
+    @endif
+  @endpush
+
   <section class="detail-hero">
     <div class="container">
       <p class="detail-eyebrow">{{ $pages[$section]['eyebrow'] }}</p>
@@ -18,7 +29,29 @@
             @endforeach
           </dl>
         @endif
-        <nav class="profile-hero-nav" aria-label="Navigasi cepat profil sekolah">
+      @elseif ($section === 'ppdb')
+        {{-- Status penerimaan murid baru dari pengaturan sekolah, plus CTA
+             yang langsung menuju formulir di halaman yang sama. --}}
+        <div class="ppdb-hero-status">
+          <span class="ppdb-status-pill" role="status">{{ $data['spmb']['status'] }}</span>
+          @if (filled($data['spmb']['period']))
+            <span class="ppdb-hero-period">{{ $data['spmb']['period'] }}</span>
+          @endif
+          <a class="btn btn-accent" href="#formulir">Isi formulir pendaftaran</a>
+          <a class="btn btn-ghost" href="{{ route('ppdb.printable') }}">Cetak formulir pendaftaran</a>
+        </div>
+      @endif
+    </div>
+  </section>
+
+  @if ($section === 'profil')
+    {{-- Pita jangkar ditempatkan di luar hero (hero punya overflow: hidden
+         yang mematikan position: sticky) sehingga menetap di bawah pita
+         navigasi utama sepanjang halaman. site.js memasang data-scrollspy
+         untuk menyorot bagian yang sedang dibaca. --}}
+    <nav class="profile-subnav" data-scrollspy aria-label="Navigasi cepat profil sekolah">
+      <div class="container">
+        <div class="profile-hero-nav">
           <a href="#sambutan">Sambutan <span aria-hidden="true">↓</span></a>
           <a href="#tentang">Tentang sekolah <span aria-hidden="true">↓</span></a>
           <a href="#identitas">Identitas <span aria-hidden="true">↓</span></a>
@@ -28,10 +61,10 @@
           <a href="#guru">Guru &amp; TTK <span aria-hidden="true">↓</span></a>
           <a href="#fasilitas">Fasilitas <span aria-hidden="true">↓</span></a>
           <a href="#keunggulan">Keunggulan <span aria-hidden="true">↓</span></a>
-        </nav>
-      @endif
-    </div>
-  </section>
+        </div>
+      </div>
+    </nav>
+  @endif
 
   <section @class(['sec', 'detail-content', 'detail-content-profile' => $section === 'profil'])>
     <div class="container">
@@ -56,11 +89,32 @@
                 </div>
               </div>
               <div class="kepala-sekolah-portrait">
-                <div class="kepala-sekolah-portrait-placeholder">
-                  <span class="portrait-initials" aria-hidden="true">IF</span>
-                  Foto kepala sekolah
-                  <span>Foto resmi akan ditampilkan setelah ditambahkan.</span>
-                </div>
+                @php
+                  // Inisial untuk placeholder foto kepala sekolah diambil dari
+                  // nama pada pengaturan; gelar (Ir., M.MPd) dilepas lewat
+                  // helper bersama agar inisial benar dari nama aslinya.
+                  $principalInitials = \App\Support\Initials::from($data['principal_name'] ?? '', 'KS');
+                  // Foto kepala sekolah disimpan pada catatan guru bert jabatan
+                  // "Kepala Sekolah" di panel admin; cocokkan dulu dengan nama
+                  // pengaturan, baru dengan jabatan bila nama belum tercatat.
+                  $principalTeacher = collect($data['teachers'] ?? [])->first(
+                      fn ($teacher) => filled($data['principal_name'] ?? null)
+                          && strcasecmp(trim($teacher->name), trim($data['principal_name'])) === 0
+                  ) ?? collect($data['teachers'] ?? [])->first(
+                      fn ($teacher) => ! str_contains(strtolower($teacher->position), 'wakil')
+                          && str_contains(strtolower($teacher->position), 'kepala sekolah')
+                  );
+                  $principalPhoto = $principalTeacher?->photo_url;
+                @endphp
+                @if (filled($principalPhoto))
+                  <img src="{{ $principalPhoto }}" alt="Foto {{ $data['principal_name'] ?: 'kepala sekolah' }}" loading="lazy">
+                @else
+                  <div class="kepala-sekolah-portrait-placeholder">
+                    <span class="portrait-initials" aria-hidden="true">{{ $principalInitials }}</span>
+                    Foto kepala sekolah
+                    <span>Foto resmi akan ditampilkan setelah ditambahkan.</span>
+                  </div>
+                @endif
               </div>
             </div>
           </div>
@@ -175,60 +229,103 @@
               <div class="sh">
                 <span class="detail-eyebrow">STRUKTUR</span>
                 <h2 id="strukturTitle">Struktur Organisasi</h2>
+                <p>Jabatan pimpinan mengikuti data Guru &amp; Tenaga Kependidikan yang dikelola melalui panel admin.</p>
               </div>
             </div>
+            @php
+                // Struktur organisasi disusun dinamis dari catatan guru panel
+                // admin: wakil kepala sekolah, ketua program keahlian, dan
+                // kepala urusan — tanpa nama jabatan karangan.
+                $orgTeachers = collect($data['teachers'] ?? []);
+                $orgWakil = $orgTeachers
+                    ->filter(fn ($teacher) => str_starts_with(strtolower($teacher->position), 'wakil kepala'))
+                    ->values();
+                $orgKetua = $orgTeachers
+                    ->filter(fn ($teacher) => str_contains(strtolower($teacher->position), 'kepala program keahlian'))
+                    ->values();
+                $orgUrusan = $orgTeachers
+                    ->filter(fn ($teacher) => (bool) preg_match('/^Kepala (?!Sekolah\b|Program\b)/i', trim($teacher->position)))
+                    ->values();
+            @endphp
             <div class="org-tree">
               <div class="org-level">
-                <div class="org-card">
-                  <div class="photo">
-                    <div class="photo-placeholder">KHS</div>
-                  </div>
-                  <div class="role">Pimpinan</div>
+                <div class="org-card">                    <div class="photo">
+                      @if (filled($principalPhoto ?? null))
+                        <img src="{{ $principalPhoto }}" alt="Foto {{ $data['principal_name'] ?: 'kepala sekolah' }}" loading="lazy">
+                      @else
+                        <div class="photo-placeholder">{{ $principalInitials }}</div>
+                      @endif
+                    </div>
+                    <div class="role">Pimpinan</div>
                   <div class="name">{{ filled($data['principal_name']) ? $data['principal_name'] : 'Belum dikonfirmasi' }}</div>
                 </div>
               </div>
+
+              @if ($orgWakil->isNotEmpty())
+                <div class="org-level diamond">
+                  @foreach ($orgWakil as $teacher)
+                    <article class="org-card">
+                      <div class="photo">
+                        @if (filled($teacher->photo_url))
+                          <img src="{{ $teacher->photo_url }}" alt="Foto {{ $teacher->name }}" loading="lazy">
+                        @else
+                          <div class="photo-placeholder">{{ $teacher->initials }}</div>
+                        @endif
+                      </div>
+                      <div class="role">Wakil Kepala</div>
+                      <div class="name">{{ $teacher->name }}</div>
+                      <div class="org-card-meta"><span>{{ preg_replace('/^Wakil Kepala Sekolah (Bidang )?/i', '', $teacher->position) }}</span></div>
+                    </article>
+                  @endforeach
+                </div>
+              @endif
+
+              @if ($orgKetua->isNotEmpty())
+                <div class="org-level diamond">
+                  @foreach ($orgKetua as $teacher)
+                    <article class="org-card">
+                      <div class="photo">
+                        @if (filled($teacher->photo_url))
+                          <img src="{{ $teacher->photo_url }}" alt="Foto {{ $teacher->name }}" loading="lazy">
+                        @else
+                          <div class="photo-placeholder">{{ $teacher->initials }}</div>
+                        @endif
+                      </div>
+                      <div class="role">Ketua Program</div>
+                      <div class="name">{{ $teacher->name }}</div>
+                      <div class="org-card-meta">
+                        @if ($teacher->program?->short)<span>{{ $teacher->program->short }}</span>@else<span>Keahlian</span>@endif
+                      </div>
+                    </article>
+                  @endforeach
+                </div>
+              @endif
+
+              @if ($orgUrusan->isNotEmpty())
+                <div class="org-level diamond">
+                  @foreach ($orgUrusan as $teacher)
+                    <article class="org-card">
+                      <div class="photo">
+                        @if (filled($teacher->photo_url))
+                          <img src="{{ $teacher->photo_url }}" alt="Foto {{ $teacher->name }}" loading="lazy">
+                        @else
+                          <div class="photo-placeholder">{{ $teacher->initials }}</div>
+                        @endif
+                      </div>
+                      <div class="role">Pendukung</div>
+                      <div class="name">{{ $teacher->name }}</div>
+                      <div class="org-card-meta"><span>{{ $teacher->position }}</span></div>
+                    </article>
+                  @endforeach
+                </div>
+              @endif
+
               <div class="org-level diamond">
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">WKS</div></div>
-                  <div class="role">Bidang</div>
-                  <div class="name">Wakil Kepala Sekolah</div>
-                </div>
-              </div>
-              <div class="org-level">
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">W</div></div>
-                  <div class="role">Kurikulum</div>
-                  <div class="name">Wakil Kepala Bidang Kurikulum</div>
-                </div>
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">W</div></div>
-                  <div class="role">Kesiswaan</div>
-                  <div class="name">Wakil Kepala Bidang Kesiswaan</div>
-                </div>
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">W</div></div>
-                  <div class="role">Sarana &amp; Prasarana</div>
-                  <div class="name">Wakil Kepala Bidang Sarana &amp; Prasarana</div>
-                </div>
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">W</div></div>
-                  <div class="role">Hubungan Industri</div>
-                  <div class="name">Wakil Kepala Bidang Hub. Industri</div>
-                </div>
-              </div>
-              <div class="org-level diamond">
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">PK</div></div>
-                  <div class="role">Program</div>
-                  <div class="name">Ketua Program Keahlian</div>
-                </div>
-              </div>
-              <div class="org-level">
-                <div class="org-card">
-                  <div class="photo"><div class="photo-placeholder">G</div></div>
+                <a class="org-card org-card-branch" href="{{ route('guru.index') }}">
                   <div class="role">Tenaga</div>
                   <div class="name">Guru &amp; Tenaga Kependidikan</div>
-                </div>
+                  <div class="org-card-meta"><span>Buka direktori lengkap</span></div>
+                </a>
               </div>
             </div>
           </div>
@@ -250,8 +347,8 @@
                   @foreach ($data['teachers'] as $teacher)
                     <article class="org-card">
                       <div class="photo">
-                        @if (filled($teacher->photo))
-                          <img src="{{ $teacher->photo }}" alt="Foto {{ $teacher->name }}" loading="lazy">
+                        @if (filled($teacher->photo_url))
+                          <img src="{{ $teacher->photo_url }}" alt="Foto {{ $teacher->name }}" loading="lazy">
                         @else
                           <div class="photo-placeholder">{{ $teacher->initials }}</div>
                         @endif
@@ -269,6 +366,8 @@
             @else
               <p class="detail-empty">Informasi guru akan segera tersedia.</p>
             @endif
+
+            <p><a class="link" href="{{ route('guru.index') }}">Buka direktori lengkap guru dan tenaga kependidikan <span aria-hidden="true">→</span></a></p>
           </div>
         </section>
 
@@ -281,11 +380,25 @@
                 <h2 id="fasilitasTitle">Fasilitas Pendukung Pembelajaran</h2>
               </div>
             </div>
-            <div class="fasilitas-grid">
-              @foreach ($data['facilities'] as $facility)
-                <article class="fasilitas-card"><div class="fasilitas-thumb"><div class="fasilitas-thumb-placeholder">Fasilitas</div></div><h3>{{ $facility['title'] }}</h3><p>{{ $facility['description'] }}</p></article>
-              @endforeach
-            </div>
+            @if ($data['facilities']->isNotEmpty())
+              <div class="fasilitas-grid">
+                @foreach ($data['facilities'] as $facility)
+                  <article class="fasilitas-card">
+                    <div class="fasilitas-thumb">
+                      @if (filled($facility->photo_url))
+                        <img src="{{ $facility->photo_url }}" alt="{{ $facility->title }}" loading="lazy" width="800" height="600">
+                      @else
+                        <div class="fasilitas-thumb-placeholder">{{ $facility->title }}</div>
+                      @endif
+                    </div>
+                    <h3>{{ $facility->title }}</h3>
+                    <p>{{ $facility->description }}</p>
+                  </article>
+                @endforeach
+              </div>
+            @else
+              <p class="detail-empty">Daftar dan foto fasilitas sekolah belum dipublikasikan. Data akan tampil di sini setelah dikelola melalui panel admin.</p>
+            @endif
           </div>
         </section>
 
@@ -385,16 +498,36 @@
           </div>
           <div class="detail-grid academic-grid" id="program-keahlian">
             @foreach ($data as $program)
-              <article class="detail-card academic-card">
-                <span class="detail-tag">{{ $program->short }}</span>
-                <h2>{{ $program->name }}</h2>
-                <p>{{ $program->description }}</p>
-                <h3>Kompetensi</h3>
-                <ul>@foreach ($program->skills as $skill)<li>{{ $skill }}</li>@endforeach</ul>
-                <h3>Prospek karier</h3>
-                <p>{{ implode(' · ', $program->jobs) }}</p>
-                <a class="tentang-cta" href="{{ route('program.show', $program) }}">Selengkapnya <span aria-hidden="true">→</span></a>
-              </article>
+              @if (filled($program->photo_url))
+                {{-- Kartu jurusan berfoto mengikuti contoh halaman program keahlian:
+                     foto penuh dengan overlay gelap, watermark singkatan jurusan,
+                     deskripsi ringkas, dan tiga prospek karier sebagai tautan. --}}
+                <a class="academic-card program-card" href="{{ route('program.show', $program) }}">
+                  <img class="program-card-img" src="{{ $program->photo_url }}" alt="Kegiatan siswa {{ $program->short }} di SMK INFOKOM" loading="lazy" decoding="async">
+                  <span class="program-card-watermark" aria-hidden="true">{{ $program->short }}</span>
+                  <span class="program-card-kode">{{ $program->short }}</span>
+                  <div class="program-card-body">
+                    <h2>{{ $program->name }}</h2>
+                    <p>{{ \Illuminate\Support\Str::limit($program->description, 130) }}</p>
+                    <span class="program-card-tags">
+                      @foreach (array_slice($program->jobs, 0, 3) as $job)<span>{{ $job }}</span>@endforeach
+                    </span>
+                    <span class="program-card-go">Selengkapnya <span aria-hidden="true">→</span></span>
+                  </div>
+                </a>
+              @else
+                {{-- Tanpa foto: kartu teks lengkap (kompetensi, prospek karier). --}}
+                <article class="detail-card academic-card">
+                  <span class="detail-tag">{{ $program->short }}</span>
+                  <h2>{{ $program->name }}</h2>
+                  <p>{{ $program->description }}</p>
+                  <h3>Kompetensi</h3>
+                  <ul>@foreach ($program->skills as $skill)<li>{{ $skill }}</li>@endforeach</ul>
+                  <h3>Prospek karier</h3>
+                  <p>{{ implode(' · ', $program->jobs) }}</p>
+                  <a class="tentang-cta" href="{{ route('program.show', $program) }}">Selengkapnya <span aria-hidden="true">→</span></a>
+                </article>
+              @endif
             @endforeach
           </div>
         </div>
@@ -423,6 +556,17 @@
           @endforelse
         </div>
       @elseif ($section === 'industri')
+        @php
+          // Pengelompokan mitra untuk marquee: baris satu dunia usaha &
+          // industri, baris dua perguruan tinggi — mengikuti contoh
+          // halaman karier pada zip websmk_infokom.
+          $industriPartners = $data->filter(
+              fn ($partner) => strcasecmp($partner->category, 'Perguruan Tinggi') !== 0,
+          )->values();
+          $kampusPartners = $data->filter(
+              fn ($partner) => strcasecmp($partner->category, 'Perguruan Tinggi') === 0,
+          )->values();
+        @endphp
         <div class="industry-shell">
           <div class="industry-intro-panel">
             <span class="detail-tag">Kolaborasi industri</span>
@@ -434,9 +578,70 @@
               <span>Persiapan kerja</span>
             </div>
           </div>
+
+          {{-- Marquee logo mitra: bergeser otomatis, berhenti saat disorot,
+               dan menghormati preferensi gerak minimal pengunjung. --}}
+          @if ($industriPartners->isNotEmpty() || $kampusPartners->isNotEmpty())
+            <section class="mitra-marquee-shell" aria-labelledby="mitraMarqueeTitle">
+              <div class="sh-row">
+                <div class="sh">
+                  <span class="detail-eyebrow">MITRA KERJA SAMA</span>
+                  <h2 id="mitraMarqueeTitle">Dipercaya industri dan perguruan tinggi</h2>
+                </div>
+              </div>
+
+              @if ($industriPartners->isNotEmpty())
+                <div class="mitra-marquee-label"><span>Dunia usaha &amp; industri</span></div>
+                <div class="mitra-marquee to-left">
+                  <div class="mitra-marquee-track">
+                    @foreach ([$industriPartners, $industriPartners] as $loopIndex => $items)
+                      @foreach ($items as $partner)
+                        <div class="mitra-marquee-item" @if($loopIndex > 0) aria-hidden="true" @endif>
+                          <span class="mitra-marquee-tile">
+                            @if (filled($partner->logo_url))
+                              <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" loading="lazy" width="160" height="160">
+                            @endif
+                          </span>
+                          <span class="mitra-marquee-name">{{ $partner->name }}</span>
+                        </div>
+                      @endforeach
+                    @endforeach
+                  </div>
+                </div>
+              @endif
+
+              @if ($kampusPartners->isNotEmpty())
+                <div class="mitra-marquee-label"><span>Perguruan tinggi</span></div>
+                <div class="mitra-marquee to-right">
+                  <div class="mitra-marquee-track">
+                    @foreach ([$kampusPartners, $kampusPartners] as $loopIndex => $items)
+                      @foreach ($items as $partner)
+                        <div class="mitra-marquee-item" @if($loopIndex > 0) aria-hidden="true" @endif>
+                          <span class="mitra-marquee-tile">
+                            @if (filled($partner->logo_url))
+                              <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" loading="lazy" width="160" height="160">
+                            @endif
+                          </span>
+                          <span class="mitra-marquee-name">{{ $partner->name }}</span>
+                        </div>
+                      @endforeach
+                    @endforeach
+                  </div>
+                </div>
+              @endif
+            </section>
+          @endif
+
           <div class="detail-grid detail-grid-compact industry-grid">
             @forelse ($data as $partner)
               <article class="detail-card industry-card">
+                <div class="industry-card-logo">
+                  @if (filled($partner->logo_url))
+                    <img src="{{ $partner->logo_url }}" alt="Logo {{ $partner->name }}" loading="lazy" width="120" height="120">
+                  @else
+                    <span class="industry-card-initials" aria-hidden="true">{{ mb_substr($partner->name, 0, 2) }}</span>
+                  @endif
+                </div>
                 <span class="detail-tag">{{ $partner->category }}</span>
                 <h2>{{ $partner->name }}</h2>
                 <p>Mitra industri yang mendukung proses pembelajaran, praktik, dan kesiapan siswa memasuki dunia kerja.</p>
@@ -452,25 +657,98 @@
         </div>
       @elseif ($section === 'jepang')
         <ol class="detail-steps">
-          @foreach ($data as $step)
-            <li><span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><div><h2>{{ $step->title }}</h2><p>{{ $step->description }}</p><small>{{ $step->duration }}</small></div></li>
+          @foreach ($data['steps'] as $step)
+            <li>
+              <span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+              <div>
+                <h2>{{ $step->title }}</h2>
+                <p>{{ $step->description }}</p>
+                @if (filled($step->photo_url))
+                  <img class="step-photo" src="{{ $step->photo_url }}" alt="{{ $step->title }}" loading="lazy" width="640" height="400">
+                @endif
+                <small>{{ $step->duration }}</small>
+              </div>
+            </li>
           @endforeach
         </ol>
+
+        {{-- Dokumentasi Reel Instagram resmi sekolah — tautan, judul, dan
+             poster dikelola lewat panel admin (modul Reel Magang Jepang),
+             mengikuti pola dokumentasi Reel pada contoh websmk_infokom. --}}
+        @if ($data['reels']->isNotEmpty())
+          <div class="reel-shell">
+            <div class="sh-row">
+              <div class="sh">
+                <span class="detail-eyebrow">Dokumentasi Program Jepang</span>
+                <h2>PKL &amp; Magang Jepang</h2>
+                <p>Lihat dokumentasi dan informasi program melalui Reel Instagram resmi sekolah.</p>
+              </div>
+            </div>
+            <div class="reel-grid">
+              @foreach ($data['reels'] as $reel)
+                <a class="reel-card" href="{{ $reel->url }}" target="_blank" rel="noopener noreferrer" aria-label="Putar video: {{ $reel->title }}">
+                  <span class="reel-poster reel-poster-{{ $loop->index % 3 }}">
+                    @if (filled($reel->poster_url))
+                      <img src="{{ $reel->poster_url }}" alt="{{ $reel->title }}" loading="lazy">
+                    @endif
+                    <span class="reel-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="m10 8.5 5 3.5-5 3.5z" fill="currentColor"/></svg> Reel</span>
+                    <span class="reel-play" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+                    <span class="reel-hint">Klik untuk memutar video</span>
+                  </span>
+                  <span class="reel-body">
+                    <span class="reel-kicker">@smk.infokom_official</span>
+                    <b>{{ $reel->title }}</b>
+                    @if (filled($reel->description))<p>{{ $reel->description }}</p>@endif
+                    <span class="reel-cta">Tonton di Instagram <span aria-hidden="true">→</span></span>
+                  </span>
+                </a>
+              @endforeach
+            </div>
+          </div>
+        @endif
       @elseif ($section === 'ppdb')
         <div class="detail-ppdb">
           <div>
             <div class="ppdb-intro-panel">
-              <span class="detail-tag">Pendaftaran 2026</span>
+              <span class="detail-tag">{{ $data['spmb']['period'] ?: 'Pendaftaran' }}</span>
               <h2>Daftar sebagai calon murid</h2>
               <p>Isi data berikut. Nomor pendaftaran akan ditampilkan setelah formulir berhasil dikirim.</p>
               <div class="ppdb-checklist">
-                <span>✅ Proses sederhana</span>
-                <span>✅ Jadwal informasi jelas</span>
-                <span>✅ Informasi program keahlian lengkap</span>
+                <span>Proses sederhana</span>
+                <span>Jadwal informasi jelas</span>
+                <span>Informasi program keahlian lengkap</span>
               </div>
             </div>
+
+            <section class="ppdb-block" aria-labelledby="persyaratanTitle">
+              <h2 id="persyaratanTitle">Persyaratan pendaftaran</h2>
+              @if ($data['spmb']['requirements'] !== [])
+                <ul class="ppdb-requirements">
+                  @foreach ($data['spmb']['requirements'] as $requirement)
+                    <li>{{ $requirement }}</li>
+                  @endforeach
+                </ul>
+              @else
+                <p class="detail-empty">Daftar persyaratan dokumen diumumkan panitia melalui <a class="link" href="{{ route('berita.index', ['kategori' => 'ppdb']) }}">berita PPDB</a>. Konfirmasi persyaratan terbaru kepada panitia melalui kontak di samping.</p>
+              @endif
+            </section>
+
+            <section class="ppdb-block" aria-labelledby="langsungTitle">
+              <h2 id="langsungTitle">Daftar langsung di sekolah</h2>
+              <p>Selain formulir daring, tersedia formulir cetak bagi calon murid atau orang tua yang ingin mendaftar langsung ke sekolah. Cetak formulir di halaman <a class="link" href="{{ route('ppdb.printable') }}">Formulir Pendaftaran</a>, isi dengan huruf cetak, lalu serahkan ke panitia PPDB beserta dokumen persyaratan. Pendaftaran daring tetap tersedia kapan saja.</p>
+            </section>
+
+            <section class="ppdb-block" aria-labelledby="alurTitle">
+              <h2 id="alurTitle">Alur pendaftaran</h2>
+              <ol class="detail-steps">
+                @foreach ($data['spmb']['steps'] as $step)
+                  <li><span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><div><h3>{{ $step['title'] }}</h3><p>{{ $step['description'] }}</p></div></li>
+                @endforeach
+              </ol>
+            </section>
+
             @if (session('registration_number'))<div class="admin-status" role="status">Pendaftaran berhasil. Simpan nomor Anda: <b>{{ session('registration_number') }}</b></div>@endif
-            <form class="ppdb-form" method="post" action="{{ route('ppdb.apply') }}">
+            <form class="ppdb-form" id="formulir" method="post" action="{{ route('ppdb.apply') }}">
               @csrf
               <label for="full_name">Nama lengkap</label><input id="full_name" name="full_name" type="text" value="{{ old('full_name') }}" autocomplete="name" required>
               @error('full_name')<small class="admin-field-error">{{ $message }}</small>@enderror
@@ -488,8 +766,51 @@
           <aside class="detail-agenda ppdb-sidebar">
             <h2>Informasi pendaftaran</h2>
             @forelse ($data['posts'] as $post)<article><time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->locale('id')->translatedFormat('j M') }}</time><div><h3><a href="{{ route('berita.show', $post) }}">{{ $post->title }}</a></h3><p>{{ $post->excerpt }}</p></div></article>@empty<p class="detail-empty">Silakan hubungi sekolah untuk jadwal terbaru.</p>@endforelse
+            @php
+              // Kontak pendaftaran: nomor/email khusus panitia PPDB bila
+              // sudah diatur admin; jika belum, jatuh ke kontak umum sekolah
+              // dengan keterangan jujur — bukan nomor karangan.
+              $contact = $data['contact'];
+              $ppdbPhone = filled($contact['phones']['ppdb'] ?? null) ? $contact['phones']['ppdb'] : ($contact['phones']['general'] ?? null);
+              $ppdbWhatsapp = filled($contact['whatsapp']['ppdb'] ?? null) ? $contact['whatsapp']['ppdb'] : ($contact['whatsapp']['general'] ?? null);
+              $ppdbEmail = filled($contact['emails']['ppdb'] ?? null) ? $contact['emails']['ppdb'] : ($contact['emails']['general'] ?? null);
+              $hasCommitteeContact = filled($contact['phones']['ppdb'] ?? null)
+                  || filled($contact['whatsapp']['ppdb'] ?? null)
+                  || filled($contact['emails']['ppdb'] ?? null);
+              $channelLabel = $hasCommitteeContact ? 'panitia' : 'sekolah';
+            @endphp
+            @if ($ppdbPhone || $ppdbWhatsapp || $ppdbEmail)
+              <h2>Kontak pendaftaran</h2>
+              <div class="ppdb-help">
+                @if ($ppdbWhatsapp)
+                  <a href="{{ \App\Support\WhatsApp::link($ppdbWhatsapp, 'Halo panitia PPDB SMK INFOKOM, saya ingin bertanya tentang penerimaan murid baru.') }}" target="_blank" rel="noopener">WhatsApp {{ $channelLabel }} <span aria-hidden="true">→</span></a>
+                @endif
+                @if ($ppdbPhone)
+                  <a href="tel:{{ preg_replace('/[^0-9+]/', '', $ppdbPhone) }}">Telepon {{ $channelLabel }}: {{ $ppdbPhone }}</a>
+                @endif
+                @if ($ppdbEmail)
+                  <a href="mailto:{{ $ppdbEmail }}">Email {{ $channelLabel }}: {{ $ppdbEmail }}</a>
+                @endif
+              </div>
+              @unless ($hasCommitteeContact)
+                <p class="ppdb-help-note">Kontak khusus panitia PPDB belum diatur. Pertanyaan pendaftaran dapat disampaikan lewat kontak umum sekolah.</p>
+              @endunless
+            @endif
           </aside>
         </div>
+        @if ($data['spmb']['faq'] !== [])
+          <section class="ppdb-faq" aria-labelledby="faqTitle">
+            <h2 id="faqTitle">Pertanyaan umum pendaftaran</h2>
+            <div class="ppdb-faq-list">
+              @foreach ($data['spmb']['faq'] as $item)
+                <details class="ppdb-faq-item">
+                  <summary>{{ $item['question'] }}</summary>
+                  <p>{{ $item['answer'] }}</p>
+                </details>
+              @endforeach
+            </div>
+          </section>
+        @endif
       @elseif ($section === 'informasi')
         <div class="detail-split">
           <div id="berita"><h2>Berita terbaru</h2><div class="detail-list">
@@ -504,17 +825,118 @@
           </aside>
         </div>
       @elseif ($section === 'alumni')
-        <div class="detail-split">
-          <div><h2>Cerita alumni</h2><div class="detail-grid detail-grid-compact">
-            @forelse ($data['alumni'] as $alumnus)
-              <blockquote class="detail-card">@if (filled($alumnus->quote))<p>“{{ $alumnus->quote }}”</p>@endif<footer><b>{{ $alumnus->name }}</b><span>{{ $alumnus->role_desc }}</span></footer></blockquote>
-            @empty<p class="detail-empty">Cerita alumni akan segera tersedia.</p>@endforelse
-          </div></div>
-          <aside class="detail-agenda"><h2>Tracer study</h2>
-            @forelse ($data['tracer'] as $stat)
-              <article><span class="detail-tag">{{ $stat->value }}%</span><div><h3>{{ $stat->label }}</h3><meter class="detail-meter" min="0" max="100" value="{{ min($stat->value, 100) }}">{{ $stat->value }}%</meter></div></article>
-            @empty<p class="detail-empty">Data tracer study belum tersedia.</p>@endforelse
-          </aside>
+        @php
+          // Alumni yang perjalanannya ke Jepang sudah tercatat pada data
+          // (role_desc memuat "Jepang") — tidak dikarang, diambil dari DB.
+          $jepangAlumni = $data['alumni']->filter(fn ($a) => stripos($a->role_desc ?? '', 'jepang') !== false);
+        @endphp
+
+        {{-- Testimoni / cerita perjalanan alumni --}}
+        <div class="sh-row">
+          <div class="sh">
+            <span class="detail-eyebrow">Cerita lulusan</span>
+            <h2>Perjalanan alumni</h2>
+            <p>Setelah menyelesaikan pendidikan, lulusan SMK INFOKOM melangkah ke dunia kerja, wirausaha, atau lanjut studi.</p>
+          </div>
+        </div>
+        <div class="alumni-carousel" data-carousel>
+          <div class="alumni-carousel-viewport" data-carousel-viewport tabindex="0" aria-label="Geser daftar cerita alumni">
+            <div class="detail-grid detail-grid-compact alumni-grid alumni-grid--track">
+              @forelse ($data['alumni'] as $alumnus)
+                <article class="detail-card alumni-card">
+                  <div class="alumni-avatar" aria-hidden="true">{{ $alumnus->initials }}</div>
+                  <b class="alumni-name">{{ $alumnus->name }}</b>
+                  <span class="detail-tag">{{ $alumnus->role_desc }}</span>
+                  @if (filled($alumnus->quote))
+                    <p class="alumni-quote">“{{ $alumnus->quote }}”</p>
+                  @else
+                    <p class="detail-empty alumni-empty">Cerita lengkap alumni ini akan ditampilkan setelah disetujui untuk dipublikasikan.</p>
+                  @endif
+                </article>
+              @empty
+                <p class="detail-empty">Cerita alumni akan segera tersedia.</p>
+              @endforelse
+            </div>
+          </div>
+          <div class="alumni-carousel-controls">
+            <button class="carousel-btn" type="button" data-carousel-prev aria-label="Geser cerita alumni ke kiri">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="carousel-btn" type="button" data-carousel-next aria-label="Geser cerita alumni ke kanan">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {{-- Alumni & Magang Jepang: hanya lulusan yang perjalanannya tercatat. --}}
+        @if ($jepangAlumni->isNotEmpty())
+          <div class="sh-row">
+            <div class="sh">
+              <span class="detail-eyebrow">Magang Jepang</span>
+              <h2>Lulusan yang melangkah ke Jepang</h2>
+              <p>Sebagian lulusan melanjutkan perjalanan melalui program magang di Jepang setelah menyelesaikan pendidikan di SMK INFOKOM.</p>
+            </div>
+          </div>
+          <div class="detail-grid detail-grid-compact">
+            @foreach ($jepangAlumni as $alumnus)
+              <article class="detail-card alumni-card">
+                <div class="alumni-avatar" aria-hidden="true">{{ $alumnus->initials }}</div>
+                <b class="alumni-name">{{ $alumnus->name }}</b>
+                <p class="alumni-quote">{{ $alumnus->role_desc }}</p>
+              </article>
+            @endforeach
+          </div>
+        @endif
+
+        {{-- Statistik lulusan & BMW (bekerja / melanjutkan / wirausaha). --}}
+        <div class="sh-row">
+          <div class="sh">
+            <span class="detail-eyebrow">Statistik lulusan</span>
+            <h2>Bekerja, lanjut studi, atau berwirausaha</h2>
+            <p>Gambaran aktivitas lulusan setelah kelulusan, dari data tracer study yang dapat dipertanggungjawabkan.</p>
+          </div>
+        </div>
+        @if ($data['tracer']->isNotEmpty())
+          <div class="tracer-list">
+            @foreach ($data['tracer'] as $stat)
+              <article class="tracer-row">
+                <span class="tracer-label">{{ $stat->label }}</span>
+                <span class="tracer-bar"><i style="width: {{ min($stat->value, 100) }}%"></i></span>
+                <span class="tracer-value">{{ $stat->value }}%</span>
+              </article>
+            @endforeach
+          </div>
+          <p class="tracer-note">Diperbarui {{ \Illuminate\Support\Carbon::now()->locale('id')->translatedFormat('j F Y') }} · persentase dari responden tracer study, mewakili lulusan yang berhasil dihubungi.</p>
+        @else
+          <p class="detail-empty">Data tracer study lulusan akan dipublikasikan setelah diverifikasi. Angka bekerja, melanjutkan pendidikan, dan berwirausaha akan muncul di sini ketika survei resmi tersedia.</p>
+        @endif
+
+        {{-- Penjelasan tracer study & cara berkontribusi. --}}
+        <div class="sh-row">
+          <div class="sh">
+            <span class="detail-eyebrow">Ikut serta</span>
+            <h2>Bagaimana data ini dikumpulkan</h2>
+          </div>
+        </div>
+        <div class="detail-grid detail-grid-compact">
+          <article class="detail-card">
+            <h3>Apa itu tracer study?</h3>
+            <p>Survei yang mengikuti jejak lulusan setelah kelulusan untuk mengetahui jalur kerja, studi, atau wirausaha yang ditempuh.</p>
+          </article>
+          <article class="detail-card">
+            <h3>Mengapa dikumpulkan?</h3>
+            <p>Hasilnya menolong sekolah mengevaluasi mutu pendidikan dan menyelaraskan pembelajaran dengan kebutuhan dunia kerja.</p>
+          </article>
+          <article class="detail-card">
+            <h3>Data dilindungi</h3>
+            <p>Informasi pribadi alumni hanya dipakai untuk keperluan evaluasi dan ditampilkan sebagaimana disetujui pemiliknya.</p>
+          </article>
+        </div>
+
+        {{-- CTA kontribusi: mengarah ke kanal kontak resmi yang nyata. --}}
+        <div class="program-actions">
+          <a class="btn btn-brand" href="{{ route('site.section', 'kontak') }}">Bagikan cerita atau isi tracer study</a>
+          <a class="btn btn-line" href="{{ route('site.section', 'jepang') }}">Kenali program Magang Jepang</a>
         </div>
       @elseif ($section === 'kontak')
         <div class="contact-layout">

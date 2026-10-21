@@ -14,24 +14,24 @@
 }
 
 :root {
-    --navy: #0e1454;
-    --navy-2: #161f6e;
-    --brand: #2a3fe0;
-    --accent: #f5c518;
-    --red: #d9241b;
-    --bg: #ffffff;
-    --mist: #f2f5fa;
+    --navy: #243476;
+    --navy-2: #2f4190;
+    --brand: #3446b4;
+    --accent: #f2cf4a;
+    --red: #c8463d;
+    --bg: #fdfcf8;
+    --mist: #f5f2e9;
     --surface: #ffffff;
-    --ink: #141c30;
-    --muted: #566079;
-    --line: #dce3ef;
+    --ink: #1e2336;
+    --muted: #5d6377;
+    --line: #e5e1d4;
     --link: var(--brand);
     --on-bg: var(--navy);
     --nav-ink: var(--navy);
     --focus: var(--brand);
-    --danger: #c43d4b;
-    --ok: #1e8e5a;
-    --warn: #9a6500;
+    --danger: #b8434e;
+    --ok: #2a7d57;
+    --warn: #8a5f00;
     --fd: "Bricolage Grotesque", "Segoe UI", Arial, sans-serif;
     --fb: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
     box-sizing: border-box;
@@ -41,16 +41,16 @@
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --bg: #0a1226;
-        --mist: #0e1932;
-        --surface: #121e3b;
-        --ink: #e8edf8;
-        --muted: #9ba8c4;
-        --line: #243359;
+        --bg: #11172e;
+        --mist: #161e3a;
+        --surface: #1a2344;
+        --ink: #e9ecf6;
+        --muted: #a1a9c4;
+        --line: #2b3560;
         --link: color-mix(in srgb, var(--brand) 50%, #fff);
-        --on-bg: var(--brand);
+        --on-bg: #b9c5f7;
         --nav-ink: var(--ink);
-        --focus: #9db8ff;
+        --focus: #b6c3ff;
         --danger: #ff8494;
         --ok: #5fd3a0;
         --warn: #ffc857;
@@ -58,16 +58,16 @@
 }
 
 :root[data-theme="dark"] {
-    --bg: #0a1226;
-    --mist: #0e1932;
-    --surface: #121e3b;
-    --ink: #e8edf8;
-    --muted: #9ba8c4;
-    --line: #243359;
+    --bg: #11172e;
+    --mist: #161e3a;
+    --surface: #1a2344;
+    --ink: #e9ecf6;
+    --muted: #a1a9c4;
+    --line: #2b3560;
     --link: color-mix(in srgb, var(--brand) 50%, #fff);
-    --on-bg: var(--brand);
+    --on-bg: #b9c5f7;
     --nav-ink: var(--ink);
-    --focus: #9db8ff;
+    --focus: #b6c3ff;
     --danger: #ff8494;
     --ok: #5fd3a0;
     --warn: #ffc857;
@@ -169,10 +169,10 @@ p {
 .admin-status {
     margin: 16px 0;
     padding: 12px 16px;
-    border: 1px solid #b9e4cc;
+    border: 1px solid color-mix(in srgb, var(--ok) 35%, var(--surface));
     border-radius: 6px;
-    background: #eef9f2;
-    color: #247747;
+    background: color-mix(in srgb, var(--ok) 10%, var(--surface));
+    color: var(--ok);
     font-size: 0.82rem;
 }
 
@@ -216,7 +216,6 @@ p {
 .btn-accent {
     background: var(--accent);
     color: #1a1400;
-    box-shadow: 0 12px 24px rgb(245 197 24 / 18%);
 }
 
 .btn-accent:hover {
@@ -236,7 +235,6 @@ p {
 .btn-brand {
     background: var(--brand);
     color: #fff;
-    box-shadow: 0 12px 24px rgb(245 197 24 / 18%);
 }
 
 .btn-brand:hover {
@@ -275,4 +273,13 @@ p {
 
 .icon-btn:hover {
     border-color: var(--muted);
+}
+
+/* Logo sekolah di navbar, footer, dan sidebar admin */
+.brand-logo {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: contain;
 }

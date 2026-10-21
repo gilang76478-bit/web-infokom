@@ -17,7 +17,11 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     reporter: [['list']],
-    timeout: 30_000,
+    // Server pengembangan PHP single-threaded: render PDF (~2 detik) menumpuk
+    // di belakangnya sehingga permintaan halaman lain ikut menunggu saat seluruh
+    // worker berjalan paralel. Batas 60 detik menampung antrean itu tanpa
+    // melonggarkan assertion apa pun.
+    timeout: 60_000,
     use: {
         baseURL,
         locale: 'id-ID',
@@ -26,7 +30,7 @@ export default defineConfig({
     projects: [
         {
             name: 'desktop',
-            testMatch: /desktop-dropdown\.spec\.js/,
+            testMatch: /(desktop-dropdown|profil-scrollspy|ppdb-printable|motion-interactions)\.spec\.js/,
             use: {
                 ...devices['Desktop Chrome'],
                 viewport: { width: 1440, height: 900 },

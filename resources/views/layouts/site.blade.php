@@ -33,7 +33,8 @@
             'section' => 'akademik',
             'items' => [
                 ['label' => 'Program Keahlian', 'url' => route('site.section', 'akademik') . '#program-keahlian'],
-                ['label' => 'Guru & Tenaga Kependidikan', 'url' => route('site.section', 'profil') . '#guru'],
+                ['label' => 'Guru & Tenaga Kependidikan', 'url' => route('guru.index')],
+                ['label' => 'Bursa Kerja Khusus (BKK)', 'url' => route('bkk.index')],
             ],
         ],
         'Kesiswaan' => [
@@ -70,18 +71,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#102a65">
+  <meta name="theme-color" content="#243476">
+  <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png') }}">
+  <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
   <meta name="robots" content="index,follow">
   <meta name="description" content="{{ $siteDescription }}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="@yield('ogType', 'website')">
   <meta property="og:site_name" content="SMK INFOKOM">
   <meta property="og:title" content="{{ $siteTitle }}">
   <meta property="og:description" content="{{ $siteDescription }}">
   <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:image" content="@yield('ogImage', \App\Support\SchoolSettings::logoUrl('images/logo-512.png'))">
+  @stack('og')
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ $siteTitle }}">
   <meta name="twitter:description" content="{{ $siteDescription }}">
   <link rel="canonical" href="{{ url()->current() }}">
+  {{-- Data terstruktur Schema.org: node identitas sekolah tampil di seluruh
+       halaman, dan tiap halaman bagian menambahkan remah navigasi lewat
+       stack jsonld di bawah. --}}
+  {!! \App\Support\StructuredData::script(\App\Support\StructuredData::school()) !!}
+  @stack('jsonld')
   <title>{{ $siteTitle }}</title>
   {{-- Font diunduh saat build Vite dan disajikan dari /build (self-hosted). --}}
   @vite(['resources/css/site.css', 'resources/js/site.js'])
@@ -90,7 +101,7 @@
   <header class="nav">
     <div class="container nav-in">
       <a class="brand" href="{{ route('home') }}" aria-label="SMK INFOKOM, beranda">
-        <span class="detail-mark" aria-hidden="true">IF</span>
+        <img class="brand-logo" src="{{ \App\Support\SchoolSettings::logoUrl() }}" width="40" height="40" alt="">
         <span><b>SMK INFOKOM</b></span>
       </a>
       <nav class="menu" id="menu" aria-label="Menu utama">
@@ -130,8 +141,8 @@
     <div class="container home-footer">
       <div>
         <a class="brand" href="{{ route('home') }}">
-          <span class="detail-mark" aria-hidden="true">IF</span>
-          <span><b>{{ $school['name'] ?? 'SMK INFOKOM' }}</b><small>Teknologi, industri, dunia</small></span>
+          <img class="brand-logo" src="{{ \App\Support\SchoolSettings::logoUrl() }}" width="40" height="40" alt="">
+          <span><b>{{ $school['name'] ?? 'SMK INFOKOM' }}</b><small>Bogor, Jawa Barat</small></span>
         </a>
         <p>Sekolah vokasi yang menyiapkan lulusan untuk bekerja, berwirausaha, dan melanjutkan pendidikan.</p>
       </div>
@@ -171,6 +182,7 @@
       <div>
         <h3>Informasi</h3>
         <a href="{{ route('site.section', 'ppdb') }}">PPDB</a>
+        <a href="{{ route('ppdb.printable') }}">Formulir pendaftaran cetak</a>
         <a href="{{ route('site.section', 'informasi') }}">Berita & agenda</a>
         <a href="{{ route('site.section', 'kontak') }}">Hubungi sekolah</a>
         <a href="{{ route('site.section', 'jepang') }}">Magang Jepang</a>

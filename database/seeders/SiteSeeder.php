@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\{Category, Program, Post, Agenda, Achievement, GalleryItem, JapanStep, Partner, Alumnus, TracerStat, Announcement};
+use App\Models\{Category, Program, Post, Agenda, Achievement, GalleryItem, JapanReel, JapanStep, Alumnus, TracerStat, Announcement};
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
@@ -12,12 +14,40 @@ class SiteSeeder extends Seeder
     {
         $data = json_decode(file_get_contents(database_path('seeders/data/site.json')), true);
 
+        // Foto per baris (artikel berita, foto galeri, foto jurusan): berkas
+        // sumber berada di database/seeders/data/photos/<grup> dan disalin ke
+        // disk publik sebelum baris dibuat — dilewati bila target sudah ada
+        // agar unggahan admin yang lebih baru tidak tertimpa.
+        $photoGroups = [
+            'posts' => 'posts',
+            'gallery_items' => 'gallery',
+            'programs' => 'programs',
+        ];
+
+        foreach ($photoGroups as $key => $sourceGroup) {
+            foreach ($data[$key] as $row) {
+                $path = $row['image_path'] ?? $row['photo_path'] ?? null;
+
+                if (blank($path) || Storage::disk('public')->exists($path)) {
+                    continue;
+                }
+
+                $source = database_path('seeders/data/photos/'.$sourceGroup.'/'.basename($path));
+
+                if (is_file($source)) {
+                    Storage::disk('public')->put($path, File::get($source));
+                }
+            }
+        }
+
+        // Mitra kerja sama memakai seeder sendiri (PartnerSeeder) karena
+        // perlu menyalin 14 logo HD ke disk publik sebelum baris dibuat.
         $map = [
             'programs'      => Program::class,
             'agendas'       => Agenda::class,
             'achievements'  => Achievement::class,
             'japan_steps'   => JapanStep::class,
-            'partners'      => Partner::class,
+            'japan_reels'   => JapanReel::class,
             'alumni'        => Alumnus::class,
             'tracer_stats'  => TracerStat::class,
             'announcements' => Announcement::class,
@@ -74,5 +104,8 @@ class SiteSeeder extends Seeder
         }
 
         $this->call(TeacherSeeder::class);
+        $this->call(PartnerSeeder::class);
+        $this->call(FacilitySeeder::class);
+        $this->call(VacancySeeder::class);
     }
 }

@@ -38,5 +38,13 @@ class SchoolSettingFields
         'school_youtube_url' => ['label' => 'YouTube', 'rules' => 'nullable|url|max:255'],
         'school_other_social_url' => ['label' => 'Sosial media lain', 'rules' => 'nullable|url|max:255'],
         'school_hours' => ['label' => 'Jam operasional (setiap baris: Hari|Jam)', 'rules' => 'nullable|string|max:2000'],
+
+        // Penerimaan murid baru (SPMB/PPDB). Dikosongkan untuk mengembalikan
+        // teks alur/FAQ ke bawaan sistem; persyaratan tampil bila diisi admin.
+        'ppdb_status' => ['label' => 'Status pendaftaran (mis. Formulir pendaftaran daring aktif)', 'rules' => 'nullable|string|max:160'],
+        'ppdb_period' => ['label' => 'Periode pendaftaran (mis. Tahun Ajaran 2026/2027)', 'rules' => 'nullable|string|max:120'],
+        'ppdb_requirements' => ['label' => 'Persyaratan pendaftaran (satu baris satu syarat)', 'type' => 'textarea', 'rules' => 'nullable|string|max:4000'],
+        'ppdb_steps' => ['label' => 'Alur pendaftaran (satu baris: Judul|Penjelasan)', 'type' => 'textarea', 'rules' => 'nullable|string|max:4000'],
+        'ppdb_faq' => ['label' => 'FAQ pendaftaran (satu baris: Pertanyaan|Jawaban)', 'type' => 'textarea', 'rules' => 'nullable|string|max:8000'],
     ];
 }

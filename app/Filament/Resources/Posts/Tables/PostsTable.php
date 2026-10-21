@@ -8,6 +8,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -18,6 +19,11 @@ class PostsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('image_path')
+                    ->label('Foto')
+                    ->disk('public')
+                    ->square()
+                    ->placeholder('Tanpa foto'),
                 TextColumn::make('title')
                     ->label('Judul')
                     ->searchable()
@@ -30,6 +36,12 @@ class PostsTable
                 TextColumn::make('published_at')
                     ->label('Terbit')
                     ->date('j M Y')
+                    ->sortable(),
+                TextColumn::make('is_published')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Terbit' : 'Draf')
+                    ->color(fn ($state) => $state ? 'success' : 'gray')
                     ->sortable(),
                 TextColumn::make('slug')
                     ->label('Slug')

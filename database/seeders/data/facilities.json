@@ -1,0 +1,80 @@
+[
+    {
+        "title": "Gedung Kelas",
+        "description": "Gedung tempat kegiatan belajar mengajar siswa SMK INFOKOM.",
+        "photo_file": "gedung-kelas.jpg",
+        "sort_order": 1
+    },
+    {
+        "title": "Ruang Kelas",
+        "description": "Ruang belajar yang nyaman untuk menunjang proses pembelajaran.",
+        "photo_file": "kelas.jpg",
+        "sort_order": 2
+    },
+    {
+        "title": "Laboratorium Komputer",
+        "description": "Ruang praktik untuk pembelajaran teknologi informasi dan komputasi.",
+        "photo_file": "laboratorium.jpg",
+        "sort_order": 3
+    },
+    {
+        "title": "Laboratorium RPL",
+        "description": "Ruang praktik Rekayasa Perangkat Lunak untuk proyek dan tugas kejuruan.",
+        "photo_file": "lab-rpl.jpg",
+        "sort_order": 4
+    },
+    {
+        "title": "Laboratorium PSPT",
+        "description": "Ruang praktik Produksi dan Siaran Program Televisi.",
+        "photo_file": "lab-pspt.jpg",
+        "sort_order": 5
+    },
+    {
+        "title": "Perpustakaan",
+        "description": "Sumber bacaan dan referensi untuk mendukung tugas dan proyek siswa.",
+        "photo_file": "perpustakaan.jpg",
+        "sort_order": 6
+    },
+    {
+        "title": "Ruang Guru",
+        "description": "Ruang kerja dan koordinasi tenaga pendidik dan kependidikan.",
+        "photo_file": "ruang-guru.jpg",
+        "sort_order": 7
+    },
+    {
+        "title": "Ruang Kepala Sekolah",
+        "description": "Ruang pimpinan sekolah untuk pelayanan dan koordinasi warga sekolah.",
+        "photo_file": "ruang-kepsek.jpg",
+        "sort_order": 8
+    },
+    {
+        "title": "Ruang Tata Usaha",
+        "description": "Ruang kerja dan pelayanan administrasi sekolah.",
+        "photo_file": "tu.jpg",
+        "sort_order": 9
+    },
+    {
+        "title": "Ruang Tata Usaha 2",
+        "description": "Ruang layanan administrasi tambahan untuk warga sekolah.",
+        "photo_file": "tu2.jpg",
+        "sort_order": 10
+    },
+    {
+        "title": "Kantin Sekolah",
+        "description": "Fasilitas makan dan kebutuhan sehari-hari siswa serta guru.",
+        "photo_file": "kantin.jpg",
+        "sort_order": 11
+    },
+    {
+        "title": "Mushola",
+        "description": "Ruang ibadah untuk aktivitas keagamaan siswa dan warga sekolah.",
+        "photo_file": "musholla.jpg",
+        "sort_order": 12
+    },
+    {
+        "title": "Taman Sekolah",
+        "description": "Area hijau sekolah untuk istirahat dan kegiatan luar ruangan.",
+        "photo_file": "taman.jpg",
+        "sort_order": 13
+    }
+]

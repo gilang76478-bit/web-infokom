@@ -5,6 +5,12 @@
 ])
 
 @section('content')
+  {{-- Galeri adalah bagian kesebelas; remah navigasi Schema.org mengikuti
+       metadata yang sama dengan beranda & sitemap. --}}
+  @push('jsonld')
+    {!! \App\Support\StructuredData::script(\App\Support\StructuredData::breadcrumb('Galeri kegiatan', route('galeri.index'))) !!}
+  @endpush
+
   <section class="detail-hero">
     <div class="container">
       <p class="detail-eyebrow">Dokumentasi</p>
@@ -32,9 +38,10 @@
       @else
         <div class="galeri-grid">
           @foreach ($items as $item)
-            <figure @class(['galeri-card', 'size-w' => $item->size === 'w'])>
+            <figure @class(['galeri-card', 'size-w' => $item->size === 'w']) @if ($item->url) data-lightbox-item @endif>
               @if ($item->url)
                 <img src="{{ $item->url }}" alt="{{ $item->title }}" loading="lazy" decoding="async">
+                <span class="galeri-zoom" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M11 8.5v5M8.5 11h5"/></svg></span>
               @else
                 <div class="galeri-placeholder galeri-art-{{ $item->art }}" role="img" aria-label="{{ $item->title }}"></div>
               @endif

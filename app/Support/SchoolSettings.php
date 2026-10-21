@@ -134,6 +134,33 @@ class SchoolSettings
     }
 
     /**
+     * Path logo sekolah pada disk publik (hasil unggahan lewat panel),
+     * atau null bila admin belum mengganti logo.
+     */
+    public static function logoPath(): ?string
+    {
+        if (! Schema::hasTable('site_settings')) {
+            return null;
+        }
+
+        $path = SiteSetting::where('key', 'school_logo')->value('value');
+
+        return filled($path) ? (string) $path : null;
+    }
+
+    /**
+     * URL logo sekolah untuk ditampilkan (header, footer, beranda,
+     * media sosial, hasil pencarian). Memakai logo unggahan admin;
+     * bila belum ada, memakai berkas bawaan agar tampilan tetap utuh.
+     */
+    public static function logoUrl(string $fallback = 'images/logo-192.png'): string
+    {
+        $path = self::logoPath();
+
+        return $path !== null ? asset('storage/'.$path) : asset($fallback);
+    }
+
+    /**
      * Data dinamis untuk halaman profil (/profil).
      *\     * Default sengaja persis sama dengan teks yang selama ini hardcoded di
      * view, sehingga tampilan tidak berubah sampai admin mengisi pengaturan.
@@ -149,6 +176,9 @@ class SchoolSettings
             'accreditation' => '',
             'principal_name' => '',
             'principal_title' => 'Kepala SMK INFOKOM',
+            // Foto bagian "Profil" di halaman utama (gedung sekolah / kepsek);
+            // diisi lewat panel Pengaturan Profil, nilai berupa path disk publik.
+            'home_photo' => '',
             'sambutan_title' => 'Selamat Datang di SMK INFOKOM',
             'sambutan_paragraphs' => [
                 "Assalamu'alaikum Warahmatullahi Wabarakatuh.",
@@ -163,18 +193,6 @@ class SchoolSettings
                 'Membangun karakter disiplin, bertanggung jawab, kreatif, dan profesional.',
                 'Mendorong pemanfaatan teknologi dalam proses pembelajaran.',
                 'Membangun kemitraan yang kuat dengan dunia usaha dan dunia industri.',
-            ],
-            'facilities' => [
-                ['title' => 'Laboratorium Komputer', 'description' => 'Ruang praktik untuk pembelajaran teknologi informasi dan komputasi.'],
-                ['title' => 'Ruang Kelas', 'description' => 'Lingkungan belajar yang nyaman dan mendukung proses pembelajaran.'],
-                ['title' => 'Perpustakaan', 'description' => 'Sumber bacaan dan referensi untuk mendukung tugas dan proyek siswa.'],
-                ['title' => 'Bengkel / Workshop', 'description' => 'Tempat praktik kejuruan sesuai bidang keahlian masing-masing.'],
-                ['title' => 'Ruang Praktik', 'description' => 'Fasilitas praktik khusus untuk proyek dan tugas kejuruan.'],
-                ['title' => 'Aula', 'description' => 'Ruang pertemuan, upacara, dan kegiatan sekolah bersama.'],
-                ['title' => 'Lapangan', 'description' => 'Area olahraga dan kegiatan fisik luar ruangan.'],
-                ['title' => 'UKS', 'description' => 'Unit Kesehatan Sekolah untuk layanan kesehatan siswa.'],
-                ['title' => 'Musala', 'description' => 'Ruang ibadah untuk aktivitas keagamaan dan spiritual siswa.'],
-                ['title' => 'Kantin', 'description' => 'Fasilitas wadah untuk kebutuhan sehari-hari siswa dan guru.'],
             ],
             // Riwayat sekolah. Bawaan sengaja sama dengan teks placeholder yang
             // selama ini hardcoded di view (/profil #sejarah), sehingga tampilan
@@ -200,6 +218,7 @@ class SchoolSettings
             'profile_accreditation' => 'accreditation',
             'profile_principal_name' => 'principal_name',
             'profile_principal_title' => 'principal_title',
+            'profile_home_photo' => 'home_photo',
             'profile_sambutan_title' => 'sambutan_title',
             'profile_vision' => 'vision',
         ];
@@ -228,22 +247,9 @@ class SchoolSettings
             }
         }
 
-        $facilities = collect(self::lines($stored['profile_facilities'] ?? null))
-            ->map(function (string $row) {
-                $parts = array_pad(explode('|', $row, 2), 2, '');
-
-                return [
-                    'title' => trim($parts[0]),
-                    'description' => trim($parts[1]),
-                ];
-            })
-            ->filter(fn (array $item) => $item['title'] !== '')
-            ->values()
-            ->all();
-
-        if ($facilities !== []) {
-            $profile['facilities'] = $facilities;
-        }
+        // Fasilitas sekolah tidak lagi berasal dari pengaturan teks:
+        // kini menjadi modul konten (tabel facilities) dengan foto HD yang
+        // dikelola lewat panel admin, sehingga tidak ada key profile_facilities.
 
         // Riwayat sekolah: satu baris = satu tonggak dengan format
         // "Tahun|Judul|Keterangan". Baris kosong diabaikan.
@@ -305,6 +311,90 @@ class SchoolSettings
             ->all();
 
         return $profile;
+    }
+
+    /**
+     * Data halaman penerimaan murid baru (SPMB/PPDB).
+     *
+     * Bawaan sengaja hanya berisi hal yang benar-benar dipenuhi sistem:
+     * formulir daring aktif, periode sesuai berita SPMB yang diterbitkan,
+     * alur empat langkah proses daring di situs ini, dan FAQ yang menjawab
+     * pertanyaan berdasarkan cara kerja formulir. Daftar persyaratan dokumen
+     * sengaja kosong sampai admin mengisinya — panitia yang memutuskan
+     * dokumen wajib, bukan perkiraan sistem.
+     */
+    public static function ppdb(): array
+    {
+        $ppdb = [
+            'status' => 'Formulir pendaftaran daring aktif',
+            'period' => 'Tahun Ajaran 2026/2027',
+            'requirements' => [],
+            'steps' => [
+                ['title' => 'Siapkan data', 'description' => 'Siapkan nama calon murid, nomor telepon aktif, asal sekolah, dan pilihan program keahlian.'],
+                ['title' => 'Isi formulir daring', 'description' => 'Lengkapi formulir di halaman ini, lalu setujui penyampaian data kepada panitia.'],
+                ['title' => 'Simpan nomor pendaftaran', 'description' => 'Nomor pendaftaran tampil di layar setelah formulir terkirim. Simpan sebagai bukti pendaftaran.'],
+                ['title' => 'Pantau informasi resmi', 'description' => 'Pembaruan diumumkan melalui berita kategori PPDB. Pertanyaan lanjutan disampaikan ke panitia melalui kontak di halaman ini.'],
+            ],
+            'faq' => [
+                ['question' => 'Apakah pendaftaran dilakukan melalui daring?', 'answer' => 'Ya. Formulir di halaman ini adalah jalur pendaftaran resmi pada situs sekolah; data Anda diteruskan ke panitia setelah dikirim.'],
+                ['question' => 'Apakah ada formulir yang bisa dicetak?', 'answer' => 'Ada. Halaman Formulir Pendaftaran menyediakan formulir siap cetak untuk pendaftaran langsung ke sekolah: cetak, isi dengan huruf cetak, lalu serahkan ke panitia PPDB beserta dokumen persyaratan.'],
+                ['question' => 'Bagaimana saya tahu pendaftaran berhasil?', 'answer' => 'Setelah formulir terkirim, nomor pendaftaran tampil di layar. Simpan nomor tersebut sebagai bukti pendaftaran.'],
+                ['question' => 'Ke mana pertanyaan lebih lanjut disampaikan?', 'answer' => 'Hubungi panitia PPDB melalui telepon, WhatsApp, atau email yang tercantum pada halaman ini.'],
+                ['question' => 'Di mana informasi resmi diumumkan?', 'answer' => 'Informasi resmi penerimaan murid baru diterbitkan melalui halaman Berita pada kategori PPDB.'],
+            ],
+        ];
+
+        if (! Schema::hasTable('site_settings')) {
+            return $ppdb;
+        }
+
+        // Seluruh pengaturan diambil dengan satu kueri.
+        $stored = SiteSetting::pluck('value', 'key');
+
+        $mapping = [
+            'ppdb_status' => 'status',
+            'ppdb_period' => 'period',
+        ];
+
+        foreach ($mapping as $dbKey => $field) {
+            $value = $stored[$dbKey] ?? null;
+            if (filled($value)) {
+                $ppdb[$field] = $value;
+            }
+        }
+
+        // Persyaratan ditampilkan hanya bila admin mengisi (satu baris satu
+        // syarat); kosong = daftar resmi belum dipublish panitia.
+        $requirements = self::lines($stored['ppdb_requirements'] ?? null);
+        if ($requirements !== []) {
+            $ppdb['requirements'] = $requirements;
+        }
+
+        $pairs = static fn (array $rows): array => collect($rows)
+            ->map(function (string $row) {
+                $parts = array_pad(explode('|', $row, 2), 2, '');
+
+                return ['title' => trim($parts[0]), 'description' => trim($parts[1])];
+            })
+            ->filter(fn (array $item) => $item['title'] !== '')
+            ->values()
+            ->all();
+
+        $steps = $pairs(self::lines($stored['ppdb_steps'] ?? null));
+        if ($steps !== []) {
+            $ppdb['steps'] = $steps;
+        }
+
+        $faq = collect($pairs(self::lines($stored['ppdb_faq'] ?? null)))
+            ->map(fn (array $item) => ['question' => $item['title'], 'answer' => $item['description']])
+            ->values()
+            ->all();
+
+        if ($faq !== []) {
+            $ppdb['faq'] = $faq;
+        }
+
+        return $ppdb;
     }
 
     /**

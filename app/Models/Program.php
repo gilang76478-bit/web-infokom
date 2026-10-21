@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Program extends Model
@@ -12,6 +13,7 @@ class Program extends Model
         'short',
         'slug',
         'icon',
+        'photo_path',
         'name',
         'description',
         'skills',
@@ -34,6 +36,32 @@ class Program extends Model
                 $program->slug = static::makeUniqueSlug($program->name, $program->short);
             }
         });
+
+        // Foto jurusan ikut terhapus dari disk publik saat catutan dihapus
+        // agar tidak ada berkas yatim. Penggantian/penghapusan foto saat
+        // edit ditangani AdminContentController (field bertipe berkas).
+        static::deleted(function (Program $program): void {
+            if (filled($program->photo_path) && ! preg_match('#^(https?:)?//#i', $program->photo_path)) {
+                Storage::disk('public')->delete($program->photo_path);
+            }
+        });
+    }
+
+    /**
+     * URL tampilan foto jurusan. Nilai URL eksternal dipakai apa adanya;
+     * berkas hasil unggahan direlasikan terhadap disk publik.
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (blank($this->photo_path)) {
+            return null;
+        }
+
+        if (preg_match('#^(https?:)?//#i', $this->photo_path) || str_starts_with($this->photo_path, '/')) {
+            return $this->photo_path;
+        }
+
+        return asset('storage/'.ltrim($this->photo_path, '/'));
     }
 
     public function teachers(): HasMany

@@ -5,8 +5,10 @@ use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\AdminContactController;
 use App\Http\Controllers\AdminPpdbController;
 use App\Http\Controllers\AdminSettingsController;
+use App\Http\Controllers\BkkController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\GaleriController;
+use App\Http\Controllers\GuruController;
 use App\Http\Controllers\PpdbApplicantController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProgramController;
@@ -30,9 +32,34 @@ Route::get('/berita/{post:slug}', [PostController::class, 'show'])
 Route::get('/galeri', [GaleriController::class, 'index'])
 	->name('galeri.index');
 
+// Direktori guru & tenaga kependidikan, ditempatkan sebelum rute tangkap-lambung.
+Route::get('/guru', [GuruController::class, 'index'])
+	->name('guru.index');
+
+// Halaman Bursa Kerja Khusus (BKK): poster lowongan + berita kategori BKK,
+// ditempatkan sebelum rute tangkap-lambung /{section}.
+Route::get('/bkk', [BkkController::class, 'index'])
+	->name('bkk.index');
+
+// Berkas bantu mesin pencari. robots.txt kini dinamis agar menunjuk ke
+// sitemap.xml dengan domain yang benar; keduanya ditempatkan sebelum rute
+// tangkap-lambung /{section} agar tidak tertangkap olehnya.
+Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])
+	->name('sitemap');
+Route::get('/robots.txt', [SiteController::class, 'robots'])
+	->name('robots');
+
 Route::post('/ppdb', [PpdbApplicantController::class, 'store'])
 	->middleware('throttle:5,1')
 	->name('ppdb.apply');
+// Formulir pendaftaran siap cetak untuk pendaftaran langsung ke sekolah.
+// Didefinisikan eksplisit agar tidak pernah bertabrakan dengan rute
+// tangkap-lambung /{section}.
+Route::get('/ppdb/formulir', [PpdbApplicantController::class, 'printableForm'])
+	->name('ppdb.printable');
+// Versi PDF formulir yang sama, diunduh sebagai berkas (bukan dialog cetak).
+Route::get('/ppdb/formulir.pdf', [PpdbApplicantController::class, 'printablePdf'])
+	->name('ppdb.printable.pdf');
 Route::post('/kontak', [ContactMessageController::class, 'store'])
 	->middleware('throttle:5,1')
 	->name('contact-messages.store');

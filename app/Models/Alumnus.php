@@ -13,4 +13,10 @@ class Alumnus extends Model
         'role_desc',
         'quote',
     ];
+
+    /** Inisial nama untuk avatar ketika foto belum tersedia. */
+    public function getInitialsAttribute(): string
+    {
+        return \App\Support\Initials::from($this->name, 'A');
+    }
 }

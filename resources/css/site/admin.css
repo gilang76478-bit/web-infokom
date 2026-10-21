@@ -103,15 +103,15 @@
 .admin-shell {
     min-height: 100vh;
     padding-bottom: 0;
-    background: #f4f6fa;
+    background: var(--mist);
     color: #182236;
-    --admin-ink: #182236;
-    --admin-muted: #6e788a;
-    --admin-line: #e1e6ef;
-    --admin-blue: #3478df;
-    --admin-blue-soft: #eaf2ff;
-    --admin-sidebar: #1e2b3d;
-    --admin-sidebar-muted: #aab5c5;
+    --admin-ink: #1e2336;
+    --admin-muted: #5d6377;
+    --admin-line: #e5e1d4;
+    --admin-blue: #3446b4;
+    --admin-blue-soft: #eceefa;
+    --admin-sidebar: #243476;
+    --admin-sidebar-muted: #b3bce0;
 }
 
 .admin-shell .nav-in form {
@@ -297,9 +297,9 @@
     align-items: center;
     gap: 9px;
     padding: 0 10px;
-    border: 1px solid #dce2eb;
+    border: 1px solid var(--line);
     border-radius: 6px;
-    background: #f4f6f9;
+    background: var(--mist);
     color: #718097;
 }
 
@@ -320,7 +320,7 @@
 
 .admin-global-search kbd {
     padding: 1px 5px;
-    border: 1px solid #dce2eb;
+    border: 1px solid var(--line);
     border-radius: 3px;
     color: #929caf;
     font: 500 0.7rem var(--fb);
@@ -352,7 +352,7 @@
     height: 34px;
     place-items: center;
     border-radius: 50%;
-    background: #e0eaff;
+    background: var(--mist);
     color: #275bc0;
     font-weight: 800;
 }
@@ -439,7 +439,7 @@
 
 .admin-metric:hover {
     transform: translateY(-2px);
-    border-color: #a9c6f4;
+    border-color: var(--line);
     box-shadow: 0 10px 24px rgb(28 49 80 / 7%);
 }
 
@@ -473,7 +473,7 @@
     padding: 18px 18px 16px;
     border: 1px solid var(--admin-line);
     border-radius: 12px;
-    background: linear-gradient(180deg, #fff 0%, #f7faff 100%);
+    background: var(--surface);
     color: var(--admin-ink);
     text-decoration: none;
     box-shadow: 0 10px 24px rgb(19 31 68 / 3%);
@@ -485,12 +485,12 @@
 
 .admin-fast-card:hover {
     transform: translateY(-2px);
-    border-color: #b9c9eb;
+    border-color: var(--line);
     box-shadow: 0 16px 28px rgb(19 31 68 / 8%);
 }
 
 .admin-fast-card.is-primary {
-    background: linear-gradient(135deg, #132d70 0%, #2348a6 100%);
+    background: var(--navy);
     color: #fff;
 }
 
@@ -563,13 +563,13 @@
 }
 
 .admin-secondary-link {
-    border-color: #cbd4e1;
+    border-color: var(--line);
     background: #fff;
     color: #49576a;
 }
 
 .admin-secondary-link:hover {
-    background: #f6f8fb;
+    background: var(--mist);
 }
 
 .admin-content-area > .admin-back {
@@ -673,7 +673,7 @@
 }
 
 .admin-data-panel .admin-table tbody tr:not(.admin-no-results):hover td {
-    background: #f7faff;
+    background: var(--mist);
 }
 
 .admin-data-panel .admin-table tbody tr:last-child td {
@@ -716,7 +716,7 @@
 }
 
 .admin-small-button:hover {
-    background: #dceaff;
+    background: var(--mist);
 }
 
 .admin-empty {
@@ -846,8 +846,8 @@
     width: 100%;
     min-width: 0;
     padding: 0.75rem 0.85rem;
-    border: 1px solid #cbd3df;
-    border-color: #cbd3df;
+    border: 1px solid var(--line);
+    border-color: var(--line);
     border-radius: 5px;
     background: var(--bg);
     color: var(--ink);
@@ -863,6 +863,72 @@
 .admin-content-form .admin-form-actions,
 .admin-content-form .admin-field-error {
     grid-column: 1 / -1;
+}
+
+/* Unggah berkas (foto guru): input file yang rapi sejajar input lain. */
+.admin-file-field {
+    display: grid;
+    gap: 10px;
+}
+
+.admin-content-form input[type="file"] {
+    padding: 0.55rem 0.7rem;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.8rem;
+}
+
+.admin-file-current {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+}
+
+.admin-file-current img {
+    width: 56px;
+    height: 56px;
+    flex: none;
+    border-radius: 5px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+}
+
+.admin-file-remove {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #8a2f2f;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-file-remove input {
+    width: auto;
+    min-width: 0;
+    padding: 0;
+}
+
+/* Sel foto pada tabel daftar admin. */
+.admin-thumb-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.admin-thumb {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border-radius: 5px;
+    object-fit: cover;
+    border: 1px solid var(--line);
 }
 
 .admin-form-actions {
@@ -964,7 +1030,7 @@
 }
 
 .admin-message-unread td {
-    background: #f7faff;
+    background: var(--mist);
 }
 
 .admin-message-body {
@@ -981,12 +1047,12 @@
 }
 
 .admin-message-status.is-unread {
-    background: #e8f1ff;
+    background: var(--mist);
     color: #2d68bd;
 }
 
 .admin-message-status.is-read {
-    background: #edf1f5;
+    background: var(--mist);
     color: #69778a;
 }
 

@@ -28,7 +28,7 @@
     padding: clamp(22px, 4vw, 30px);
     border: 1px solid var(--line);
     border-radius: 14px;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--brand) 100%);
+    background: var(--navy);
     color: #fff;
     box-shadow: 0 16px 40px rgb(18 31 74 / 14%);
 }
@@ -344,7 +344,7 @@
     width: 100%;
     min-width: 0;
     padding: 10px 11px;
-    border: 1px solid #cbd3df;
+    border: 1px solid var(--line);
     border-radius: 5px;
     background: var(--surface);
     color: var(--ink);

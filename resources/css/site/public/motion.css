@@ -1,0 +1,440 @@
+/* =============================================================
+   public/motion.css — bagian dari gaya halaman publik
+   Animasi global halaman publik: entrance hero (murni CSS), scroll
+   reveal (hanya aktif bila site.js memasang .has-reveal), sentuhan
+   hover kartu, dan bayangan pita navigasi saat digulir.
+   Prinsip: transform & opacity saja, sekali jalan, tidak menghalangi
+   klik atau mengunci scroll. Seluruh aturan ini dimatikan oleh blok
+   prefers-reduced-motion global di responsive.css.
+   ============================================================= */
+
+/* =============================================================
+   1. Hero entrance — murni CSS sehingga tetap jalan walau JavaScript
+   gagal. Urutan tampil: eyebrow → judul → deskripsi → CTA; emblem
+   beranda menyusul. Jeda maksimal 320ms agar informasi penting tidak
+   tertunda lama.
+   ============================================================= */
+@keyframes motion-rise {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.detail-hero .container > *,
+.home-hero .home-copy > *,
+.home-hero .home-emblem {
+    animation: motion-rise 520ms cubic-bezier(0.22, 0.7, 0.25, 1) both;
+}
+
+.detail-hero .container > :nth-child(1),
+.home-hero .home-copy > :nth-child(1) {
+    animation-delay: 40ms;
+}
+
+.detail-hero .container > :nth-child(2),
+.home-hero .home-copy > :nth-child(2) {
+    animation-delay: 110ms;
+}
+
+.detail-hero .container > :nth-child(3),
+.home-hero .home-copy > :nth-child(3) {
+    animation-delay: 180ms;
+}
+
+.detail-hero .container > :nth-child(4),
+.home-hero .home-copy > :nth-child(4) {
+    animation-delay: 250ms;
+}
+
+.detail-hero .container > :nth-child(5) {
+    animation-delay: 320ms;
+}
+
+.home-hero .home-emblem {
+    animation-delay: 240ms;
+}
+
+/* =============================================================
+   2. Scroll reveal — kelas .has-reveal hanya dipasang site.js setelah
+   IntersectionObserver tersedia, sehingga tanpa JavaScript seluruh
+   konten tampil normal (tidak pernah tersembunyi). --motion-delay
+   memberi efek bertahap pada kartu dalam satu grid.
+   ============================================================= */
+.has-reveal .motion {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+        opacity 540ms cubic-bezier(0.22, 0.7, 0.25, 1) var(--motion-delay, 0ms),
+        transform 540ms cubic-bezier(0.22, 0.7, 0.25, 1) var(--motion-delay, 0ms),
+        translate 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.has-reveal .motion.is-in {
+    opacity: 1;
+    transform: none;
+}
+
+/* =============================================================
+   3. Hover kartu — pelengkap untuk kartu yang belum punya transisi
+   bawaan (beranda & profil sudah punya sendiri). Hover memakai
+   translate longhand agar tidak berebut properti transform dengan
+   transisi reveal, dan hanya aktif pada perangkat yang benar-benar
+   mempunyai hover.
+   ============================================================= */
+.berita-card,
+.academic-card,
+.industry-card,
+.galeri-card {
+    transition: translate 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.galeri-card img {
+    transition: transform 420ms ease;
+}
+
+@media (hover: hover) {
+    .berita-card:hover,
+    .academic-card:hover,
+    .industry-card:hover,
+    .galeri-card:hover {
+        translate: 0 -4px;
+        box-shadow: 0 16px 34px rgb(19 31 68 / 10%);
+        border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
+    }
+
+    .galeri-card:hover img {
+        transform: scale(1.03);
+    }
+}
+
+/* =============================================================
+   4. Pita navigasi — perubahan halus saat halaman digulir: bayangan
+   tipis tanpa mengubah ukuran atau posisi (tidak bergetar).
+   ============================================================= */
+.nav {
+    transition: box-shadow 220ms ease;
+}
+
+.nav.is-scrolled {
+    box-shadow: 0 10px 30px rgb(19 31 68 / 8%);
+}
+
+/* =============================================================
+   5. Umpan balik klik — setiap elemen interaktif merespons tekanan
+   jari/cursor dengan efek "tertekan" (scale longhand agar tidak
+   berebut properti transform dengan reveal & hover yang sudah ada).
+   ============================================================= */
+.btn:active,
+.berita-card:active,
+.academic-card:active,
+.industry-card:active,
+.galeri-card:active,
+.detail-card:active,
+.fasilitas-card:active,
+.org-card:active,
+.reel-card:active,
+.bkk-poster:active,
+.home-explore-card:active,
+.home-news a:active,
+.stat-card:active,
+.alumni-card:active,
+.detail-row:active,
+.berita-filters a:active,
+.link:active,
+.carousel-btn:active,
+.nav-caret:active {
+    scale: 0.96;
+}
+
+.btn:active {
+    scale: 0.97;
+}
+
+/* Ikon perbesar pada kartu galeri muncul saat kartu disorot. */
+.galeri-zoom {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 92%);
+    color: var(--brand);
+    opacity: 0;
+    translate: 0 6px;
+    transition:
+        opacity 200ms ease,
+        translate 200ms ease;
+    pointer-events: none;
+}
+
+.galeri-card:has([data-lightbox-item]),
+.galeri-card:has(.galeri-zoom) {
+    cursor: zoom-in;
+}
+
+.galeri-card:hover .galeri-zoom,
+.galeri-card:focus-within .galeri-zoom {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* =============================================================
+   6. Tirai halaman — saat tautan internal diklik, tirai warna sekolah
+   naik menutup layar selama halaman baru dimuat (dipasang site.js;
+   tanpa JS / reduced motion tirai ini tidak pernah aktif).
+   ============================================================= */
+.page-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 240;
+    pointer-events: none;
+    background: linear-gradient(180deg, var(--brand), #2a3fe0);
+    translate: 0 100%;
+}
+
+.page-curtain.is-active {
+    animation: motion-curtain 360ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+@keyframes motion-curtain {
+    from {
+        translate: 0 100%;
+    }
+    to {
+        translate: 0 0;
+    }
+}
+
+/* =============================================================
+   7. Lightbox galeri — tumbuh dari tengah saat dibuka, lalu foto
+   bergeser ke kiri/kanan saat berpindah (panah, keyboard, usapan
+   jari). Dibuka dan digeser oleh site.js pada [data-lightbox-item].
+   ============================================================= */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: grid;
+    place-items: center;
+    padding: clamp(12px, 3vw, 44px);
+}
+
+.lightbox[hidden] {
+    display: none;
+}
+
+.lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(8 12 30 / 90%);
+    animation: lightbox-fade 220ms ease both;
+}
+
+.lightbox-stage {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    max-width: min(1080px, 100%);
+    animation: lightbox-grow 280ms cubic-bezier(0.22, 0.7, 0.25, 1) both;
+}
+
+.lightbox-stage img {
+    display: block;
+    justify-self: center;
+    max-width: 100%;
+    max-height: min(72vh, 860px);
+    width: auto;
+    height: auto;
+    border-radius: 14px;
+    background: #10173a;
+    box-shadow: 0 30px 80px rgb(0 0 0 / 55%);
+}
+
+.lightbox-stage img.is-out-left {
+    animation: lightbox-out-left 150ms ease forwards;
+}
+
+.lightbox-stage img.is-out-right {
+    animation: lightbox-out-right 150ms ease forwards;
+}
+
+.lightbox-stage img.is-in-left {
+    animation: lightbox-in-left 280ms ease both;
+}
+
+.lightbox-stage img.is-in-right {
+    animation: lightbox-in-right 280ms ease both;
+}
+
+.lightbox-caption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: baseline;
+    color: #fff;
+}
+
+.lightbox-caption .lightbox-count {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: rgb(255 255 255 / 65%);
+}
+
+.lightbox-caption b {
+    font-size: 0.98rem;
+    font-weight: 700;
+}
+
+.lightbox-btn {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 35%);
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+    cursor: pointer;
+    translate: 0 -50%;
+    transition:
+        scale 140ms ease,
+        background 180ms ease;
+}
+
+.lightbox-btn:hover {
+    background: rgb(255 255 255 / 26%);
+}
+
+.lightbox-btn:active {
+    scale: 0.9;
+}
+
+.lightbox-prev {
+    left: clamp(8px, 2vw, 24px);
+}
+
+.lightbox-next {
+    right: clamp(8px, 2vw, 24px);
+}
+
+.lightbox-close {
+    position: absolute;
+    z-index: 2;
+    top: clamp(10px, 2vw, 24px);
+    right: clamp(10px, 2vw, 24px);
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 35%);
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+    cursor: pointer;
+    transition:
+        scale 140ms ease,
+        background 180ms ease;
+}
+
+.lightbox-close:hover {
+    background: rgb(255 255 255 / 26%);
+}
+
+.lightbox-close:active {
+    scale: 0.9;
+}
+
+html.lightbox-open {
+    overflow: hidden;
+}
+
+@keyframes lightbox-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes lightbox-grow {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes lightbox-out-left {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-46px);
+    }
+}
+
+@keyframes lightbox-out-right {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(46px);
+    }
+}
+
+@keyframes lightbox-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(46px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes lightbox-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(-46px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .lightbox-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .lightbox-stage img {
+        max-height: 64vh;
+    }
+}

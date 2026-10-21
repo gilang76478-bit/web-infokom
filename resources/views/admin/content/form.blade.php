@@ -7,7 +7,7 @@
 
 @section('content')
   <div class="admin-page-heading"><div><p class="admin-eyebrow">Pengelolaan konten</p><h1>{{ $record ? 'Edit' : 'Tambah' }} {{ $definition['label'] }}</h1><p>Lengkapi informasi untuk ditampilkan di website.</p></div></div>
-  <form class="admin-content-form" method="post" action="{{ $record ? route('admin.content.update', [$type, $record->id]) : route('admin.content.store', $type) }}" data-admin-form>
+  <form class="admin-content-form" method="post" action="{{ $record ? route('admin.content.update', [$type, $record->id]) : route('admin.content.store', $type) }}" data-admin-form enctype="multipart/form-data">
     @csrf
     @if ($record) @method('put') @endif
     @foreach ($definition['fields'] as $key => $field)
@@ -27,6 +27,24 @@
             <option value="{{ $optionValue }}" @selected((string) ($value ?? '') === (string) $optionValue)>{{ $optionLabel }}</option>
           @endforeach
         </select>
+      @elseif ($field['type'] === 'file')
+        @php
+          // Berkas hasil unggahan disimpan relatif terhadap disk publik;
+          // nilai lama berupa URL eksternal (https://...) dipakai apa adanya.
+          $currentFile = $record?->{$key};
+          $currentUrl = filled($currentFile)
+            ? (preg_match('#^(https?:)?//#i', $currentFile) ? $currentFile : asset('storage/'.ltrim($currentFile, '/')))
+            : null;
+        @endphp
+        <div class="admin-file-field">
+          @if (filled($currentUrl))
+            <div class="admin-file-current">
+              <img src="{{ $currentUrl }}" alt="{{ $field['label'] }} saat ini">
+              <label class="admin-file-remove"><input type="checkbox" name="{{ $key }}_remove" value="1"> Hapus foto</label>
+            </div>
+          @endif
+          <input id="field-{{ $key }}" name="{{ $key }}" type="file" accept="image/jpeg,image/png,image/webp">
+        </div>
       @else
         <input id="field-{{ $key }}" name="{{ $key }}" type="{{ $field['type'] }}" value="{{ $value }}" @if ($required) required @endif>
       @endif

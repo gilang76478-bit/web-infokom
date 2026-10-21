@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use App\Models\{Achievement, Agenda, Alumnus, Announcement, JapanStep, Partner, Program, Teacher, TracerStat};
+use App\Models\{Achievement, Agenda, Alumnus, Announcement, Facility, JapanReel, JapanStep, Partner, Program, Teacher, TracerStat, Vacancy};
 
 /**
  * Definisi modul konten admin: label, model, dan daftar field beserta
@@ -16,6 +16,7 @@ class ContentTypes
         'akademik' => ['label' => 'Program keahlian', 'model' => Program::class, 'fields' => [
             'short' => ['label' => 'Singkatan', 'type' => 'text', 'rules' => 'required|string|max:10'],
             'icon' => ['label' => 'Ikon', 'type' => 'text', 'rules' => 'required|in:code,network,pen,calc,brief'],
+            'photo_path' => ['label' => 'Foto jurusan', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:4096'],
             'name' => ['label' => 'Nama program', 'type' => 'text', 'rules' => 'required|string|max:255'],
             'description' => ['label' => 'Deskripsi', 'type' => 'textarea', 'rules' => 'required|string|max:4000'],
             'skills' => ['label' => 'Kompetensi (satu per baris)', 'type' => 'lines', 'rules' => 'required|string|max:4000'],
@@ -27,7 +28,7 @@ class ContentTypes
             'nip' => ['label' => 'NIP / NIDN', 'type' => 'text', 'rules' => 'nullable|string|max:30'],
             'position' => ['label' => 'Jabatan / peran', 'type' => 'text', 'rules' => 'required|string|max:120'],
             'program_id' => ['label' => 'Program keahlian', 'type' => 'select', 'options' => 'programs', 'rules' => 'nullable|integer|exists:programs,id'],
-            'photo' => ['label' => 'URL foto', 'type' => 'text', 'rules' => 'nullable|string|max:500'],
+            'photo' => ['label' => 'Foto guru', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048'],
             'sort_order' => ['label' => 'Urutan tampil', 'type' => 'number', 'rules' => 'required|integer|min:0|max:9999'],
         ]],
         'agenda' => ['label' => 'Agenda', 'model' => Agenda::class, 'fields' => [
@@ -45,10 +46,32 @@ class ContentTypes
             'title' => ['label' => 'Nama tahap', 'type' => 'text', 'rules' => 'required|string|max:255'],
             'description' => ['label' => 'Deskripsi', 'type' => 'textarea', 'rules' => 'required|string|max:4000'],
             'duration' => ['label' => 'Durasi', 'type' => 'text', 'rules' => 'required|string|max:255'],
+            'photo_path' => ['label' => 'Foto tahap', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:4096'],
+        ]],
+        'reel-jepang' => ['label' => 'Reel Magang Jepang', 'model' => JapanReel::class, 'fields' => [
+            'url' => ['label' => 'Tautan Reel Instagram', 'type' => 'text', 'rules' => 'required|string|max:500'],
+            'title' => ['label' => 'Judul', 'type' => 'text', 'rules' => 'required|string|max:255'],
+            'description' => ['label' => 'Keterangan', 'type' => 'textarea', 'rules' => 'nullable|string|max:1000'],
+            'poster_path' => ['label' => 'Poster (thumbnail)', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:4096'],
+            'sort_order' => ['label' => 'Urutan tampil', 'type' => 'number', 'rules' => 'required|integer|min:0|max:9999'],
         ]],
         'industri' => ['label' => 'Mitra industri', 'model' => Partner::class, 'fields' => [
             'name' => ['label' => 'Nama mitra', 'type' => 'text', 'rules' => 'required|string|max:255'],
             'category' => ['label' => 'Bidang', 'type' => 'text', 'rules' => 'required|string|max:30'],
+            'logo' => ['label' => 'Logo mitra', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048'],
+        ]],
+        'fasilitas' => ['label' => 'Fasilitas sekolah', 'model' => Facility::class, 'fields' => [
+            'title' => ['label' => 'Nama fasilitas', 'type' => 'text', 'rules' => 'required|string|max:255'],
+            'description' => ['label' => 'Deskripsi', 'type' => 'textarea', 'rules' => 'required|string|max:1000'],
+            'photo_path' => ['label' => 'Foto fasilitas', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:4096'],
+            'sort_order' => ['label' => 'Urutan tampil', 'type' => 'number', 'rules' => 'required|integer|min:0|max:9999'],
+        ]],
+        'lowongan' => ['label' => 'Lowongan BKK', 'model' => Vacancy::class, 'fields' => [
+            'title' => ['label' => 'Judul lowongan', 'type' => 'text', 'rules' => 'required|string|max:255'],
+            'description' => ['label' => 'Keterangan', 'type' => 'textarea', 'rules' => 'nullable|string|max:1000'],
+            'image_path' => ['label' => 'Poster lowongan', 'type' => 'file', 'rules' => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:4096'],
+            'link' => ['label' => 'Tautan (opsional)', 'type' => 'text', 'rules' => 'nullable|string|max:500'],
+            'posted_at' => ['label' => 'Tanggal tayang', 'type' => 'date', 'rules' => 'required|date'],
         ]],
         'alumni' => ['label' => 'Cerita alumni', 'model' => Alumnus::class, 'fields' => [
             'name' => ['label' => 'Nama alumni', 'type' => 'text', 'rules' => 'required|string|max:255'],

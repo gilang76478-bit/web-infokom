@@ -5,12 +5,24 @@
 ])
 
 @section('content')
+  {{-- Remah navigasi Schema.org: Beranda → Program keahlian → program ini. --}}
+  @push('jsonld')
+    {!! \App\Support\StructuredData::script(\App\Support\StructuredData::breadcrumb(
+        $program->name,
+        route('program.show', $program),
+        [['name' => 'Program keahlian', 'item' => route('site.section', 'akademik')]],
+    )) !!}
+  @endpush
+
   <section class="detail-hero">
     <div class="container">
       <p class="detail-eyebrow">Program keahlian</p>
       <span class="detail-tag">{{ $program->short }}</span>
       <h1>{{ $program->name }}</h1>
       <p>{{ $program->description }}</p>
+      @if (filled($program->photo_url))
+        <img class="program-hero-photo" src="{{ $program->photo_url }}" alt="Kegiatan siswa {{ $program->short }} di SMK INFOKOM" loading="lazy" decoding="async">
+      @endif
       <div class="program-actions">
         <a class="btn btn-accent" href="{{ route('site.section', 'ppdb') }}">Daftar PPDB</a>
         <a class="btn btn-brand" href="{{ route('site.section', 'akademik') }}">Semua program keahlian</a>
@@ -76,8 +88,8 @@
               @foreach ($program->teachers as $teacher)
                 <article class="org-card">
                   <div class="photo">
-                    @if (filled($teacher->photo))
-                      <img src="{{ $teacher->photo }}" alt="Foto {{ $teacher->name }}" loading="lazy">
+                    @if (filled($teacher->photo_url))
+                      <img src="{{ $teacher->photo_url }}" alt="Foto {{ $teacher->name }}" loading="lazy">
                     @else
                       <div class="photo-placeholder">{{ $teacher->initials }}</div>
                     @endif

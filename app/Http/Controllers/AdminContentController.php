@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminContentRequest;
 use App\Support\ContentTypes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminContentController extends Controller
@@ -27,7 +30,8 @@ class AdminContentController extends Controller
     public function store(AdminContentRequest $request, string $type): RedirectResponse
     {
         $definition = $this->definition($type);
-        $definition['model']::create($this->normalize($request->validated(), $definition));
+        $values = $this->handleFileFields($request, $definition, $request->validated());
+        $definition['model']::create($this->normalize($values, $definition));
 
         return redirect()->route('admin.content.index', $type)->with('status', 'Data berhasil ditambahkan.');
     }
@@ -44,7 +48,8 @@ class AdminContentController extends Controller
     {
         $definition = $this->definition($type);
         $record = $definition['model']::findOrFail($record);
-        $record->update($this->normalize($request->validated(), $definition));
+        $values = $this->handleFileFields($request, $definition, $request->validated(), $record);
+        $record->update($this->normalize($values, $definition));
 
         return redirect()->route('admin.content.index', $type)->with('status', 'Perubahan berhasil disimpan.');
     }
@@ -62,6 +67,43 @@ class AdminContentController extends Controller
         abort_unless(isset(ContentTypes::ALL[$type]), 404);
 
         return ContentTypes::ALL[$type];
+    }
+
+    /**
+     * Tangani field bertipe berkas (mis. foto guru): berkas baru disimpan ke
+     * disk publik, berkas lama yang diganti atau diminta dihapus ikut
+     * dibersihkan agar tidak menumpuk, dan ketika admin tidak mengirim
+     * berkas apa pun nilai lama dipertahankan (bukan ditimpa null).
+     *
+     * @return array<string, mixed>
+     */
+    private function handleFileFields(Request $request, array $definition, array $values, ?Model $record = null): array
+    {
+        foreach ($definition['fields'] as $name => $field) {
+            if (($field['type'] ?? null) !== 'file') {
+                continue;
+            }
+
+            if ($request->hasFile($name)) {
+                $this->deleteStoredFile($record?->{$name});
+                $values[$name] = $request->file($name)->store('photos/'.$definition['model']::query()->getModel()->getTable(), 'public');
+            } elseif ($request->boolean($name.'_remove')) {
+                $this->deleteStoredFile($record?->{$name});
+                $values[$name] = null;
+            } else {
+                unset($values[$name]);
+            }
+        }
+
+        return $values;
+    }
+
+    /** Hapus berkas hasil unggahan; nilai URL luar (http) tidak disentuh. */
+    private function deleteStoredFile(mixed $path): void
+    {
+        if (is_string($path) && filled($path) && ! preg_match('#^(https?:)?//#i', $path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     private function normalize(array $values, array $definition): array

@@ -21,7 +21,8 @@
             "facilities": [
                 "Laboratorium komputer",
                 "Laboratorium jaringan"
-            ]
+            ],
+            "photo_path": "photos/programs/tkj.jpg"
         },
         {
             "short": "RPL",
@@ -44,7 +45,8 @@
             "facilities": [
                 "Laboratorium komputer",
                 "Ruang kerja proyek perangkat lunak"
-            ]
+            ],
+            "photo_path": "photos/programs/rpl.jpg"
         },
         {
             "short": "DKV",
@@ -67,7 +69,8 @@
             "facilities": [
                 "Studio desain",
                 "Laboratorium komputer desain"
-            ]
+            ],
+            "photo_path": "photos/programs/dkv.jpg"
         },
         {
             "short": "PSPT",
@@ -90,17 +93,19 @@
             "facilities": [
                 "Studio produksi televisi",
                 "Peralatan kamera dan penyuntingan"
-            ]
+            ],
+            "photo_path": "photos/programs/pspt.jpg"
         }
     ],
     "posts": [
         {
-            "category": "Kegiatan",
+            "category": "BKK",
             "title": "Alumni TKJ diterima bekerja di PT. Mitra Copierindo Mandiri",
             "excerpt": "Bursa Kerja Khusus SMK INFOKOM mengabarkan alumni Teknik Komputer dan Jaringan diterima bekerja di perusahaan mitra.",
             "body": "Melalui Bursa Kerja Khusus (BKK), SMK INFOKOM Kota Bogor mengabarkan bahwa alumni program keahlian Teknik Komputer dan Jaringan, M. Fahmi Ramadhan, diterima bekerja di PT. Mitra Copierindo Mandiri.\nKabar yang diunggah pada 10 Oktober 2026 ini menunjukkan jalur dunia kerja yang terbuka bagi lulusan sekolah melalui jejaring Bursa Kerja Khusus dan mitra DU/DI.",
             "published_at": "2026-10-10",
-            "art": 2
+            "art": 2,
+            "image_path": "photos/posts/alumni-tkj.jpg"
         },
         {
             "category": "PPDB",
@@ -108,7 +113,8 @@
             "excerpt": "Sekolah mengundang calon peserta didik mendaftar melalui kanal resmi; empat program keahlian ditawarkan.",
             "body": "SMK INFOKOM Kota Bogor mempromosikan Penerimaan Murid Baru (SPMB) tahun ajaran 2026-2027 melalui kanal resmi sekolah, termasuk unggahan di akun Instagram @smk.infokom_official pada 26 Februari 2026 dengan tagar #spmbjabar dan #spmb2026.\nCalon peserta didik diarahkan mengunjungi website resmi sekolah untuk informasi pendaftaran lebih lanjut. Empat program keahlian ditawarkan: Teknik Komputer dan Jaringan (TKJ), Rekayasa Perangkat Lunak (RPL), Desain Komunikasi Visual (DKV), dan Produksi dan Siaran Program Televisi (PSPT).",
             "published_at": "2026-02-26",
-            "art": 4
+            "art": 4,
+            "image_path": "photos/posts/spmb-gedung.jpg"
         },
         {
             "category": "Akademik",
@@ -116,7 +122,8 @@
             "excerpt": "Ujian Sumatif Akhir Semester ganjil tahun ajaran 2025-2026 diikuti siswa kelas X, XI, dan XII.",
             "body": "Melalui kanal resminya, SMK INFOKOM Kota Bogor menyampaikan ucapan selamat menempuh Ujian Sumatif Akhir Semester (SAS) ganjil kepada seluruh siswa-siswi kelas X, XI, dan XII tahun ajaran 2025-2026.\nUcapan tersebut diunggah pada 4 Desember 2025 sebagai dukungan sekolah menjelang berakhirnya semester ganjil.",
             "published_at": "2025-12-04",
-            "art": 0
+            "art": 0,
+            "image_path": "photos/posts/sas-kelas.jpg"
         },
         {
             "category": "Kegiatan",
@@ -124,7 +131,8 @@
             "excerpt": "Warga sekolah memperingati Hari Guru Nasional bersama guru dan tenaga kependidikan.",
             "body": "SMK INFOKOM Kota Bogor memperingati Hari Guru Nasional yang jatuh pada 25 November 2025. Ucapan peringatan diunggah melalui kanal resmi sekolah pada 24 November 2025.\nPeringatan ini merupakan apresiasi bagi guru dan tenaga kependidikan yang mendampingi pendidikan siswa di sekolah.",
             "published_at": "2025-11-24",
-            "art": 3
+            "art": 3,
+            "image_path": "photos/posts/hari-guru.jpg"
         },
         {
             "category": "Akademik",
@@ -132,7 +140,8 @@
             "excerpt": "Seluruh siswa kelas XII menempuh Ujian Tes Kemampuan Akademik tahun ajaran 2025-2026.",
             "body": "Melalui kanal resminya, SMK INFOKOM Kota Bogor menyampaikan dukungan kepada seluruh siswa-siswi kelas XII yang menempuh Ujian Tes Kemampuan Akademik (TKA) tahun ajaran 2025-2026.\nUcapan tersebut diunggah pada 3 November 2025.",
             "published_at": "2025-11-03",
-            "art": 5
+            "art": 5,
+            "image_path": "photos/posts/tka-lab.jpg"
         },
         {
             "category": "Akademik",
@@ -140,7 +149,8 @@
             "excerpt": "Sumatif Tengah Semester ganjil tahun ajaran 2025-2026 diikuti siswa kelas X, XI, dan XII.",
             "body": "Melalui kanal resminya, SMK INFOKOM Kota Bogor menyampaikan ucapan selamat menempuh Sumatif Tengah Semester (STS) kepada siswa-siswi kelas X, XI, dan XII tahun ajaran 2025-2026.\nUcapan tersebut diunggah pada 5 Oktober 2025.",
             "published_at": "2025-10-05",
-            "art": 1
+            "art": 1,
+            "image_path": "photos/posts/sts-gedung-kelas.jpg"
         }
     ],
     "agendas": [],
@@ -157,61 +167,71 @@
             "category": "Praktik",
             "title": "Praktik jaringan di Lab TKJ",
             "size": "w",
-            "art": 1
+            "art": 1,
+            "image_path": "photos/gallery/kegiatan-tkj.jpg"
         },
         {
             "category": "Kegiatan",
             "title": "Upacara Hari Kemerdekaan",
             "size": "",
-            "art": 0
+            "art": 0,
+            "image_path": "photos/gallery/upacara1.jpg"
         },
         {
-            "category": "Jepang",
-            "title": "Kelas budaya Jepang",
+            "category": "Kegiatan",
+            "title": "Upacara bendera mingguan",
+            "size": "",
+            "art": 0,
+            "image_path": "photos/gallery/upacara2.jpg"
+        },
+        {
+            "category": "Kegiatan",
+            "title": "Latihan paskibra",
             "size": "t",
-            "art": 4
+            "art": 4,
+            "image_path": "photos/gallery/paskibra.jpg"
         },
         {
-            "category": "PKL",
-            "title": "Siswa PKL di mitra industri",
+            "category": "Kegiatan",
+            "title": "Turnamen bulutangkis siswa",
             "size": "",
-            "art": 2
+            "art": 2,
+            "image_path": "photos/gallery/badminton.jpg"
         },
         {
-            "category": "Prestasi",
-            "title": "Penyerahan piala lomba",
+            "category": "Kegiatan",
+            "title": "Latihan basket ekstrakurikuler",
             "size": "",
-            "art": 3
+            "art": 3,
+            "image_path": "photos/gallery/basket.jpg"
+        },
+        {
+            "category": "Praktik",
+            "title": "Klub robotik siswa",
+            "size": "w",
+            "art": 5,
+            "image_path": "photos/gallery/robotik.jpg"
         },
         {
             "category": "Praktik",
             "title": "Sesi foto produk di studio DKV",
             "size": "w",
-            "art": 5
-        },
-        {
-            "category": "Kegiatan",
-            "title": "Pentas seni akhir semester",
-            "size": "",
-            "art": 0
-        },
-        {
-            "category": "Jepang",
-            "title": "Pelepasan peserta magang",
-            "size": "",
-            "art": 4
-        },
-        {
-            "category": "PKL",
-            "title": "Kunjungan guru pembimbing",
-            "size": "t",
-            "art": 1
+            "art": 5,
+            "image_path": "photos/gallery/kegiatan-dkv.jpg"
         },
         {
             "category": "Praktik",
             "title": "Pemrograman gim di Lab RPL",
             "size": "",
-            "art": 2
+            "art": 2,
+            "image_path": "photos/gallery/kegiatan-rpl.jpg"
+        },
+        {
+            "category": "Praktik",
+            "title": "Praktik studio siaran PSPT",
+            "size": "",
+            "art": 1,
+            "image_path": "photos/gallery/kegiatan-pspt.jpg"
         }
     ],
     "japan_steps": [
@@ -266,14 +286,24 @@
             "duration": "Sesuai kontrak program"
         }
     ],
-    "partners": [
+    "japan_reels": [
         {
-            "name": "PT. Guna Senaputra Sejahtera",
-            "category": "DU/DI"
+            "url": "https://www.instagram.com/smk.infokom_official/reel/DZE77u4oNN_/",
+            "title": "Dokumentasi Program Jepang",
+            "description": "Lihat Reel resmi sekolah terkait program PKL dan Magang Jepang.",
+            "sort_order": 1
         },
         {
-            "name": "Raja Promo Advertising",
-            "category": "DU/DI"
+            "url": "https://www.instagram.com/smk.infokom_official/reel/DTfPQPRkkAq/",
+            "title": "Informasi Magang Jepang",
+            "description": "Jelajahi Reel resmi sekolah untuk mengetahui dokumentasi program magang.",
+            "sort_order": 2
+        },
+        {
+            "url": "https://www.instagram.com/smk.infokom_official/reel/DWjaMP3CEID/",
+            "title": "Dokumentasi dan Pengalaman",
+            "description": "Saksikan dokumentasi lainnya dari Instagram resmi SMK Infokom Bogor.",
+            "sort_order": 3
         }
     ],
     "alumni": [
@@ -300,14 +330,6 @@
         },
         {
             "text": "Selamat kepada lulusan Angkatan XVIII yang lulus seleksi SNBP dan SNBT tahun 2026."
-        }
-    ],
-    "teachers": [
-        {
-            "name": "Ir. Hj. Liliek Rahmaningsih, M.MPd",
-            "nip": null,
-            "position": "Kepala Sekolah",
-            "sort_order": 1
         }
     ]
 }

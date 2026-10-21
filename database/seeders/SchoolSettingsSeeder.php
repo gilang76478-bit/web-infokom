@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\SiteSetting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Mengisi tabel site_settings dengan data resmi sekolah dari
@@ -34,6 +36,24 @@ class SchoolSettingsSeeder extends Seeder
 
             $setting->wasRecentlyCreated ? $created++ : $kept++;
         }
+
+        // Foto beranda (bagian "Profil" pada halaman utama): berkas disalin
+        // dari benih lalu didaftarkan sebagai profile_home_photo — key yang
+        // sudah diatur admin tidak pernah ditimpa.
+        $homePhoto = 'photos/home/gedung-sekolah.jpg';
+
+        if (! Storage::disk('public')->exists($homePhoto)) {
+            $source = database_path('seeders/data/photos/home/gedung-sekolah.jpg');
+
+            if (is_file($source)) {
+                Storage::disk('public')->put($homePhoto, File::get($source));
+            }
+        }
+
+        SiteSetting::firstOrCreate(
+            ['key' => 'profile_home_photo'],
+            ['value' => $homePhoto],
+        );
 
         $this->command?->info("Pengaturan sekolah: {$created} key diisi, {$kept} key sudah ada dan dibiarkan.");
     }
